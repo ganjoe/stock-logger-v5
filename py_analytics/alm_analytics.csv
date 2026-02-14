@@ -1,0 +1,8 @@
+ID,Category,Title,Description,Status
+F-ANA-010,Architecture,Unified Report Pattern,"Das Modul liefert IMMER ein `AnalyticsReport` Objekt zurück, egal ob Live-Snapshot oder historische Zeitreihe. Das Objekt enthält immer `summary` und `positions` (Zustand am Ende). Optional ist `series` gefüllt.",DONE
+F-ANA-020,Data Structure,Tabular Data Models,"Definiert flache DTOs (`PositionRow`, `SummaryRow`, `SeriesPoint`), die wie Tabellenblätter aufgebaut sind. Optimiert für einfaches Parsen im Frontend/CLI und Export nach Pandas.",DONE
+F-ANA-030,Logic,Snapshot Analysis (The Loupe),"Funktion `analyze_snapshot(snapshot)`. Analysiert EINEN Zeitpunkt. Berechnet Risiko-Metriken (`rist_p%`, `rist_g%`, `R-Value`) durch Verknüpfung von Positionen mit aktiven Stop-Orders. Füllt Tab 1 (Positions) und Tab 2 (Summary).",DONE
+F-ANA-040,Logic,Series Analysis (The Binoculars),"Funktion `analyze_series(list_of_snapshots)`. Analysiert einen ZEITRAUM. 1. Berechnet Kurvenverläufe (Equity, Drawdown, Cash, Exposure) für Tab 3 (`series`). 2. Nutzt den LETZTEN Snapshot der Liste, um Tab 1 & 2 zu füllen (aktueller Zustand).",DONE
+F-ANA-050,Math,Delegation to Math Core,"Keine eigenen Formeln! Delegiert alle Berechnungen (Drawdown, Heat, Winrate) strikt an `py_financial_math`. `py_analytics` ist nur der ""Manager"", der Daten sammelt und weiterreicht.",DONE
+F-ANA-060,Reporting,Performance Summary,"Erweiterung für `TradeResult`-Listen: `analyze_performance(trades)`. Berechnet statistische Kennzahlen (Winrate, Profit Factor, SQN) basierend auf abgeschlossenen Trades.",DONE
+F-ANA-070,Logic,Risk Guardrails,"(Optional) Prüft während der Analyse auf Grenzwerte (z.B. Heat > 2.5%) und fügt Warnhinweise in die `PositionRow` oder `SummaryRow` ein.",BACKLOG

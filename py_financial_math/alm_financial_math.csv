@@ -1,0 +1,9 @@
+ID,Category,Title,Description,Status
+F-MATH-010,Core,Pure Function Policy,"Das Modul darf KEINE Abhängigkeiten zu anderen Projekt-Modulen haben. Es importiert nur Standard-Libs (math, statistics). Alle Inputs sind primitive Typen (float, list[float]) oder generische DTOs.",DONE
+F-MATH-020,Position,Position Sizing (Risk),"Berechnet die maximal zulässige Positionsgröße basierend auf: Account Size, Risk% (z.B. 1%), Entry Price und Stop Price. Formel: Quantity = (Account * RiskPct) / (Entry - Stop).",DONE
+F-MATH-030,Position,Position Valuation,Berechnet Marktwert, Unrealized PnL und Risk Exposure (offenes Risiko) für eine gegebene Menge, Einstiegspreis und aktuellen Preis.,DONE
+F-MATH-040,Series,Drawdown Calculation,Berechnet aus einer Zeitreihe von Equity-Werten: 1. Den aktuellen Drawdown in %. 2. Den maximalen Drawdown (MaxDD) der Serie. Nutzt das High-Watermark Prinzip.,DONE
+F-MATH-050,Series,Equity Curve Metrics,Berechnet simple Metriken einer Kurve: Total Return %, CAGR (optional), Volatility (StdDev der täglichen Returns).,DONE
+F-MATH-060,Trade,Trade Statistics (R-Multiples),Berechnet für eine Liste von Trades: Winrate, Avg Win, Avg Loss, Payoff Ratio (AvgWin/AvgLoss), Expectancy und SQN (System Quality Number).,DONE
+F-MATH-070,Risk,Heat Calculation,Berechnet die Portfolio Heat: Summe des offenen Risikos aller Positionen relativ zum Gesamtkapital.,DONE
+F-MATH-080,Risk,Expectancy & Ruin,(Optional/Advanced) Berechnet die mathematische Wahrscheinlichkeit für einen Ruin (Risk of Ruin) basierend auf Winrate und Payoff Ratio.,BACKLOG
