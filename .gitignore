@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+env/
+venv/
+*.json
+# Keep JSON files in data/trades if they are part of the core data
+!data/trades/**/*.json
