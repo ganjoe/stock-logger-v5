@@ -3,7 +3,7 @@ py_tradeobject/interface.py
 Abstract Contracts. NOW SPLIT.
 """
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 from .models import TradeTransaction
@@ -65,4 +65,13 @@ class IMarketDataProvider(ABC):
 # --- The Union Interface (Optional, for backward compatibility) ---
 class IBrokerAdapter(IExecutionProvider, IMarketDataProvider):
     """Full broker capabilities."""
-    pass
+    
+    @abstractmethod
+    def get_account_summary(self) -> Dict[str, float]:
+        """Returns key metrics like 'TotalCash', 'NetLiquidation'."""
+        pass
+
+    @abstractmethod
+    def get_positions(self) -> List[Any]:
+        """Returns raw position objects (adapter specific or generic DTOs)."""
+        pass

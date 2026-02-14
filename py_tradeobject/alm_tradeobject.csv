@@ -8,7 +8,7 @@ F-TO-033,API,Command: .close(),Glattstellung (Markt-Verkauf) aller verbleibenden
 F-TO-040,Persistence,Autonomous State,Speichert sich selbstständig bei jeder Änderung als JSON. Das Format ist so gewählt, dass es ohne externe Datenbank lesbar bleibt.,-
 F-TO-041,Persistence,Cross-Platform Robustness,"Implementiert Retry-Logik und Dateisperren-Behandlung (z.B. für Windows Virenscanner), um korrupte Dateien beim atomaren Schreiben zu verhindern.",-
 F-TO-050,API,Sync & Refresh,Aktualisiert Marktpreise (via DataFetcher) und prüft auf neue Fills (via BrokerAdapter), um den internen State aktuell zu halten.,-
-F-TO-060,API,Command: .update_chart(),"Lädt historische Kursdaten (py_datafetcher), zeichnet Trade-Marker (Entry, Exits, Stop-Level) ein und speichert eine Chart-JSON im Trade-Ordner.",-
+F-TO-060,API,Command: .get_chart(),"Delegiert das Laden historischer Kursdaten an den `ChartManager` (py_market_data). Nutzt Smart Caching und Delta-Updates.",-
 F-TO-070,API,Property: .status,"Read-only Zugriff auf den aktuellen logischen Status (PLANNED, OPENING, OPEN, CLOSING, CLOSED, ARCHIVED) basierend auf Fills und Active Order IDs.",-
 F-TO-071,Metrics,Intrinsic Metrics,"Berechnet Metriken, die nur diesen Trade betreffen: avg_price, unrealized_pnl, realized_pnl, r_multiple (basierend auf Initial Risk).",-
 F-TO-072,New,Event Stream Export,"Stellt eine Methode bereit, die den gesamten Trade-Verlauf als standardisierte, chronologische Liste von Events zurückgibt (z.B. [{timestamp, type=""ENTRY"", delta_cash=-1000}, {type=""EXIT"", delta_cash=+1200}]). Dient als Datenquelle für Portfolio-Timelines.",-
@@ -21,3 +21,4 @@ F-TO-130,Metrics,Slippage Calculation,"Pro Transaktion wird die Slippage (Limit/
 F-TO-140,Integration,Order Reference Linking,"Alle ausgehenden Orders erhalten eine eindeutige order_ref (TradeID), um Broker-Updates gezielt zuzuordnen.",-
 F-BR-010,Broker,Tick Size Validation,"Der BrokerAdapter (nicht das TradeObject!) validiert/rundet Preise auf die zulässige Tick Size des Instruments.",-
 F-TO-150,Logic,Metric Robustness,"Berechnungslogik behandelt Zeitzonen-Konflikte (Timezone-Aware vs Naive) und Edge-Cases wie Position Flips (Long->Short) mathematisch korrekt.",-
+F-TO-160,Data,Order History Log,"Führt ein vollständiges Tagebuch (Audit Trail) aller Entry-, Exit- und Stop-Orders inklusive Limit/Stop-Preisen und Zeitstempeln.",-

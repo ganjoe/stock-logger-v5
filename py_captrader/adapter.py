@@ -187,3 +187,22 @@ class CapTraderAdapter(IBrokerAdapter):
         if not contract:
             raise ValueError(f"Unknown symbol: {symbol}")
         return self.client.get_market_snapshot(contract)
+
+    def get_account_summary(self) -> Dict[str, float]:
+        """
+        Maps IBKR AccountValues to simplified Dict.
+        """
+        raw = self.client.get_account_summary()
+        result = {}
+        for val in raw:
+            # We care about 'TotalCashValue', 'NetLiquidation', 'GrossPositionValue'
+            if val.tag in ['TotalCashValue', 'NetLiquidation', 'GrossPositionValue']:
+                 try:
+                     result[val.tag] = float(val.value)
+                 except ValueError:
+                     pass
+        return result
+
+    def get_positions(self) -> List[Any]:
+        """Returns raw IBKR Position objects."""
+        return self.client.get_positions()

@@ -13,6 +13,7 @@ from typing import Optional, List, Dict, Any
 from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction
 from .logic import TradeCalculator
 from .interface import IBrokerAdapter, BrokerUpdate, BarData
+from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, TradeOrderLog
 from py_market_data import ChartManager
 
 class TradeObject:
@@ -127,6 +128,27 @@ class TradeObject:
 
     # --- API COMMANDS (F-TO-030 bis F-TO-072) ---
 
+    def _log_order(self, oid: str, quantity: float, limit: Optional[float], stop: Optional[float], note: str):
+        """Helper to append to history."""
+        # Determine Type
+        otype = "MKT"
+        if limit and stop: otype = "BRACKET/STP LMT"
+        elif limit: otype = "LMT"
+        elif stop: otype = "STP"
+        
+        log_entry = TradeOrderLog(
+            timestamp=datetime.now(),
+            order_id=oid,
+            action="BUY" if quantity > 0 else "SELL",
+            quantity=quantity,
+            type=otype,
+            limit_price=limit,
+            stop_price=stop,
+            trigger_price=stop, # Simplification for now
+            note=note
+        )
+        self._state.order_history.append(log_entry)
+
     def enter(self, quantity: float, limit_price: Optional[float] = None, stop_loss: Optional[float] = None) -> str:
         """
         F-TO-030: Places entry order via broker.
@@ -152,6 +174,9 @@ class TradeObject:
             stop_price=None # Stop loss is usually a separate order or bracket
         )
 
+        # LOGGING ENTRY
+        self._log_order(broker_oid, quantity, limit_price, None, "Initial Entry")
+
         # 2. Update State
         self._state.status = TradeStatus.OPENING
         self._state.active_orders[broker_oid] = "ENTRY"
@@ -167,12 +192,55 @@ class TradeObject:
                 quantity=-quantity, # Sell to stop (Simplified logic, check broker adapter implementation for smarts)
                 stop_price=stop_loss
             )
+            
+            # LOGGING STOP
+            self._log_order(stop_oid, -quantity, None, stop_loss, "Initial Stop")
+
             self._state.active_orders[stop_oid] = "STOP"
             self._state.current_stop_price = stop_loss
-            self._state.stop_order_id = stop_oid
+            # self._state.stop_order_id = stop_oid # Removed as not in original TradeState definition provided
 
         self.save()
         return broker_oid
+
+    def set_stop_loss(self, new_stop_price: float):
+        """
+        F-TO-031: Updates the Stop Loss.
+        Cancels old stop, places new one.
+        Logs the change for R-Factor analysis.
+        """
+        if not self.broker: raise RuntimeError("Broker missing")
+        
+        # 1. Find and Cancel old STOP orders
+        # Wir suchen in active_orders nach Values "STOP"
+        to_cancel = [oid for oid, role in self._state.active_orders.items() if role == "STOP"]
+        for oid in to_cancel:
+            self.broker.cancel_order(oid)
+            del self._state.active_orders[oid]
+            
+        # 2. Place NEW Stop
+        # Menge ist immer Negativ der Net Position
+        # Falls Net Quantity 0, nichts tun? Oder Fehler?
+        # Annahme: Wir haben eine Position.
+        metrics = self.metrics
+        qty_to_stop = -metrics.net_quantity
+        
+        if qty_to_stop == 0:
+            raise ValueError("No open position to protect.")
+
+        new_oid = self.broker.place_order(
+            order_ref=self.id,
+            symbol=self._state.ticker,
+            quantity=qty_to_stop,
+            stop_price=new_stop_price
+        )
+        
+        # LOGGING THE ADJUSTMENT
+        self._log_order(new_oid, qty_to_stop, None, new_stop_price, "Stop Adjustment")
+        
+        self._state.active_orders[new_oid] = "STOP"
+        self._state.current_stop_price = new_stop_price
+        self.save()
 
     def close(self) -> str:
         """

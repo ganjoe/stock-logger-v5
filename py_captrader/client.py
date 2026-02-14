@@ -171,3 +171,15 @@ class IBKRClient:
                 if math.isnan(price): price = 0.0
             return price
         return 0.0
+
+    def get_account_summary(self) -> List[Any]:
+        """
+        Fetches account summary (Blocking).
+        """
+        return self.ib.accountSummary()
+
+    def get_positions(self) -> List[Any]:
+        """
+        Fetches current positions (Blocking).
+        """
+        return self.ib.positions()

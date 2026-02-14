@@ -21,6 +21,49 @@ class TransactionType(Enum):
     ADJUSTMENT = "ADJUSTMENT"
 
 @dataclass
+class TradeOrderLog:
+    """
+    Historical record of an order submission.
+    Essential for analyzing 'Intended Risk' vs. 'Actual Outcome'.
+    """
+    timestamp: datetime
+    order_id: str       # Broker ID
+    action: str         # BUY / SELL
+    quantity: float     # Signed or Unsigned? Let's keep it signed like transactions (+Buy/-Sell)
+    type: str           # LMT, MKT, STP, STP LMT
+    limit_price: Optional[float]
+    stop_price: Optional[float]
+    trigger_price: Optional[float] = None # For Stop Orders (auxPrice)
+    note: str = ""      # e.g. "Initial Entry", "Stop Trail", "Scale Out"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "timestamp": self.timestamp.isoformat(),
+            "order_id": self.order_id,
+            "action": self.action,
+            "quantity": self.quantity,
+            "type": self.type,
+            "limit_price": self.limit_price,
+            "stop_price": self.stop_price,
+            "trigger_price": self.trigger_price,
+            "note": self.note
+        }
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> 'TradeOrderLog':
+        return TradeOrderLog(
+            timestamp=datetime.fromisoformat(data["timestamp"]),
+            order_id=data["order_id"],
+            action=data["action"],
+            quantity=data["quantity"],
+            type=data["type"],
+            limit_price=data.get("limit_price"),
+            stop_price=data.get("stop_price"),
+            trigger_price=data.get("trigger_price"),
+            note=data.get("note", "")
+        )
+
+@dataclass
 class TradeTransaction:
     """Immutable record of an executed order."""
     id: str             # Broker Execution ID
@@ -82,6 +125,9 @@ class TradeState:
     transactions: List[TradeTransaction] = field(default_factory=list)
     active_orders: Dict[str, str] = field(default_factory=dict) # {broker_oid: 'ENTRY'|'STOP'|'EXIT'} [F-TO-120]
     
+    # NEU: Das vollständige Order-Tagebuch
+    order_history: List[TradeOrderLog] = field(default_factory=list)
+    
     # Metadata
     initial_stop_price: Optional[float] = None
     current_stop_price: Optional[float] = None
@@ -94,6 +140,7 @@ class TradeState:
             "ticker": self.ticker,
             "status": self.status.value,
             "transactions": [t.to_dict() for t in self.transactions],
+            "order_history": [o.to_dict() for o in self.order_history],
             "active_orders": self.active_orders,
             "initial_stop_price": self.initial_stop_price,
             "current_stop_price": self.current_stop_price,
@@ -103,14 +150,25 @@ class TradeState:
 
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> 'TradeState':
-        return TradeState(
+        state = TradeState(
             id=data["id"],
             ticker=data["ticker"],
             status=TradeStatus(data["status"]),
-            transactions=[TradeTransaction.from_dict(t) for t in data.get("transactions", [])],
-            active_orders=data.get("active_orders", {}),
-            initial_stop_price=data.get("initial_stop_price"),
-            current_stop_price=data.get("current_stop_price"),
-            entry_date=datetime.fromisoformat(data["entry_date"]) if data.get("entry_date") else None,
-            notes=data.get("notes", "")
         )
+        
+        if "transactions" in data:
+            state.transactions = [TradeTransaction.from_dict(t) for t in data["transactions"]]
+            
+        if "order_history" in data:
+            state.order_history = [TradeOrderLog.from_dict(o) for o in data["order_history"]]
+            
+        if "active_orders" in data:
+            state.active_orders = data["active_orders"]
+            
+        state.initial_stop_price = data.get("initial_stop_price")
+        state.current_stop_price = data.get("current_stop_price")
+        if data.get("entry_date"):
+            state.entry_date = datetime.fromisoformat(data["entry_date"])
+        state.notes = data.get("notes", "")
+            
+        return state
