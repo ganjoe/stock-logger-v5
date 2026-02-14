@@ -1,0 +1,23 @@
+ID,Category,Title,Description,Covered By
+F-TO-010,Architecture,Smart Trade Facade,"Das TradeObject ist die alleinige Wahrheit für einen Trade. Es kapselt Transaktionen und Statusänderungen.",-
+F-TO-020,Logic,Transaction Integrity,"Der Zustand (Net Quantity, Avg Price) wird ausschließlich dynamisch aus der Liste der Transaktionen (Fills) berechnet. Keine redundanten Status-Variablen.",-
+F-TO-030,API,Command: .enter(),Platziert eine Entry-Order beim Broker (Market/Limit + optional Initial Stop). Wechselt den Status zu OPEN (sobald Fill).,-
+F-TO-031,API,Command: .set_stop_loss(),Setzt oder aktualisiert den aktuellen Stop-Loss-Level beim Broker. Löscht automatisch alte aktive Stops für diesen Trade.,-
+F-TO-032,API,Command: .scale_out(),Verkauft einen definierten Teil der Position (Quantity). Reduziert net_quantity und generiert realized_pnl (Teilgwinnmitnahme).,-
+F-TO-033,API,Command: .close(),Glattstellung (Markt-Verkauf) aller verbleibenden Anteile. Löscht offene Orders (Stops/Limits). Status wechselt zu CLOSED.,-
+F-TO-040,Persistence,Autonomous State,Speichert sich selbstständig bei jeder Änderung als JSON. Das Format ist so gewählt, dass es ohne externe Datenbank lesbar bleibt.,-
+F-TO-041,Persistence,Cross-Platform Robustness,"Implementiert Retry-Logik und Dateisperren-Behandlung (z.B. für Windows Virenscanner), um korrupte Dateien beim atomaren Schreiben zu verhindern.",-
+F-TO-050,API,Sync & Refresh,Aktualisiert Marktpreise (via DataFetcher) und prüft auf neue Fills (via BrokerAdapter), um den internen State aktuell zu halten.,-
+F-TO-060,API,Command: .update_chart(),"Lädt historische Kursdaten (py_datafetcher), zeichnet Trade-Marker (Entry, Exits, Stop-Level) ein und speichert eine Chart-JSON im Trade-Ordner.",-
+F-TO-070,API,Property: .status,"Read-only Zugriff auf den aktuellen logischen Status (PLANNED, OPENING, OPEN, CLOSING, CLOSED, ARCHIVED) basierend auf Fills und Active Order IDs.",-
+F-TO-071,Metrics,Intrinsic Metrics,"Berechnet Metriken, die nur diesen Trade betreffen: avg_price, unrealized_pnl, realized_pnl, r_multiple (basierend auf Initial Risk).",-
+F-TO-072,New,Event Stream Export,"Stellt eine Methode bereit, die den gesamten Trade-Verlauf als standardisierte, chronologische Liste von Events zurückgibt (z.B. [{timestamp, type=""ENTRY"", delta_cash=-1000}, {type=""EXIT"", delta_cash=+1200}]). Dient als Datenquelle für Portfolio-Timelines.",-
+F-TO-080,Integration,Broker Abstraction,"Alle schreibenden Befehle (enter, close, set_stop) nutzen intern das entkoppelte Broker-Interface (BrokerOrderManager), um Aktionen auszuführen.",-
+F-TO-090,Logic,Multi-Trade Isolation,Jede Instanz repräsentiert exakt einen logischen Trade (Entry bis Exit). Neuer Trade im gleichen Ticker = Neue Instanz mit neuer ID.,-
+F-TO-100,Data,Offline Capability,Status- und Metrik-Abfragen sind jederzeit offline möglich (basierend auf letztem .save()/.refresh()). Broker-Aktionen erfordern Online-Status.,-
+F-TO-110,UI,Command: .show(),Öffnet ein grafisches Fenster zur Visualisierung des Trades. Die Methode delegiert das Rendering der Chart- und Trade-Daten an ein externes Visualisierungsmodul.,-
+F-TO-120,Logic,Async Order Tracking,"Das TradeObject speichert aktive order_ids im State und unterscheidet Status präzise: PLANNED, OPENING (Order gesendet), OPEN (Fill), CLOSING (Exit gesendet), CLOSED (Flat).",-
+F-TO-130,Metrics,Slippage Calculation,"Pro Transaktion wird die Slippage (Limit/Stop-Trigger vs. Execution Price) berechnet und gespeichert.",-
+F-TO-140,Integration,Order Reference Linking,"Alle ausgehenden Orders erhalten eine eindeutige order_ref (TradeID), um Broker-Updates gezielt zuzuordnen.",-
+F-BR-010,Broker,Tick Size Validation,"Der BrokerAdapter (nicht das TradeObject!) validiert/rundet Preise auf die zulässige Tick Size des Instruments.",-
+F-TO-150,Logic,Metric Robustness,"Berechnungslogik behandelt Zeitzonen-Konflikte (Timezone-Aware vs Naive) und Edge-Cases wie Position Flips (Long->Short) mathematisch korrekt.",-

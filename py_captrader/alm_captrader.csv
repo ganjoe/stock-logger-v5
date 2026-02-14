@@ -1,0 +1,15 @@
+ID,Category,Title,Description,Covered By
+F-CAP-010,Architecture,Dedicated Execution Module,"Dient ausschließlich als Ausführungs-Adapter für das TradeObject. Implementiert `py_tradeobject.interface.IBrokerAdapter`.",-
+F-CAP-020,Architecture,Dependency Isolation,"Keine Abhängigkeiten zu `py_manage_portfolio` oder dem Legacy-Modul. Nutzt direkt `ib_insync` für TWS-Kommunikation.",-
+F-CAP-030,Connection,Robust Connection Manager,"Vergibt eine eigene ClientId, um nicht mit Dashboard/Legacy-Modul zu kollidieren. Reconnect-Logik bei Verbindungsabbruch.",-
+F-CAP-040,Execution,Smart Order Routing,"Nutzt `ib.qualifyContracts()`, um ConId und Exchange-Routing (SMART) automatisch vor Order-Aufgabe zu klären.",-
+F-CAP-050,Execution,Order Reference Tagging,"Setzt bei JEDER Order das Feld `orderRef` auf die TradeID (UUID) des TradeObjects. Ermöglicht Filterung im Stream.",-
+F-CAP-060,Data,Event Stream Filtering,"Die Methode `get_updates(ref)` liefert NUR Events (Fills, Status), die zur übergebenen `orderRef` gehören. Filtert irrelevante Portfolio-Daten aus.",-
+F-CAP-070,Mapping,DTO Conversion,"Mappt interne IBKR-Objekte (Order, Execution, Contract) sauber auf `py_tradeobject` DTOs (`TradeTransaction`, `BrokerUpdate`).",-
+F-CAP-080,Validation,Tick Size Check,"Prüft Limit/Stop-Preise gegen `minTick` des Instruments VOR Absenden an API. (Implementiert F-BR-010).",-
+F-CAP-090,Architecture,Sync-Async Bridge,"Kapselt den asyncio Loop von ib_insync vollständig. Bietet nach außen synchrone, blockierende Methoden (place_order), die auf Bestätigung warten.",-
+F-CAP-100,Performance,Contract Cache,"Cacht temporär Contract-Details (MinTick, ConID), um Latenz bei `enter()` zu minimieren und wiederholte Netzwerk-Calls zu vermeiden.",-
+F-CAP-110,Mapping,Unique Execution Mapping,"Mappt `TradeTransaction.id` strikt auf `execution.execId` (nicht orderId!), um Partial Fills korrekt als separate Transaktionen zu erfassen.",-
+F-CAP-120,Mapping,Commission Handling,"Behandelt verzögerte CommissionReports. Merged Commission nachträglich in existierende Fills (basierend auf execId) oder speichert vorläufig 0.0.",-
+F-CAP-130,Validation,Order Status Mapping,"Mappt alle IBKR Status (ApiPending, PendingSubmit, PreSubmitted etc.) korrekt auf die TradeStatus Logik (OPENING, CLOSING).",-
+F-CAP-140,Recovery,Execution Reconciliation,"Beim Start (oder auf Befehl) führt der Adapter eine reqExecutions Query aus, um verpasste Fills (während Downtime) nachzuladen und den Status zu korrigieren.",-

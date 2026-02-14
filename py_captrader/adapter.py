@@ -1,0 +1,143 @@
+"""
+py_captrader/adapter.py
+Execution Adapter (TradeObject <-> IBKRClient). Integration Point.
+"""
+from typing import Dict, Optional, List, Any
+import math
+from datetime import datetime
+
+from ib_insync import Order, LimitOrder, MarketOrder, TagValue
+from py_tradeobject.interface import IBrokerAdapter, BrokerUpdate
+from py_tradeobject.models import TradeTransaction
+from .client import IBKRClient
+from .mapper import IBKRMapper
+
+class CapTraderAdapter(IBrokerAdapter):
+    """
+    Implementation of IBrokerAdapter using the synchronous IBKRClient wrapper.
+    Handles execution logic, caching, and mapping.
+    """
+    
+    def __init__(self, client: IBKRClient):
+        self.client = client
+        if not self.client.is_connected():
+            self.client.connect()
+            
+    def place_order(self, order_ref: str, symbol: str, quantity: float, 
+                   limit_price: Optional[float] = None, 
+                   stop_price: Optional[float] = None) -> str:
+        """
+        Places order and validates tick size [F-CAP-080].
+        Sets orderRef to TradeID [F-CAP-050].
+        Blocks until submitted.
+        """
+        if not quantity or quantity == 0:
+            raise ValueError("Quantity must not be zero")
+            
+        # 1. Get Contract & Details (Cached via Client)
+        contract = self.client.qualify_contract(symbol)
+        if not contract:
+            raise ValueError(f"Could not qualify contract for {symbol}")
+            
+        details = self.client.get_contract_details(contract)
+        min_tick = details.minTick if details else 0.01
+
+        # 2. Setup Order Logic
+        # ib_insync uses 'BUY'/'SELL' and positive quantity by default, 
+        # but LimitOrder/MarketOrder helpers handle action/qty based on sign logic if implicit?
+        # Actually LimitOrder(action, totalQuantity, lmtPrice) needs explicit action.
+        action = 'BUY' if quantity > 0 else 'SELL'
+        total_qty = abs(quantity)
+        
+        # SMART Routing & Order Type Selection
+        order = None
+        
+        if stop_price and limit_price:
+            # Stop Limit Order
+            # Order constructor is safest for complex types
+            order = Order()
+            order.action = action
+            order.totalQuantity = total_qty
+            order.orderType = 'STP LMT'
+            order.lmtPrice = self._round_tick(limit_price, min_tick)
+            order.auxPrice = self._round_tick(stop_price, min_tick) # Trigger Price
+            
+        elif stop_price:
+             # Stop Market
+            order = Order()
+            order.action = action
+            order.totalQuantity = total_qty
+            order.orderType = 'STP'
+            order.auxPrice = self._round_tick(stop_price, min_tick)
+            
+        elif limit_price:
+            # Limit Order
+            order = LimitOrder(action, total_qty, self._round_tick(limit_price, min_tick))
+            
+        else:
+            # Market Order
+            order = MarketOrder(action, total_qty)
+            
+        # 3. Critical: Set Order Reference
+        order.orderRef = order_ref
+        order.tif = 'GTC' # Default to Good-Till-Canceled
+        
+        print(f"  [CapTrader] Placing Order: {action} {total_qty} {symbol} @ {order.orderType} (Ref: {order_ref})")
+        
+        # 4. Submit Blocking
+        trade = self.client.place_order(contract, order)
+        
+        # 5. Return Broker ID
+        # Prefer orderId which is now filled by client
+        return str(trade.order.orderId)
+
+    def get_updates(self, order_ref: str) -> BrokerUpdate:
+        """
+        Fetches fills and status updates filtered by order_ref.
+        [F-CAP-060]
+        """
+        # 1. Get Fills (All session fills)
+        all_fills = self.client.get_fills() # list of Fill objects
+        
+        new_transactions = []
+        # Filter Fills by orderRef
+        for fill_obj in all_fills:
+            # fill_obj is a Fill(contract, execution, commissionReport, time)
+            exec = fill_obj.execution
+            if exec.orderRef == order_ref:
+                # Map to Transaction
+                tx = IBKRMapper.map_execution_to_transaction(fill_obj)
+                new_transactions.append(tx)
+                
+        # 2. Get Open Orders
+        open_trades = self.client.get_open_orders()
+        active_ids = []
+        
+        for trade in open_trades:
+            if trade.order.orderRef == order_ref:
+                # This order belongs to our trade and is active
+                active_ids.append(str(trade.order.orderId))
+                
+        cancelled_ids = [] # Not explicitly supported via API return yet
+        
+        return BrokerUpdate(
+            new_fills=new_transactions,
+            active_order_ids=active_ids,
+            cancelled_order_ids=cancelled_ids
+        )
+
+    def cancel_order(self, order_id: str) -> bool:
+        """Cancels a specific order."""
+        open_trades = self.client.get_open_orders()
+        for trade in open_trades:
+             if str(trade.order.orderId) == str(order_id) or str(trade.order.permId) == str(order_id):
+                 self.client.ib.cancelOrder(trade.order)
+                 return True
+        return False
+
+    def _round_tick(self, price: float, min_tick: float) -> float:
+        """Rounds price to nearest valid tick size."""
+        if min_tick <= 0: return price
+        rounded = round(price / min_tick) * min_tick
+        # Precision fix for floats
+        return round(rounded, 10)
