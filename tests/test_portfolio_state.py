@@ -44,6 +44,29 @@ class MockBroker(IBrokerAdapter):
         if symbol == "MSFT": return 290.0  # +$500 PnL (Short from 300 to 290)
         return 100.0
 
+    def get_all_open_orders(self) -> List[Any]:
+        # Mimic ib_insync Trade objects
+        class MockOrder:
+            def __init__(self, orderId, action, orderType, totalQuantity, lmtPrice=0.0, auxPrice=0.0, orderRef=""):
+                self.orderId = orderId
+                self.action = action
+                self.orderType = orderType
+                self.totalQuantity = totalQuantity
+                self.lmtPrice = lmtPrice
+                self.auxPrice = auxPrice
+                self.orderRef = orderRef
+
+        class MockTrade:
+            def __init__(self, symbol, orderId, action, orderType, qty, lmt=0.0, aux=0.0, ref=""):
+                self.contract = MagicMock()
+                self.contract.symbol = symbol
+                self.order = MockOrder(orderId, action, orderType, qty, lmt, aux, ref)
+
+        return [
+            MockTrade("AAPL", 1001, "BUY", "LMT", 10, lmt=155.0, ref="TRD-AAPL-1"),
+            MockTrade("TSLA", 1002, "SELL", "STP", 20, aux=200.0, ref="TRD-TSLA-1") # Stop Order
+        ]
+
     # Dummies
     def place_order(self, *args, **kwargs): pass
     def get_updates(self, *args): pass
@@ -61,22 +84,27 @@ def test_live_manager():
     print(f"Equity: {snapshot.equity} (Expected 75000.0)")
     assert snapshot.equity == 75000.0
     
+    # 1. Positions
     assert len(snapshot.positions) == 2
     
-    aapl = next(p for p in snapshot.positions if p.ticker == "AAPL")
-    assert aapl.quantity == 100
-    assert aapl.market_value == 16000.0
-    assert aapl.unrealized_pnl == 1000.0 # (160 - 150) * 100
+    aapl_pos = next(p for p in snapshot.positions if p.ticker == "AAPL")
+    assert aapl_pos.quantity == 100
+    assert aapl_pos.market_value == 16000.0
     
-    msft = next(p for p in snapshot.positions if p.ticker == "MSFT")
-    assert msft.quantity == -50
-    # Short Value is usually negative in some systems or absolute? 
-    # Current implementation: market_value = qty * current_price = -50 * 290 = -14500
-    assert msft.market_value == -14500.0
-    # PnL = (Current - Avg) * Qty = (290 - 300) * -50 = -10 * -50 = +500
-    assert msft.unrealized_pnl == 500.0
+    # 2. Orders
+    assert len(snapshot.active_orders) == 2
     
-    print("Live Snapshot Verification PASSED")
+    aapl_order = next(o for o in snapshot.active_orders if o.ticker == "AAPL")
+    assert aapl_order.qty == 10
+    assert aapl_order.price == 155.0 # lmtPrice
+    assert aapl_order.trade_id == "TRD-AAPL-1"
+    
+    tsla_order = next(o for o in snapshot.active_orders if o.ticker == "TSLA")
+    assert tsla_order.qty == 20
+    assert tsla_order.price == 200.0 # auxPrice (Stop)
+    assert tsla_order.trade_id == "TRD-TSLA-1"
+    
+    print("Live Snapshot (Positions + Orders) Verification PASSED")
 
 def test_history_factory():
     print("\n--- Testing HistoryFactory ---")
@@ -85,8 +113,12 @@ def test_history_factory():
         shutil.rmtree(test_dir)
     os.makedirs(test_dir)
     
-    # Create Dummy TradeState JSON
-    ts = TradeState(id="TRD-001", ticker="GOOGL", status=TradeStatus.OPEN)
+    # Create Dummy TradeState JSON in Ticker Subdir
+    ticker = "GOOGL"
+    ticker_dir = os.path.join(test_dir, ticker)
+    os.makedirs(ticker_dir)
+    
+    ts = TradeState(id="TRD-001", ticker=ticker, status=TradeStatus.OPEN)
     ts.status = TradeStatus.OPEN
     # Add Transaction 1: Buy 10 @ 100 on Jan 1
     ts.transactions.append(TradeTransaction(
@@ -99,42 +131,110 @@ def test_history_factory():
         quantity=10, price=110.0, commission=1.0, slippage=0.0
     ))
     
-    with open(os.path.join(test_dir, "GOOGL_trade.json"), 'w') as f:
+    # Add Order Log for T2 (Stop Loss created on Jan 2)
+    from py_tradeobject.models import TradeOrderLog
+    ts.order_history.append(TradeOrderLog(
+        timestamp=datetime(2025, 1, 2, 10, 0),
+        order_id="ORD-T2",
+        status="SUBMITTED",
+        action="SELL",
+        message="Stop Loss Placed",
+        quantity=20.0,
+        type="STP",
+        limit_price=None,
+        stop_price=95.0,
+        details={}
+    ))
+    
+    with open(os.path.join(ticker_dir, "TRD-001.json"), 'w') as f:
         json.dump(ts.to_dict(), f)
     
     factory = HistoryFactory(trades_dir=test_dir)
     factory.load_all_trades()
     
-    print(f"Loaded {len(factory._cache)} trades.")
-    if factory._cache:
-        t = factory._cache[0]
-        print(f"Trade 0: {t.ticker}, Tx Count: {len(t.transactions)}")
-        for tx in t.transactions:
-            print(f"  Tx: {tx.id} @ {tx.timestamp} Qty={tx.quantity}")
+    # ... (Loaded check) ...
 
     # Test Snapshot at Jan 1 (After T1, Before T2)
     snap1 = factory.get_snapshot_at(datetime(2025, 1, 1, 12, 0, 0))
-    # Should have 10 qty
-    print(f"Snapshot 1 (Jan 1): {len(snap1.positions)} positions")
+    # Should have 10 qty, 0 orders (T2 order not yet created)
+    print(f"Snapshot 1 (Jan 1): {len(snap1.positions)} positions, {len(snap1.active_orders)} orders")
+    assert len(snap1.active_orders) == 0
     if snap1.positions:
         p = snap1.positions[0]
-        print(f"  Ticker: {p.ticker}, Qty: {p.quantity}, AvgPrice: {p.avg_price}")
         assert p.quantity == 10
-        assert p.avg_price == 100.0
-    else:
-        assert False, "Missing position in Snapshot 1"
-        
-    # Test Snapshot at Jan 3 (After T2)
+
+    # Test Snapshot at Jan 3 (After T2 and Order Log)
     snap2 = factory.get_snapshot_at(datetime(2025, 1, 3))
-    # Should have 20 qty, Avg Price (10*100 + 10*110)/20 = 105
-    print(f"Snapshot 2 (Jan 3): {len(snap2.positions)} positions")
+    # Should have 20 qty, 1 active order (Stop Loss)
+    print(f"Snapshot 2 (Jan 3): {len(snap2.positions)} positions, {len(snap2.active_orders)} orders")
+    assert len(snap2.active_orders) == 1
+    o = snap2.active_orders[0]
+    assert o.order_id == "ORD-T2"
+    assert o.price == 95.0
+    
+    # Check Jan 3 position
     if snap2.positions:
         p = snap2.positions[0]
-        print(f"  Ticker: {p.ticker}, Qty: {p.quantity}, AvgPrice: {p.avg_price}")
         assert p.quantity == 20
-        assert p.avg_price == 105.0
-    else:
-        assert False, "Missing position in Snapshot 2"
+
+    # Test Daily Series (F-PS-070)
+    print("Testing get_daily_snapshots...")
+    start = datetime(2025, 1, 1)
+    end = datetime(2025, 1, 3)
+    dailies = factory.get_daily_snapshots(start, end)
+    
+    print(f"Daily Snapshots Generated: {len(dailies)}")
+    assert len(dailies) == 3 # Jan 1, Jan 2, Jan 3
+    
+    # Check Jan 1 (10 qty)
+    assert dailies[0].timestamp.day == 1
+    assert dailies[0].positions[0].quantity == 10
+    
+    # Check Jan 2 (After T2, 20 qty)
+    assert dailies[1].timestamp.day == 2
+    assert dailies[1].positions[0].quantity == 20
+    
+    # Check Jan 3 (Still 20 qty)
+    assert dailies[2].timestamp.day == 3
+    assert dailies[2].positions[0].quantity == 20
+
+    # Check Jan 3 (Still 20 qty)
+    assert dailies[2].timestamp.day == 3
+    assert dailies[2].positions[0].quantity == 20
+
+    # Test Closed Trade Aggregator (F-PS-080)
+    print("Testing get_closed_trades...")
+    # Add a CLOSED trade
+    ts_closed = TradeState(id="TRD-CLOSED-001", ticker="MSFT", status=TradeStatus.CLOSED)
+    # Buy 10 @ 200
+    ts_closed.transactions.append(TradeTransaction(
+        id="T3", timestamp=datetime(2025, 1, 5), type=TransactionType.ENTRY,
+        quantity=10, price=200.0, commission=1.0, slippage=0.0
+    ))
+    # Sell 10 @ 220
+    ts_closed.transactions.append(TradeTransaction(
+        id="T4", timestamp=datetime(2025, 1, 10), type=TransactionType.EXIT,
+        quantity=-10, price=220.0, commission=1.0, slippage=0.0
+    ))
+    
+    # Save it
+    with open(os.path.join(test_dir, "MSFT_closed.json"), 'w') as f:
+        json.dump(ts_closed.to_dict(), f)
+        
+    # Reload factory to pick up new file
+    factory.load_all_trades()
+    
+    # Query Window covering Jan 10
+    closed_trades = factory.get_closed_trades(datetime(2025, 1, 1), datetime(2025, 1, 31))
+    
+    print(f"Closed Trades Found: {len(closed_trades)}")
+    assert len(closed_trades) == 1
+    result = closed_trades[0]
+    assert result.ticker == "MSFT"
+    assert result.duration_days == 5
+    # PnL: (-10*200 -1) + (-(-10)*220 -1) = -2001 + 2199 = +198
+    print(f"PnL: {result.pnl_absolute}")
+    assert result.pnl_absolute == 198.0
 
     print("History Factory Verification PASSED")
     

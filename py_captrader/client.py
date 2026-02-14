@@ -183,3 +183,13 @@ class IBKRClient:
         Fetches current positions (Blocking).
         """
         return self.ib.positions()
+
+    def get_all_open_orders(self) -> List[Any]:
+        """
+        Fetches ALL open orders from IBKR (Blocking).
+        Uses reqAllOpenOrders() to ensure we get everything, not just client's own.
+        Returns list of trades (Trade objects) which contain order + contract.
+        """
+        self.ib.reqAllOpenOrders()
+        self.ib.sleep(0.1) # Give time for updates
+        return self.ib.openTrades()

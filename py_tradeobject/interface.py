@@ -75,3 +75,8 @@ class IBrokerAdapter(IExecutionProvider, IMarketDataProvider):
     def get_positions(self) -> List[Any]:
         """Returns raw position objects (adapter specific or generic DTOs)."""
         pass
+
+    @abstractmethod
+    def get_all_open_orders(self) -> List[Any]:
+        """Returns list of open orders (adapter specific)."""
+        pass

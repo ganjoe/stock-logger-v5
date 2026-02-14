@@ -1,3 +1,5 @@
+import os
+import json
 from datetime import datetime
 from typing import Optional, List, Any
 from py_tradeobject.interface import IBrokerAdapter
@@ -58,15 +60,62 @@ class LivePortfolioManager:
                 trade_id=None # Unknown in this raw view, needs correlation later
             ))
             
-        # 3. Create Snapshot
-        return PortfolioSnapshot(
+        # 3. Active Orders
+        # F-PS-060: Fetch all open orders
+        raw_orders = self.broker.get_all_open_orders() # Returns list of Trade objects (ib_insync)
+        
+        mapped_orders: List[Any] = [] # Use Any to avoid circular imports? No, use PortfolioOrder imported from .objects
+        from .objects import PortfolioOrder # Local import if needed or top-level
+        
+        for trade in raw_orders:
+            # trade is ib_insync.Trade
+            order = trade.order
+            contract = trade.contract
+            
+            # Determine Price (Stop vs Limit)
+            # Logic: If auxPrice > 0, it's a Stop (or StopLimit). Use auxPrice as risk trigger.
+            # Else use lmtPrice.
+            price = order.auxPrice if (order.auxPrice and order.auxPrice > 0) else order.lmtPrice
+            if not price: price = 0.0 # Market order?
+            
+            mapped_orders.append(PortfolioOrder(
+                ticker=contract.symbol,
+                order_id=str(order.orderId),
+                action=order.action,
+                type=order.orderType,
+                qty=order.totalQuantity,
+                price=price,
+                trade_id=order.orderRef if order.orderRef else ""
+            ))
+
+        # 4. Create Snapshot
+        snapshot = PortfolioSnapshot(
             timestamp=datetime.now(),
             cash=cash,
             equity=equity,
             positions=mapped_positions,
-            active_orders=[], # TODO: Fetch open orders if needed
+            active_orders=mapped_orders,
             source="LIVE"
         )
+        
+        # 5. Persist (F-PS-020)
+        self.save_snapshot(snapshot)
+        
+        return snapshot
+
+    def save_snapshot(self, snapshot: PortfolioSnapshot, filename: str = "portfolio_latest.json"):
+        """
+        F-PS-020/F-PS-050: Persists the snapshot to disk for caching/offline use.
+        """
+        # Ensure data dir exists
+        data_dir = "./data"
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+            
+        filepath = os.path.join(data_dir, filename)
+        with open(filepath, 'w') as f:
+            json.dump(snapshot.to_dict(), f, indent=4)
+        print(f"  [LivePortfolioManager] Snapshot saved to {filepath}")
         
     def get_active_trade_id(self, ticker: str) -> Optional[str]:
         """

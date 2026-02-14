@@ -16,30 +16,23 @@ class HistoryFactory:
         self._cache: List[TradeState] = []
         
     def load_all_trades(self):
-        """ Scans dir and loads all JSONs. """
+        """ Scans dir recursively and loads all JSONs. """
         self._cache = []
         if not os.path.exists(self.trades_dir):
             return
 
-        for filename in os.listdir(self.trades_dir):
-            if filename.endswith(".json"):
-                # Load TradeState
-                # Assumption: One JSON per trade in trades_dir or standard TradeObject structure?
-                # TradeObject saves to {storage_root}/{ticker}/{id}.json or similar?
-                # The TradeObject ALM says "Speichert sich selbstständig...".
-                # Usually we might have to search recursively if structure is complex.
-                # Let's assume flat or we assume trades_dir is the root and we walk it.
-                
-                # Simple walk
-                filepath = os.path.join(self.trades_dir, filename)
-                try:
-                    with open(filepath, 'r') as f:
-                        data = json.load(f)
-                        state = TradeState.from_dict(data)
-                        self._cache.append(state)
-                except Exception:
-                    # Ignore corrupted or non-trade files
-                    continue
+        for root, _, files in os.walk(self.trades_dir):
+            for filename in files:
+                if filename.endswith(".json"):
+                    filepath = os.path.join(root, filename)
+                    try:
+                        with open(filepath, 'r') as f:
+                            data = json.load(f)
+                            state = TradeState.from_dict(data)
+                            self._cache.append(state)
+                    except Exception:
+                        # Ignore corrupted or non-trade files
+                        continue
                     
         # Sort by entry date (if available) for processing order? Not strictly needed for snapshot at time X.
 
@@ -115,12 +108,65 @@ class HistoryFactory:
         # Calculate Equity
         equity = total_cash + sum(p.market_value for p in positions)
         
+        # Reconstruct Active Orders from Logs
+        active_orders: List[PortfolioOrder] = []
+        
+        for trade in self._cache:
+            # Check logs for orders that were OPEN at `date`
+            # TradeState has 'active_orders' which is current. 
+            # We need to rely on 'order_history' (TradeOrderLog).
+            # Logic:
+            # 1. Find last log entry <= date for each order_id? 
+            #    Or logs track state changes.
+            #    If we have a "CREATED/SUBMITTED" log before date, and no "FILLED/CANCELLED" log before date, it's open.
+            
+            # Group logs by order_id
+            if not hasattr(trade, 'order_history'): continue
+            
+            orders_state = {} # order_id -> status, details
+            
+            for log in sorted(trade.order_history, key=lambda x: x.timestamp):
+                if log.timestamp > date: break
+                
+                # Update state
+                orders_state[log.order_id] = {
+                    "status": log.status,
+                    "action": log.action,
+                    "log_obj": log
+                }
+                
+            # Filter for active
+            for oid, state in orders_state.items():
+                # What statuses are active?
+                # SUBMITTED, PARTIALLY_FILLED, PENDING
+                # Inactive: FILLED, CANCELLED, REJECTED
+                
+                status = state["status"]
+                if status not in ["FILLED", "CANCELLED", "REJECTED", "EXPIRED"]:
+                    # It's active!
+                    log = state["log_obj"]
+                    
+                    # Determine price (Limit or Stop?)
+                    # PortfolioOrder expects 'price'.
+                    price = log.limit_price if log.limit_price is not None else log.stop_price
+                    if price is None: price = 0.0
+                    
+                    active_orders.append(PortfolioOrder(
+                        ticker=trade.ticker,
+                        order_id=oid,
+                        action=state.get("action", "UNKNOWN"),
+                        type=log.type,
+                        qty=log.quantity,
+                        price=price,
+                        trade_id=trade.id
+                    ))
+
         return PortfolioSnapshot(
             timestamp=date,
             cash=total_cash,
             equity=equity,
             positions=positions,
-            active_orders=[], # TODO: Replay logs for orders
+            active_orders=active_orders,
             source="HISTORY"
         )
 
@@ -130,42 +176,72 @@ class HistoryFactory:
         """
         results = []
         for trade in self._cache:
-            if trade.status == TradeStatus.CLOSED or trade.status == TradeStatus.ARCHIVED:
-                # Check exit date
-                # We need to find the exit date.
-                # Last transaction timestamp?
+            if trade.status in [TradeStatus.CLOSED, TradeStatus.ARCHIVED]:
+                # Check exit date (Timestamp of last transaction)
                 if not trade.transactions: continue
-                last_tx = trade.transactions[-1]
+                
+                # Sort transactions by time to be sure
+                sorted_tx = sorted(trade.transactions, key=lambda x: x.timestamp)
+                last_tx = sorted_tx[-1]
+                
                 if start <= last_tx.timestamp <= end:
-                    # Metrics should be in trade.metrics?
-                    # Or we calculate fresh?
-                    # Trade State has metrics?
-                    # No, TradeMetrics is separate in models usually, usually computed.
-                    # TradeState has NO metrics field in standard definition?
-                    # Core usually calculates it on load.
-                    # We might need to recalculate here or assume TradeState has it?
-                    # Let's verify TradeState definition. 
-                    # Assuming we can calculate simple metrics here.
-                    
-                    entry_date = trade.transactions[0].timestamp
+                    entry_tx = sorted_tx[0]
+                    entry_date = entry_tx.timestamp
                     exit_date = last_tx.timestamp
                     
-                    # Simple PnL: Sum of all cash flows
-                    pnl = sum([-(t.quantity * t.price) - t.commission for t in trade.transactions])
+                    # Calculate PnL: Sum of all cash flows (Prices are positive, Qty signed?)
+                    # TradeTransaction models usually store:
+                    # type=ENTRY, quantity=10 (Long), price=100
+                    # type=EXIT, quantity=-10 (Sell), price=110
+                    # Cash Flow = -(Qty * Price) - Commission
+                    
+                    pnl = 0.0
+                    total_bought_qty = 0.0
+                    
+                    for tx in sorted_tx:
+                        cash_flow = -(tx.quantity * tx.price) - tx.commission
+                        pnl += cash_flow
+                        if tx.quantity > 0:
+                            total_bought_qty += tx.quantity
+
+                    # Direction
+                    direction = "LONG" if total_bought_qty > 0 else "SHORT" # Simplified
                     
                     results.append(TradeResult(
                         ticker=trade.ticker,
-                        direction="LONG", # Todo: detect short
+                        direction=direction,
                         entry_date=entry_date,
                         exit_date=exit_date,
-                        entry_price=trade.transactions[0].price,
+                        entry_price=entry_tx.price,
                         exit_price=last_tx.price,
-                        qty=sum([t.quantity for t in trade.transactions if t.quantity > 0]), # Total bought size?
+                        qty=total_bought_qty,
                         pnl_absolute=pnl,
-                        pnl_percent=0.0, # Todo
-                        r_multiple=0.0, # Todo
+                        pnl_percent=0.0, # Todo: Calculate return on risk/capital
+                        r_multiple=0.0, # Todo: Requires initial risk
                         duration_days=(exit_date - entry_date).days
                     ))
+        return results
+
+    def get_daily_snapshots(self, start_date: datetime, end_date: datetime) -> List[PortfolioSnapshot]:
+        """
+        F-PS-070: Generates a list of PortfolioSnapshots, one for each day in range (EOD).
+        """
+        results = []
+        current = start_date
+        
+        while current <= end_date:
+            # Set to End of Day (23:59:59)
+            eod_timestamp = current.replace(hour=23, minute=59, second=59, microsecond=999999)
+            
+            # Replay
+            snapshot = self.get_snapshot_at(eod_timestamp)
+            results.append(snapshot)
+            
+            # Next day
+            # If current is datetime, use timedelta
+            import datetime as dt
+            current += dt.timedelta(days=1)
+            
         return results
 
     def _get_price_at(self, ticker: str, date: datetime) -> float:

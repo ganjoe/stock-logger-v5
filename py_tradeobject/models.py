@@ -29,24 +29,30 @@ class TradeOrderLog:
     timestamp: datetime
     order_id: str       # Broker ID
     action: str         # BUY / SELL
+    status: str         # [NEW] SUBMITTED, FILLED, CANCELLED
+    message: str        # [NEW] Log message
     quantity: float     # Signed or Unsigned? Let's keep it signed like transactions (+Buy/-Sell)
     type: str           # LMT, MKT, STP, STP LMT
     limit_price: Optional[float]
     stop_price: Optional[float]
     trigger_price: Optional[float] = None # For Stop Orders (auxPrice)
     note: str = ""      # e.g. "Initial Entry", "Stop Trail", "Scale Out"
+    details: Dict[str, Any] = field(default_factory=dict) # [NEW] Extra details
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "timestamp": self.timestamp.isoformat(),
             "order_id": self.order_id,
             "action": self.action,
+            "status": self.status,
+            "message": self.message,
             "quantity": self.quantity,
             "type": self.type,
             "limit_price": self.limit_price,
             "stop_price": self.stop_price,
             "trigger_price": self.trigger_price,
-            "note": self.note
+            "note": self.note,
+            "details": self.details
         }
 
     @staticmethod
@@ -55,12 +61,15 @@ class TradeOrderLog:
             timestamp=datetime.fromisoformat(data["timestamp"]),
             order_id=data["order_id"],
             action=data["action"],
+            status=data.get("status", "UNKNOWN"),
+            message=data.get("message", ""),
             quantity=data["quantity"],
             type=data["type"],
             limit_price=data.get("limit_price"),
             stop_price=data.get("stop_price"),
             trigger_price=data.get("trigger_price"),
-            note=data.get("note", "")
+            note=data.get("note", ""),
+            details=data.get("details", {})
         )
 
 @dataclass

@@ -206,3 +206,7 @@ class CapTraderAdapter(IBrokerAdapter):
     def get_positions(self) -> List[Any]:
         """Returns raw IBKR Position objects."""
         return self.client.get_positions()
+        
+    def get_all_open_orders(self) -> List[Any]:
+        """Returns list of ib_insync Trade objects (Order + Contract)."""
+        return self.client.get_all_open_orders()
