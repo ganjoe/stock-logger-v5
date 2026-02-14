@@ -12,7 +12,8 @@ from typing import Optional, List, Dict, Any
 
 from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction
 from .logic import TradeCalculator
-from .interface import IBrokerAdapter, BrokerUpdate
+from .interface import IBrokerAdapter, BrokerUpdate, BarData
+from py_market_data import ChartManager
 
 class TradeObject:
     def __init__(self, ticker: str, id: Optional[str] = None, storage_dir: str = "./data/trades"):
@@ -285,3 +286,22 @@ class TradeObject:
         
         # Sort by timestamp
         return sorted(events, key=lambda x: x["timestamp"])
+
+    def get_chart(self, timeframe: str = "1D", lookback: str = "1Y") -> List[BarData]:
+        """
+        F-TO-080: Fetches chart data via decentralized ChartManager.
+        Uses self.storage_dir as cache root (./data/trades).
+        Delegates fetching to self.broker (if available).
+        """
+        # 1. Instantiate Manager (Episodic usage)
+        # We use the Trade's storage dir to keep data close to the trade?
+        # Or should we use a central cache?
+        # The prompt says: "Als storage_root übergibst du self.storage_dir"
+        # self.storage_dir is usually ./data/trades
+        # This means charts will be at ./data/trades/{ticker}/charts/{timeframe}.json
+        # This is nice for per-trade isolation/backup.
+        
+        manager = ChartManager(storage_root=self.storage_root, provider=self.broker)
+        
+        # 2. Delegate
+        return manager.ensure_data(self.ticker, timeframe, lookback)
