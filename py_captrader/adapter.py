@@ -7,7 +7,7 @@ import math
 from datetime import datetime
 
 from ib_insync import Order, LimitOrder, MarketOrder, TagValue
-from py_tradeobject.interface import IBrokerAdapter, BrokerUpdate
+from py_tradeobject.interface import IBrokerAdapter, BrokerUpdate, BarData
 from py_tradeobject.models import TradeTransaction
 from .client import IBKRClient
 from .mapper import IBKRMapper
@@ -141,3 +141,49 @@ class CapTraderAdapter(IBrokerAdapter):
         rounded = round(price / min_tick) * min_tick
         # Precision fix for floats
         return round(rounded, 10)
+
+    # --- Implementation IMarketDataProvider ---
+
+    def get_historical_data(self, symbol: str, timeframe: str, lookback: str) -> List[BarData]:
+        # 1. Qualify Contract
+        contract = self.client.qualify_contract(symbol)
+        if not contract:
+            raise ValueError(f"Unknown symbol: {symbol}")
+
+        # 2. Map Timeframe/Lookback to IBKR syntax
+        # TradeObject nutzt saubere Strings, IBKR ist eigenwillig.
+        ib_bar_size = "1 day" # Default
+        if timeframe == "1D": ib_bar_size = "1 day"
+        elif timeframe == "1H": ib_bar_size = "1 hour"
+        
+        ib_duration = "1 Y" # Default
+        if lookback == "1Y": ib_duration = "1 Y"
+        elif lookback == "1M": ib_duration = "1 M"
+
+        # 3. Call Client
+        ib_bars = self.client.get_history(contract, ib_duration, ib_bar_size)
+
+        # 4. Map to DTO
+        result = []
+        for b in ib_bars:
+            ts = b.date
+            if not isinstance(ts, datetime):
+                # Convert date to datetime (Midnight)
+                ts = datetime(ts.year, ts.month, ts.day)
+
+            result.append(BarData(
+                timestamp=ts,
+                open=b.open,
+                high=b.high,
+                low=b.low,
+                close=b.close,
+                volume=float(b.volume)
+            ))
+            
+        return result
+
+    def get_current_price(self, symbol: str) -> float:
+        contract = self.client.qualify_contract(symbol)
+        if not contract:
+            raise ValueError(f"Unknown symbol: {symbol}")
+        return self.client.get_market_snapshot(contract)

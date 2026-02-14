@@ -1,53 +1,68 @@
 """
 py_tradeobject/interface.py
-Abstract Contracts (Broker). CONTRACTS.
+Abstract Contracts. NOW SPLIT.
 """
 from abc import ABC, abstractmethod
 from typing import Optional, List
 from dataclasses import dataclass
+from datetime import datetime
 from .models import TradeTransaction
+
+# --- Data Transfer Objects ---
 
 @dataclass
 class BrokerUpdate:
-    """Standardized response from broker updates."""
-    new_fills: List[TradeTransaction]       # Completely new executions
-    active_order_ids: List[str]             # List of currently open order IDs
-    cancelled_order_ids: List[str]          # IDs of orders that are no longer active
+    new_fills: List[TradeTransaction]
+    active_order_ids: List[str]
+    cancelled_order_ids: List[str]
 
-class IBrokerAdapter(ABC):
-    """
-    Contract for broker interactions.
-    Decoupled interface that TradeObject relies on.
-    """
+@dataclass
+class BarData:
+    """Standard OHLCV Bar for Charts."""
+    timestamp: datetime
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: float
+
+# --- The Split Interfaces ---
+
+class IExecutionProvider(ABC):
+    """Responsible for TRADING (Orders, Fills)."""
     
     @abstractmethod
     def place_order(self, order_ref: str, symbol: str, quantity: float, 
                    limit_price: Optional[float] = None, 
                    stop_price: Optional[float] = None) -> str:
-        """
-        Places order and validates tick size [F-BR-010].
-        
-        Args:
-            order_ref: Unique TradeID to tag the order (for filtering updates).
-            symbol: Ticker symbol.
-            quantity: Signed quantity (+ Buy, - Sell).
-            limit_price: Optional limit price. None = Market.
-            stop_price: Optional stop trigger price. None = No Stop.
-            
-        Returns:
-            str: Broker Order ID (oid).
-        """
         pass
 
     @abstractmethod
     def get_updates(self, order_ref: str) -> BrokerUpdate:
-        """
-        Fetches fills and status updates filtered by order_ref.
-        The Adapter is responsible for converting raw broker fills into TradeTransaction objects.
-        """
         pass
     
     @abstractmethod
     def cancel_order(self, order_id: str) -> bool:
-        """Cancels a specific order."""
         pass
+
+class IMarketDataProvider(ABC):
+    """Responsible for DATA (History, Quotes)."""
+
+    @abstractmethod
+    def get_historical_data(self, symbol: str, timeframe: str, lookback: str) -> List[BarData]:
+        """
+        Fetches historical OHLCV data.
+        timeframe: '1 day', '1 hour', '5 mins'
+        lookback: '1 Y', '1 M', '5 D'
+        """
+        pass
+
+    @abstractmethod
+    def get_current_price(self, symbol: str) -> float:
+        """Fetches latest known price (Snapshot)."""
+        pass
+
+# --- The Union Interface (Optional, for backward compatibility) ---
+class IBrokerAdapter(IExecutionProvider, IMarketDataProvider):
+    """Full broker capabilities."""
+    pass

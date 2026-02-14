@@ -136,3 +136,38 @@ class IBKRClient:
         # reqExecutions is heavy, usually auto-updates via valid connection are enough.
         # Use sparingly.
         pass
+
+    def get_history(self, contract: Contract, duration_str: str, bar_size_setting: str) -> List[Any]:
+        """
+        Fetches historical data (Blocking).
+        Wraps async reqHistoricalData.
+        """
+        # IBKR reqHistoricalData is blocking in this synchronous context
+        bars = self.ib.reqHistoricalData(
+            contract,
+            endDateTime='',
+            durationStr=duration_str,
+            barSizeSetting=bar_size_setting,
+            whatToShow='TRADES',
+            useRTH=True,
+            formatDate=1
+        )
+        return bars
+
+    def get_market_snapshot(self, contract: Contract) -> float:
+        """
+        Gets a live price snapshot using reqTickers.
+        reqTickers is more robust than reqMktData for snapshots as it waits for data.
+        """
+        import math
+        tickers = self.ib.reqTickers(contract)
+        if tickers:
+            t = tickers[0]
+            # Use marketPrice() helper which handles last/close/bid-ask fallback
+            price = t.marketPrice()
+            if math.isnan(price):
+                # Hard fallback logic
+                price = t.last if not math.isnan(t.last) else t.close
+                if math.isnan(price): price = 0.0
+            return price
+        return 0.0

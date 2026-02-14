@@ -1,0 +1,10 @@
+ID,Category,Title,Description,Covered By
+F-DATA-010,Architecture,Standalone Data Manager,"Das Modul `ChartManager` agiert eigenständig. Es nimmt einen Speicherpfad und optional einen `IMarketDataProvider` entgegen.",-
+F-DATA-020,Storage,Ticker-Level Isolation,"Speichert Chart-Daten pro Ticker und Timeframe isoliert in `{storage_root}/{ticker}/charts/{timeframe}.json`.",-
+F-DATA-030,Logic,Dynamic Staleness Check,"Entscheidet basierend auf dem Timeframe, ob Daten veraltet sind (Daily: Datum < Heute; Intraday: Zeitstempel > 1 Periode alt).",-
+F-DATA-040,Integration,Provider Agnostic,"Nutzt strikt das Interface `IMarketDataProvider`. Das Modul weiß nicht, ob die Daten von IBKR, Yahoo oder CSV kommen.",-
+F-DATA-050,API,Unified Accessor,"Zentrale Methode `ensure_data(ticker, timeframe, lookback)`. Managt den kompletten Zyklus: Laden -> Prüfen -> (Nachladen) -> Speichern -> Rückgabe.",-
+F-DATA-060,Serialization,Compact Storage / Typed RAM,"Disk-Optimierung: Speichert JSON mit minimierten Keys (t, o, h, l, c, v). RAM: Deserialisiert zwingend in typisierte `BarData` Objekte.",-
+F-DATA-080,Logic,Gap Handling (Append Strategy),"Vermeidet Lücken robust: Wenn Cache existiert, wird nur das Delta (ab letzter Kerze) geladen und angehängt. Bei Konflikten gewinnt neue Datenquelle.",-
+F-DATA-090,Protection,Request Throttling,Verhindert API-Spamming durch zu häufige Requests für denselben Ticker innerhalb kurzer Zeit (Rate Limiting).,-
+F-DATA-100,Optimization,Smart Duration Request,"Berechnet dynamisch die minimal benötigte Dauer (Lookback) seit der letzten Kerze, um API-Last und Latenz zu minimieren.",-
