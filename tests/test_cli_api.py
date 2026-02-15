@@ -2,7 +2,7 @@
 import sys
 import os
 import json
-import pytest
+# import pytest
 from unittest.mock import MagicMock
 
 # Adjust path to find modules
@@ -22,65 +22,67 @@ from py_portfolio_state.objects import PortfolioSnapshot
 
 # --- Mocks ---
 class MockBroker(IBrokerAdapter):
+    # Abstract methods from IBrokerAdapter
     def get_account_summary(self): return {"NetLiquidation": 50000.0}
     def get_positions(self): return []
     def get_all_open_orders(self): return []
     def get_current_price(self, symbol): return 100.0
+    def place_order(self, *args, **kwargs): return "MOCK_OID"
+    def cancel_order(self, *args): return True
+    def get_updates(self, *args): 
+        from py_tradeobject.interface import BrokerUpdate
+        return BrokerUpdate([], [], [])
+    def get_historical_data(self, *args): return []
 
-@pytest.fixture
-def cli_controller():
+# --- Contexts ---
+def get_bot_controller():
     # Register Mock Broker
     services.register_broker(MockBroker())
     return CLIController(mode=CLIMode.BOT)
 
-@pytest.fixture
-def cli_human_controller():
-    # Human controller uses same registry but renders text
-    services.register_broker(MockBroker())
-    return CLIController(mode=CLIMode.HUMAN)
-
 # --- Tests ---
 
-def test_user_mode_switching(cli_controller):
-    # 1. Check Initial Mode (Controller initialized as BOT)
-    assert cli_controller.context.mode == CLIMode.BOT
+def test_user_mode_switching():
+    print("Testing User Mode Switching...")
+    cli = get_bot_controller()
     
     # 2. Switch to Human
-    resp_json = cli_controller.process_input("user human")
-    resp = json.loads(resp_json)
+    resp_text = cli.process_input("user human")
+    # Rendering happens AFTER mode change, so this is now TEXT
+    assert "Switched to Human Mode" in resp_text
+    assert cli.context.mode == CLIMode.HUMAN
     
-    assert resp["success"] is True
-    assert resp["payload"]["mode"] == "HUMAN"
-    # Note: Controller instance stays same, but Context changed
-    assert cli_controller.context.mode == CLIMode.HUMAN
-    
-    # 3. Switch back to PTA (Bot) - Output should be JSON again?
-    # Wait, if context is HUMAN, process_input renders Text.
-    # So next command output will be Text.
-    # We call "user pta" -> Context switches to BOT -> Render returns JSON.
-    # Let's verify this dynamic switch behavior.
-    
-    resp_text = cli_controller.process_input("user pta")
-    # This should be JSON string because mode switched inside execution, 
-    # and _render_response checks context.mode at the end.
-    
-    print(f"DEBUG Output: {resp_text}")
-    try:
-        resp2 = json.loads(resp_text)
-        assert resp2["success"] is True
-        assert resp2["payload"]["mode"] == "BOT"
-    except json.JSONDecodeError:
-        pytest.fail("Switching to PTA did not result in JSON output")
+    # 3. Switch back to PTA (Bot)
+    resp_json = cli.process_input("user pta")
+    # Rendering happens AFTER mode change, so this is now JSON
+    print(f"DEBUG Output: {resp_json}")
+    resp2 = json.loads(resp_json)
+    assert resp2["success"] is True
+    assert resp2["payload"]["mode"] == "BOT"
+    print("✅ User Mode Switching Passed.")
 
-def test_status_command_bot(cli_controller):
-    # Status command should use the MockBroker we registered
-    resp_json = cli_controller.process_input("status")
+def test_status_command_bot():
+    print("Testing Status Command (BOT)...")
+    cli = get_bot_controller()
+    resp_json = cli.process_input("status")
     resp = json.loads(resp_json)
     
     assert resp["success"] is True
     assert resp["payload"]["equity"] == 50000.0
     assert resp["message"] == "Live Portfolio Snapshot"
+    print("✅ Status Command (BOT) Passed.")
 
 # def test_trade_command_bot(cli_controller):
 #     # TODO: Implement handlers_trade.py first
 #     pass
+
+if __name__ == "__main__":
+    try:
+        test_user_mode_switching()
+        test_status_command_bot()
+        print("\n[SUCCESS] CLI API Verification PASSED")
+    except Exception as e:
+        print(f"\n[FAILURE] CLI API Verification FAILED: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

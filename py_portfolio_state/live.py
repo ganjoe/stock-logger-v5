@@ -12,6 +12,13 @@ class LivePortfolioManager:
     def __init__(self, broker: IBrokerAdapter):
         self.broker = broker
 
+    def save_snapshot(self, snapshot: PortfolioSnapshot):
+        """Persists the latest snapshot to disk."""
+        path = "./data/portfolio_latest.json"
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            json.dump(snapshot.to_dict(), f, indent=2)
+
     def snapshot(self, ticker: Optional[str] = None) -> PortfolioSnapshot:
         """
         F-PS-020: Connects to broker, fetches account summary and positions.

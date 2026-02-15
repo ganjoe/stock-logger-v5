@@ -1,9 +1,10 @@
 ID,Category,Title,Description,Status
-F-PS-010,Data Structure,Dumb DTOs,Definiert PortfolioSnapshot (Zustand zu Zeitpunkt X) und TradeResult (Zusammenfassung eines abgeschlossenen Trades) als reine Daten-Container ohne Logik.,CORE
-F-PS-020,Live Factory,Live Broker Snapshot,Verbindet sich via Adapter mit dem Broker. Lädt Account-Summary und offene Positionen. Mappt diese in einen PortfolioSnapshot. Speichert Ergebnis als portfolio_latest.json.,ACTIVE
-F-PS-030,History Factory,Global Event Crawler,Scannt ./data/trades/ nach JSONs. Extrahiert und sortiert zwei Streams: 1. transactions (Fills) und 2. order_history (Logs) in eine globale Timeline.,ACTIVE
-F-PS-040,History Factory,Point-in-Time Replay,"Rekonstruiert einen PortfolioSnapshot für ein exaktes Datum. 1. Positionen: Summe aller Transaktionen bis Datum X.2. Orders: Ermittelt via Log, welche Stops zu Datum X aktiv waren.",COMPLEX
-F-PS-050,Serialization,JSON Persistence,Kann Snapshots valide nach JSON serialisieren/deserialisieren. Dient dem Caching und Offline-Modus.,ACTIVE
-F-PS-060,Helper,Active Trade Lookup,"Funktion get_active_trade_id(ticker). Nutzt den Live-Cache, um schnell die UUI zu einem Ticker zu finden (für CLI-Befehle).",ACTIVE
-F-PS-070,History Factory,Daily Series Generator,"Funktion get_daily_snapshots(start, end) -> List[PortfolioSnapshot]. Erzeugt effizient eine Liste von Snapshots (jeweils EOD) für Kurven-Analysen (Equity/Cash).",NEW
-F-PS-080,History Factory,Closed Trade Aggregator,"Funktion get_closed_trades(start, end) -> List[TradeResult]. Liefert eine Liste abgeschlossener Trades OHNE kompletten Portfolio-Replay. Optimiert für schnelle Performance-Statistiken (Winrate, AvgR).",NEW
+F-PS-010,Data Structure,Dumb DTOs,"PortfolioSnapshot und TradeResult als reine Daten-Container.","DONE"
+F-PS-020,Live Factory,Live Broker Snapshot,"Vollständiger Broker-Snapshot (Account + Positions + Orders).","DONE"
+F-PS-030,History Factory,Global Event Crawler,"Globaler Scan von ./data/trades/ für Transactions & Orders.","DONE"
+F-PS-040,History Factory,Point-in-Time Replay,"Zustands-Rekonstruktion zu exaktem Datum via Log-Replay.","DONE"
+F-PS-050,Serialization,JSON Persistence,"Caching und Offline-Modus via JSON Serialisierung.","DONE"
+F-PS-060,Helper,Active Trade Lookup,"Ticker -> TradeID Lookup via Live-Cache.","DONE"
+F-PS-070,History Factory,Daily Series Generator,"EOD-Snapshots für Zeitreihen-Analysen (Equity/Cash).","DONE"
+F-PS-080,History Factory,Closed Trade Aggregator,"Schnelle Performance-Statistiken abgeschlossener Trades.","DONE"
+F-PS-090,Data,Pandas Integration,"Native DataFrame-Brücke für Analytics/Filtering.","DONE"
