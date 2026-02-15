@@ -17,40 +17,56 @@ from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, Tra
 from py_market_data import ChartManager
 
 class TradeObject:
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any], storage_dir: str = "./data/trades") -> 'TradeObject':
+        """
+        F-TO-021: Reconstructs a TradeObject from a dictionary (TradeState).
+        """
+        ticker = data.get("ticker", "UNKNOWN")
+        # Create obj without ID to avoid constructor loading from file
+        obj = cls(ticker=ticker, id=None, storage_dir=storage_dir)
+        obj._state = TradeState.from_dict(data)
+        # Manually set filepath if id available
+        if obj._state.id:
+            obj.filepath = os.path.join(obj.storage_dir, f"{obj.ticker}/{obj._state.id}.json")
+        return obj
+
     def __init__(self, ticker: str, id: Optional[str] = None, storage_dir: str = "./data/trades"):
         self.ticker = ticker
         self.storage_dir = os.path.abspath(storage_dir)
-        self.ticker_dir = os.path.join(self.storage_dir, ticker)
+        self.id_override = id
         
-        # Ensure directories exist
-        os.makedirs(self.ticker_dir, exist_ok=True)
-        
-        # State loaded flag
+        # 1. Initialize State
         self._state: Optional[TradeState] = None
         
+        # Determine internal ID and Filepath
         if id:
-            # Try load existing
-            potential_path = os.path.join(self.ticker_dir, f"{id}.json")
-            if os.path.exists(potential_path):
-                self.filepath = potential_path
-                self._load()
-            else:
-                # Specified ID but file missing -> New Trade with this ID
-                self.filepath = potential_path
-                self._state = TradeState(id=id, ticker=ticker, status=TradeStatus.PLANNED)
-                self.save()
+             self.filepath = os.path.join(self.storage_dir, f"{self.ticker}/{id}.json")
+             self._load() # Populates self._state
         else:
-            # New Trade -> Generate ID
-            new_id = str(uuid.uuid4())
-            self.filepath = os.path.join(self.ticker_dir, f"{new_id}.json")
-            self._state = TradeState(id=new_id, ticker=ticker, status=TradeStatus.PLANNED)
-            self.save()
-            
+             new_id = str(uuid.uuid4())
+             self.filepath = os.path.join(self.storage_dir, f"{self.ticker}/{new_id}.json")
+             self._state = TradeState(id=new_id, ticker=self.ticker, status=TradeStatus.PLANNED)
+             # Ensure ticker directory exists
+             os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
+
+        # 2. Setup Charting (Internal)
+        self.chart_manager = ChartManager(storage_root="./data/market_cache")
         self.broker: Optional[IBrokerAdapter] = None # Broker must be injected via set_broker()
+    
+
     
     def set_broker(self, broker: IBrokerAdapter):
         """Injects the broker adapter dependency."""
         self.broker = broker
+        # [NEW] Automatically ensure chart data is present/stale-checked
+        try:
+            self._ensure_chart()
+        except Exception as e:
+            # Handle unknown symbols or connection errors gracefully
+            # This allows historical reconstruction for dummy/delisted tickers.
+            # print(f"WARNING: Could not sync chart for {self.ticker}: {e}")
+            pass
 
     @property
     def id(self) -> str:
@@ -79,6 +95,23 @@ class TradeObject:
             initial_risk = abs(first_tx.price - self._state.initial_stop_price) * abs(first_tx.quantity)
 
         return TradeCalculator.calculate_metrics(self._state.transactions, current_price, initial_risk)
+
+    def _ensure_chart(self, timeframe: str = "1D", lookback: str = "1Y"):
+        """
+        Internal helper to sync chart data if broker is available.
+        """
+        if self.broker:
+            # ChartManager needs an IMarketDataProvider. self.broker implements this.
+            self.chart_manager.provider = self.broker
+            self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
+
+    def get_chart(self, timeframe: str = "1D", lookback: str = "1Y") -> List[BarData]:
+        """
+        F-TO-060: Returns historical chart data.
+        Syncs with broker if available.
+        """
+        self._ensure_chart(timeframe, lookback)
+        return self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
 
     def _load(self):
         """Loads state from JSON."""
@@ -140,6 +173,8 @@ class TradeObject:
             timestamp=datetime.now(),
             order_id=oid,
             action="BUY" if quantity > 0 else "SELL",
+            status="SUBMITTED",  # [NEW]
+            message=note,        # [NEW]
             quantity=quantity,
             type=otype,
             limit_price=limit,
@@ -242,6 +277,29 @@ class TradeObject:
         self._state.current_stop_price = new_stop_price
         self.save()
 
+    def cancel_order(self, order_id: str) -> bool:
+        """
+        Explicitly cancels a specific active order (e.g. unfilled Entry).
+        """
+        if not self.broker: raise RuntimeError("Broker missing")
+
+        if order_id not in self._state.active_orders:
+            # Maybe it's already gone?
+            return False
+
+        # Execute Cancel
+        self.broker.cancel_order(order_id)
+        
+        # Log Logic? 
+        # Ideally we get an update 'Cancelled' via refresh(), but eager removal is okay for now?
+        # Better to wait for confirmation, but for now we remove it from active set to prevent 'ghosts'.
+        # Actually, let's keep it in active set until refresh() confirms it's gone or we trust our command.
+        # Strict: Adapter.cancel_order() void.
+        
+        # We'll just assume it works and remove it from tracking? 
+        # No, 'refresh()' handles cleanup.
+        return True
+
     def close(self) -> str:
         """
         F-TO-033: Closes remaining position at market.
@@ -288,7 +346,10 @@ class TradeObject:
         state_changed = False
 
         # 2. Process New Fills
+        # 2. Process New Fills & Log Executions
         existing_ids = {t.id for t in self._state.transactions}
+        filled_order_ids = set() # Track orders that got fills in this update
+        
         for fill in updates.new_fills:
             # Check if we already have this fill (Idempotency)
             if fill.id not in existing_ids:
@@ -297,6 +358,35 @@ class TradeObject:
                 self._state.transactions.append(fill)
                 existing_ids.add(fill.id)
                 state_changed = True
+                
+                # LOG EXECUTION
+                if fill.order_id:
+                    filled_order_ids.add(fill.order_id)
+                    
+                    # Determine Status (simple heuristic due to lack of order quantity context)
+                    fill_status = "FILLED" 
+                    fill_msg = f"Filled {fill.quantity} @ {fill.price}"
+
+                    self._state.order_history.append(TradeOrderLog(
+                        timestamp=datetime.now(),
+                        order_id=fill.order_id,
+                        action="BUY" if fill.quantity > 0 else "SELL",
+                        status=fill_status,
+                        message=fill_msg,
+                        quantity=fill.quantity,
+                        type="FILL",
+                        limit_price=fill.price,
+                        stop_price=None
+                    ))
+                    # Update status of the last log entry for this ID to FILLED?
+                    # TradeOrderLog is an append-only event stream. 
+                    # We append a NEW event "FILLED" (or "EXECUTION").
+                    # Let's verify _log_order usage. It appends. 
+                    # We need to set status="FILLED" explicitly.
+                    # _log_order defaults status="SUBMITTED". 
+                    # We should modify _log_order or manually append.
+
+
 
         # 3. Process Active Orders Cleanup
         # If an order is no longer in updates.active_order_ids, remove it from our tracking
@@ -307,10 +397,26 @@ class TradeObject:
              for oid in tracked_oids:
                  if oid not in current_active_oids:
                      # Order is gone (Filled, Cancelled, Expired)
-                     # We assume Fills are handled above via new_fills.
-                     # So we just remove it from tracking map.
+                     role = self._state.active_orders[oid]
                      del self._state.active_orders[oid]
                      state_changed = True
+                     
+                     # Determine Reason:
+                     # If it was in filled_order_ids, it finished filling.
+                     # If NOT, it was likely CANCELLED or Rejected.
+                     if oid not in filled_order_ids:
+                         # Log CANCELLATION
+                         self._state.order_history.append(TradeOrderLog(
+                            timestamp=datetime.now(),
+                            order_id=oid,
+                            action="CANCEL", # Action is technically referencing the original order action but here acts as Event Type
+                            status="CANCELLED",
+                            message="Order removed from active list (Cancelled/Expired)",
+                            quantity=0, # No quantity executed
+                            type="CANCEL",
+                            limit_price=None,
+                            stop_price=None
+                        ))
 
         # 4. Update Status Logic (F-TO-120)
         # Re-calculate net quantity to check if we are OPEN or CLOSED
@@ -355,21 +461,4 @@ class TradeObject:
         # Sort by timestamp
         return sorted(events, key=lambda x: x["timestamp"])
 
-    def get_chart(self, timeframe: str = "1D", lookback: str = "1Y") -> List[BarData]:
-        """
-        F-TO-080: Fetches chart data via decentralized ChartManager.
-        Uses self.storage_dir as cache root (./data/trades).
-        Delegates fetching to self.broker (if available).
-        """
-        # 1. Instantiate Manager (Episodic usage)
-        # We use the Trade's storage dir to keep data close to the trade?
-        # Or should we use a central cache?
-        # The prompt says: "Als storage_root übergibst du self.storage_dir"
-        # self.storage_dir is usually ./data/trades
-        # This means charts will be at ./data/trades/{ticker}/charts/{timeframe}.json
-        # This is nice for per-trade isolation/backup.
-        
-        manager = ChartManager(storage_root=self.storage_root, provider=self.broker)
-        
-        # 2. Delegate
-        return manager.ensure_data(self.ticker, timeframe, lookback)
+

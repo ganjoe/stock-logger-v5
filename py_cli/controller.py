@@ -45,23 +45,34 @@ class CLIController:
             sys.stderr.write(traceback.format_exc())
             return self._render_error(f"Internal Error: {str(e)}", "INTERNAL_ERROR")
 
+
     def _render_response(self, response: CommandResponse) -> str:
         """ Renders the response based on the current mode. """
+        
         if self.context.mode == CLIMode.BOT:
-            # JSON Output
+            # BOT MODE: JSON ONLY
             output = {
                 "success": response.success,
+                "payload": response.payload,
                 "message": response.message,
-                "data": response.data,
                 "error_code": response.error_code
             }
             return json.dumps(output)
         else:
-            # Human Output (Pretty Print)
-            if response.success:
-                return f"✅ {response.message}"
-            else:
-                return f"❌ Error: {response.message}"
+            # HUMAN MODE: PRETTY PRINT
+            if not response.success:
+                return f"❌ Error: {response.message} ({response.error_code})"
+                
+            # Success handling
+            out = []
+            if response.message:
+                out.append(f"✅ {response.message}")
+                
+            if response.payload:
+                # Basic JSON Pretty Print for now
+                out.append(json.dumps(response.payload, indent=2, default=str))
+                
+            return "\n".join(out)
 
     def _render_error(self, message: str, code: str) -> str:
         """ Renders a generic error. """

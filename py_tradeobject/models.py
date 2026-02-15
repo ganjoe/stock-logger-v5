@@ -82,6 +82,7 @@ class TradeTransaction:
     price: float        # Execution price
     commission: float
     slippage: float = 0.0 # [F-TO-130]
+    order_id: Optional[str] = None # Broker Order ID (for linking back to logs)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -91,7 +92,8 @@ class TradeTransaction:
             "quantity": self.quantity,
             "price": self.price,
             "commission": self.commission,
-            "slippage": self.slippage
+            "slippage": self.slippage,
+            "order_id": self.order_id
         }
 
     @staticmethod
@@ -103,7 +105,8 @@ class TradeTransaction:
             quantity=data["quantity"],
             price=data["price"],
             commission=data["commission"],
-            slippage=data.get("slippage", 0.0)
+            slippage=data.get("slippage", 0.0),
+            order_id=data.get("order_id")
         )
 
 @dataclass

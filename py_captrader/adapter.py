@@ -18,11 +18,12 @@ class CapTraderAdapter(IBrokerAdapter):
     Handles execution logic, caching, and mapping.
     """
     
+
     def __init__(self, client: IBKRClient):
         self.client = client
         if not self.client.is_connected():
-            self.client.connect()
-            
+            raise RuntimeError("CRITICAL: Adapter requires an active IBKR connection in the Client. Run setup first.")
+
     def place_order(self, order_ref: str, symbol: str, quantity: float, 
                    limit_price: Optional[float] = None, 
                    stop_price: Optional[float] = None) -> str:

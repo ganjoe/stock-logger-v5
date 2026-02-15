@@ -43,7 +43,8 @@ class IBKRMapper:
             quantity=qty,
             price=float(exec.avgPrice),
             commission=commission,
-            slippage=0.0 # Calculated later by Logic
+            slippage=0.0, # Calculated later by Logic
+            order_id=str(exec.orderId) 
         )
 
     @staticmethod

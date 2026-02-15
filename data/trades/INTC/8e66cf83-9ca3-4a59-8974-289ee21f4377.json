@@ -1,0 +1,29 @@
+{
+  "id": "8e66cf83-9ca3-4a59-8974-289ee21f4377",
+  "ticker": "INTC",
+  "status": "OPENING",
+  "transactions": [],
+  "order_history": [
+    {
+      "timestamp": "2026-02-15T19:12:40.639110",
+      "order_id": "416",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Initial Entry",
+      "quantity": 10.0,
+      "type": "LMT",
+      "limit_price": 10.0,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial Entry",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "416": "ENTRY"
+  },
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

@@ -20,6 +20,6 @@ class CLIContext:
 @dataclass
 class CommandResponse:
     success: bool
-    message: str          # To be displayed to Human (Formatted Text)
-    data: Optional[Dict[str, Any]] = None # To be serialized for Bot (JSON)
-    error_code: str = "OK" # Standardized Error Code for Bots
+    payload: Optional[Dict[str, Any]] = None # Core Data (Bot-First)
+    message: Optional[str] = None            # Human Readable (Optional)
+    error_code: str = "OK"                   # Machine Error Code

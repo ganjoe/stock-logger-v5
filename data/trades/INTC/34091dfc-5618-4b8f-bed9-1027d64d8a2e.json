@@ -1,0 +1,12 @@
+{
+  "id": "34091dfc-5618-4b8f-bed9-1027d64d8a2e",
+  "ticker": "INTC",
+  "status": "PLANNED",
+  "transactions": [],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

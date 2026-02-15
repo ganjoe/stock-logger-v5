@@ -28,14 +28,14 @@ class CloseCommand(ICommand):
             # In this architecture, maybe we expect the user to type 'close <id> --confirm'?
             # Let's enforce explicit --confirm for now, or just return a warning.
             if not force:
-                 return CommandResponse(False, f"⚠️  SAFETY: To close {trade_id}, you must append --confirm or --force.", error_code="CONFIRM_REQUIRED")
+                 return CommandResponse(False, message=f"⚠️  SAFETY: To close {trade_id}, you must append --confirm or --force.", error_code="CONFIRM_REQUIRED")
         
         elif ctx.mode == CLIMode.BOT:
             if not (force or ctx.confirm_all):
-                return CommandResponse(False, "SAFETY: Bot must use --confirm or context.confirm_all=True", error_code="SAFETY_LOCK")
+                return CommandResponse(False, message="SAFETY: Bot must use --confirm or context.confirm_all=True", error_code="SAFETY_LOCK")
 
         # Mock Logic
-        return CommandResponse(True, f"Trade {trade_id} closed successfully.", {"trade_id": trade_id, "status": "CLOSED"})
+        return CommandResponse(True, message=f"Trade {trade_id} closed successfully.", payload={"trade_id": trade_id, "status": "CLOSED"})
 
 class OrderCommand(ICommand):
     name = "order"
@@ -45,15 +45,15 @@ class OrderCommand(ICommand):
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         # Simplistic implementation
         if len(args) < 3:
-             return CommandResponse(False, "Usage: order <buy/sell> <ticker> <qty>", error_code="INVALID_ARGS")
+             return CommandResponse(False, message="Usage: order <buy/sell> <ticker> <qty>", error_code="INVALID_ARGS")
              
         side, ticker, qty = args[0], args[1], args[2]
         
         # Bot Safety
         if ctx.mode == CLIMode.BOT and not ctx.confirm_all and "--confirm" not in args:
-             return CommandResponse(False, "SAFETY: Order requires confirmation.", error_code="SAFETY_LOCK")
+             return CommandResponse(False, message="SAFETY: Order requires confirmation.", error_code="SAFETY_LOCK")
 
-        return CommandResponse(True, f"Order Placed: {side} {qty} {ticker}", {"order_id": "mock_oid_123"})
+        return CommandResponse(True, message=f"Order Placed: {side} {qty} {ticker}", payload={"order_id": "mock_oid_123"})
 
 # Registration
 registry.register(CloseCommand())

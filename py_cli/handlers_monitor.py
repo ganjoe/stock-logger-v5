@@ -9,36 +9,34 @@ from .commands import ICommand, registry
 # For now, we'll mock the data fetching or use placeholders.
 # We should probably have a 'ServiceLocator' or import a singleton 'system'.
 
+import json
+from py_captrader import services
+from py_portfolio_state.live import LivePortfolioManager
+
 class StatusCommand(ICommand):
     name = "status"
-    description = "Displays the current portfolio snapshot and risk metrics."
+    description = "Displays the current portfolio snapshot (Live Dump)."
     syntax = "status"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        # TODO: Connect to real py_financial_math / Broker
-        # For prototype, return dummy data structure that fits the requirement
-        
-        # Mock Data matching F-DAT-010 (Trade Identity Reconciliation)
-        data = {
-            "equity": 10000.0,
-            "cash": 8000.0,
-            "pnl_unrealized": 500.0,
-            "risk_heat": 2.5, # %
-            "positions": [
-                {"trade_id": "fc3f41e5", "ticker": "GOOGL", "qty": 10, "pnl": 50.0}
-            ]
-        }
-        
-        if ctx.mode.value == "BOT":
-            return CommandResponse(True, "Status valid", data)
-        
-        # Human Format
-        msg = (
-            f"--- PORTFOLIO STATUS ---\n"
-            f"Equity: ${data['equity']:.2f} | Cash: ${data['cash']:.2f}\n"
-            f"Heat:   {data['risk_heat']}% | PnL: ${data['pnl_unrealized']:.2f}"
-        )
-        return CommandResponse(True, msg, data)
+        try:
+            # 1. Get Live Broker & Manager
+            if not services.has_broker():
+                return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
+                
+            broker = services.get_broker()
+            manager = LivePortfolioManager(broker)
+            
+            # 2. Fetch Snapshot
+            print("  [CLI] Fetching Live Snapshot...")
+            snap = manager.snapshot()
+            
+            # 3. Dump Data
+            data_dict = snap.to_dict()
+            return CommandResponse(True, payload=data_dict, message="Live Portfolio Snapshot")
+            
+        except Exception as e:
+            return CommandResponse(False, payload=None, message=f"Error: {e}", error_code="FETCH_ERROR")
 
 class TradesCommand(ICommand):
     name = "trades"

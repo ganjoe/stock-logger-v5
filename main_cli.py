@@ -12,6 +12,9 @@ from py_cli.controller import CLIController
 # Import handlers to trigger registration
 import py_cli.handlers_monitor
 import py_cli.handlers_execution
+import py_cli.handlers_user_mode
+import py_cli.handlers_trade
+import py_cli.handlers_history
 
 def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")
@@ -43,12 +46,19 @@ def main():
         print("Type 'exit' or 'quit' to stop.")
         while True:
             try:
-                user_input = input(">> ")
+                if controller.context.mode == CLIMode.HUMAN:
+                    print(">> ", end="", flush=True)
+                user_input = sys.stdin.readline()
+                if not user_input:
+                     # EOF
+                     break
+                user_input = user_input.strip()
+                
                 if user_input.lower() in ["exit", "quit"]:
                     break
                 
                 response = controller.process_input(user_input)
-                print(response)
+                print(response, flush=True)
             except KeyboardInterrupt:
                 print("\nExiting...")
                 break

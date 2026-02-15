@@ -4,47 +4,55 @@ from datetime import datetime
 from typing import List, Optional
 from .objects import PortfolioSnapshot, TradeResult, PortfolioPosition, PortfolioOrder
 from py_tradeobject.models import TradeState, TradeStatus, TransactionType
-from py_market_data import ChartManager
+from py_tradeobject.core import TradeObject
+from py_tradeobject.interface import IBrokerAdapter
 
 class HistoryFactory:
     """
     F-PS-030, F-PS-040, F-PS-080: History interactions.
     """
-    def __init__(self, trades_dir: str, chart_manager: Optional[ChartManager] = None):
+    def __init__(self, trades_dir: str, provider: Optional[IBrokerAdapter] = None):
         self.trades_dir = trades_dir
-        self.chart_manager = chart_manager
-        self._cache: List[TradeState] = []
+        self.provider = provider
+        self._cache: List[TradeObject] = []
         
     def load_all_trades(self):
-        """ Scans dir recursively and loads all JSONs. """
+        """
+        F-PS-050: Recursively loads all trade JSONs from trades_dir.
+        """
         self._cache = []
         if not os.path.exists(self.trades_dir):
             return
 
         for root, _, files in os.walk(self.trades_dir):
-            for filename in files:
-                if filename.endswith(".json"):
-                    filepath = os.path.join(root, filename)
+            for file in files:
+                if file.endswith(".json"):
+                    full_path = os.path.join(root, file)
                     try:
-                        with open(filepath, 'r') as f:
+                        with open(full_path, "r") as f:
                             data = json.load(f)
-                            state = TradeState.from_dict(data)
-                            self._cache.append(state)
-                    except Exception:
-                        # Ignore corrupted or non-trade files
-                        continue
-                    
-        # Sort by entry date (if available) for processing order? Not strictly needed for snapshot at time X.
+                            trade_obj = TradeObject.from_dict(data)
+                            
+                            # Inject Provider if available
+                            if self.provider:
+                                trade_obj.set_broker(self.provider)
+                                
+                            self._cache.append(trade_obj)
+                    except Exception as e:
+                        pass
 
     def get_snapshot_at(self, date: datetime) -> PortfolioSnapshot:
         """
-        F-PS-040: Reconstructs portfolio at specific point in time.
+        F-PS-070: Reconstructs portfolio state at a specific point in time.
         """
-        # 1. Filter Transactions up to date
+        total_cash = 0.0 # TODO: Load from cash log
         positions: List[PortfolioPosition] = []
-        total_cash = 0.0 # Initial Capital? Not defined, starting at 0 relevant to trades.
         
         for trade in self._cache:
+            # We are now iterating TradeObjects. Need to access _state for data.
+            state = trade._state # Accessing protected member for analysis
+            if not state: continue
+
             # Calculate Net Quantity and Cash Flow for this trade up to `date`
             qty = 0.0
             avg_price = 0.0 # This might need FIFO/LIFO logic or just Avg Cost
@@ -55,7 +63,7 @@ class HistoryFactory:
             
             trade_active = False
             
-            for tx in trade.transactions:
+            for tx in state.transactions:
                 if tx.timestamp > date: continue
                 
                 # Apply TX
@@ -70,7 +78,7 @@ class HistoryFactory:
                 # Transaction Cost = Price * Qty.
                 # If Buy 10 @ 100 -> Cost 1000. Cash -1000.
                 
-                # Cash Delta = -(Qty * Price) - Commission
+                # Cash Delta = -(tx.quantity * tx.price) - tx.commission
                 cash_delta = -(tx.quantity * tx.price) - tx.commission
                 total_cash += cash_delta
                 
@@ -88,21 +96,18 @@ class HistoryFactory:
             # If active position exists
             if trade_active and qty != 0:
                 # Valuation
-                current_price = self._get_price_at(trade.ticker, date)
+                current_price = self._get_price_at(state.ticker, date)
                 market_val = qty * current_price
                 unrealized = market_val - (qty * cost_basis)
                 
                 positions.append(PortfolioPosition(
-                    ticker=trade.ticker,
+                    ticker=state.ticker,
                     quantity=qty,
                     avg_price=cost_basis,
                     current_price=current_price,
                     market_value=market_val,
                     unrealized_pnl=unrealized,
-                    trade_id=None # Could map trade.id if available on TradeState? TradeState doesn't technically have the ID field inside it, it's usually wrapper or filename.
-                    # Wait, TradeState usually has ID if defined in models? 
-                    # Checking models.py... TradeState has 'active_orders'.
-                    # TradeObject has ID. TradeState might not.
+                    trade_id=state.id
                 ))
                 
         # Calculate Equity
@@ -113,20 +118,15 @@ class HistoryFactory:
         
         for trade in self._cache:
             # Check logs for orders that were OPEN at `date`
-            # TradeState has 'active_orders' which is current. 
-            # We need to rely on 'order_history' (TradeOrderLog).
-            # Logic:
-            # 1. Find last log entry <= date for each order_id? 
-            #    Or logs track state changes.
-            #    If we have a "CREATED/SUBMITTED" log before date, and no "FILLED/CANCELLED" log before date, it's open.
-            
-            # Group logs by order_id
-            if not hasattr(trade, 'order_history'): continue
+            state = trade._state
+            if not getattr(state, 'order_history', None): 
+                continue
             
             orders_state = {} # order_id -> status, details
             
-            for log in sorted(trade.order_history, key=lambda x: x.timestamp):
-                if log.timestamp > date: break
+            for log in sorted(state.order_history, key=lambda x: x.timestamp):
+                if log.timestamp > date: 
+                    break
                 
                 # Update state
                 orders_state[log.order_id] = {
@@ -134,17 +134,17 @@ class HistoryFactory:
                     "action": log.action,
                     "log_obj": log
                 }
-                
+
             # Filter for active
-            for oid, state in orders_state.items():
+            for oid, state_dict in orders_state.items():
                 # What statuses are active?
                 # SUBMITTED, PARTIALLY_FILLED, PENDING
                 # Inactive: FILLED, CANCELLED, REJECTED
                 
-                status = state["status"]
+                status = state_dict["status"]
                 if status not in ["FILLED", "CANCELLED", "REJECTED", "EXPIRED"]:
                     # It's active!
-                    log = state["log_obj"]
+                    log = state_dict["log_obj"]
                     
                     # Determine price (Limit or Stop?)
                     # PortfolioOrder expects 'price'.
@@ -152,13 +152,13 @@ class HistoryFactory:
                     if price is None: price = 0.0
                     
                     active_orders.append(PortfolioOrder(
-                        ticker=trade.ticker,
+                        ticker=state.ticker,
                         order_id=oid,
-                        action=state.get("action", "UNKNOWN"),
+                        action=state_dict.get("action", "UNKNOWN"),
                         type=log.type,
                         qty=log.quantity,
                         price=price,
-                        trade_id=trade.id
+                        trade_id=state.id
                     ))
 
         return PortfolioSnapshot(
@@ -176,12 +176,15 @@ class HistoryFactory:
         """
         results = []
         for trade in self._cache:
-            if trade.status in [TradeStatus.CLOSED, TradeStatus.ARCHIVED]:
+            state = trade._state
+            if not state: continue
+
+            if state.status in [TradeStatus.CLOSED, TradeStatus.ARCHIVED]:
                 # Check exit date (Timestamp of last transaction)
-                if not trade.transactions: continue
+                if not state.transactions: continue
                 
                 # Sort transactions by time to be sure
-                sorted_tx = sorted(trade.transactions, key=lambda x: x.timestamp)
+                sorted_tx = sorted(state.transactions, key=lambda x: x.timestamp)
                 last_tx = sorted_tx[-1]
                 
                 if start <= last_tx.timestamp <= end:
@@ -208,7 +211,7 @@ class HistoryFactory:
                     direction = "LONG" if total_bought_qty > 0 else "SHORT" # Simplified
                     
                     results.append(TradeResult(
-                        ticker=trade.ticker,
+                        ticker=state.ticker,
                         direction=direction,
                         entry_date=entry_date,
                         exit_date=exit_date,
@@ -245,14 +248,39 @@ class HistoryFactory:
         return results
 
     def _get_price_at(self, ticker: str, date: datetime) -> float:
-        """Helper to get price from ChartManager or fallback."""
-        if not self.chart_manager: return 0.0
+        """Helper to get price from TradeObject's ChartManager or fallback."""
+        # Find ANY trade object for this ticker 
+        # (Charts are per ticker, so any instance logic is fine, or create temp one)
         
-        # We need data at 'date'.
-        # ChartManager.ensure_data gives us bars.
-        # We can try to load from disk without fetching?
-        # Manager doesn't expose strict "get_price_at".
-        # We can implement a helper to load 1D bars and find the close.
-        # This is expensive if we do it inside a loop. 
-        # For now return 100.0 dummy or basic implementation.
-        return 100.0
+        trade = next((t for t in self._cache if t.ticker == ticker), None)
+        if not trade:
+             # If we don't have a trade in cache, we can't easily access chart manager logic encapsulated in TradeObject
+             # unless we instantiate a dummy one.
+             # fallback
+             return 0.0
+             
+        try:
+             # This uses TradeObject's internal mechanism (including auto-fetch via provider if injected)
+             bars = trade.get_chart("1D", "1Y")
+             
+             if not bars: return 0.0
+             
+             # 3. Find closest bar <= date
+             # Binary search or simple iteration (bars are sorted)
+             closest_price = 0.0
+             found = False
+             
+             for bar in reversed(bars):
+                 if bar.timestamp.date() <= date.date():
+                     closest_price = bar.close
+                     found = True
+                     break
+             
+             if not found:
+                 # Date might be before first bar? Return first bar open?
+                 closest_price = bars[0].open
+                 
+             return closest_price
+             
+        except Exception:
+            return 0.0

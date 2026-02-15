@@ -1,0 +1,16 @@
+✅ Created historical scenario: HIST_ORDER_TEST
+🚀 Launching run_paper.py...
+Waiting for startup...
+[RunPaper] 
+[RunPaper] 🟦 --- STARTING PAPER LOGIC (Localhost:4002 ClientID:555) ---
+[RunPaper] 🔌 Connecting to IBKR Session (127.0.0.1:4002 ID:555)...
+[RunPaper] Connecting to IBKR TWS (127.0.0.1:4002 ID:555)...
+[RunPaper] ✅ Session Established.
+[RunPaper] ✅ Broker Registered: CapTraderAdapter
+[RunPaper] 🚀 Trading CLI (Mode: HUMAN)
+Sending: user pta
+
+🔎 Verifying History @ 7 Days Ago (Expect Order A Active)...
+Sending: history 7
+Payload: []
+❌ Test Failed: Order A should be active 7 days ago!

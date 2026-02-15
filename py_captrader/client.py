@@ -78,10 +78,12 @@ class IBKRClient:
                 self._contract_cache[symbol] = c
                 return c
             else:
-                print(f"Error: Could not qualify contract for {symbol}")
+                import sys
+                sys.stderr.write(f"Error: Could not qualify contract for {symbol}\n")
                 return None
         except Exception as e:
-            print(f"Error qualifying contract {symbol}: {e}")
+            import sys
+            sys.stderr.write(f"Error qualifying contract {symbol}: {e}\n")
             return None
 
     def get_contract_details(self, contract: Contract):
