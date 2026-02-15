@@ -37,24 +37,5 @@ class CloseCommand(ICommand):
         # Mock Logic
         return CommandResponse(True, message=f"Trade {trade_id} closed successfully.", payload={"trade_id": trade_id, "status": "CLOSED"})
 
-class OrderCommand(ICommand):
-    name = "order"
-    description = "Places a new order."
-    syntax = "order <side> <ticker> <qty>"
-    
-    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        # Simplistic implementation
-        if len(args) < 3:
-             return CommandResponse(False, message="Usage: order <buy/sell> <ticker> <qty>", error_code="INVALID_ARGS")
-             
-        side, ticker, qty = args[0], args[1], args[2]
-        
-        # Bot Safety
-        if ctx.mode == CLIMode.BOT and not ctx.confirm_all and "--confirm" not in args:
-             return CommandResponse(False, message="SAFETY: Order requires confirmation.", error_code="SAFETY_LOCK")
-
-        return CommandResponse(True, message=f"Order Placed: {side} {qty} {ticker}", payload={"order_id": "mock_oid_123"})
-
 # Registration
 registry.register(CloseCommand())
-registry.register(OrderCommand(), aliases=["orders"])

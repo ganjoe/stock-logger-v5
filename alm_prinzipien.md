@@ -35,3 +35,23 @@ Jede Schnittstelle (API, CLI-Command, Modul-Output) ist primär für die maschin
     *   **Stdout** ist exklusiv für strukturierte Daten (JSON) reserviert. Der Bot sieht hierdurch immer nur sauberes JSON auf dem Hauptkanal.
     *   **Stderr** wird für alle Log-Ausgaben, Warnungen und Fehlermeldungen genutzt. Der Entwickler (oder das Log-File) sieht die Fehlermeldungen trotzdem noch im Terminal, ohne dass der Datenfluss gestört wird.
 
+## 3. Historische Integrität (Point-in-Time Analysis)
+
+### Grundsatz: Log-basierte Rekonstruktion
+Der Zustand des Portfolios zu einem beliebigen Zeitpunkt $T$ wird durch das "Replay" aller Transaktionen und Order-Logs bis zum Zeitpunkt $T$ ermittelt.
+
+### Umsetzung
+*   **Immutability**: Einmal geschriebene Order-Logs oder Transaktionen werden niemals gelöscht oder nachträglich verändert. Korrekturen erfolgen durch neue, kompensierende Einträge.
+*   **Zeitstempel-Filterung**: Jede Analyse-Funktion (`HistoryFactory`, `PortfolioReconstruct`) muss einen `date`-Parameter akzeptieren, um konsistente historische Schnappschüsse zu ermöglichen.
+*   **FIFO/LIFO Konsistenz**: Die Methode der Bestandsbewertung (derzeit LIFO) muss systemweit konsistent in der `PortfolioSnapshot`-Logik angewendet werden.
+
+## 4. Resilienz & Daten-Sicherheit
+
+### Grundsatz: Unabhängigkeit von Live-Daten
+Historische Analysen müssen auch dann funktionieren, wenn keine Live-Verbindung zum Broker besteht oder Symbole nicht mehr existieren (Delisted/Dummy-Ticker).
+
+### Umsetzung
+*   **Graceful Adapter Failure**: Broker-Adapter dürfen bei fehlschlagender Kontrakt-Qualifizierung (z.B. unbekannter Ticker) oder fehlenden Marktdaten das Gesamtsystem nicht zum Absturz bringen. Sie informieren via `Stderr`, ermöglichen aber die Weiterverarbeitung der restlichen Daten.
+*   **Atomares Speichern**: Speicheroperationen für Trade-Daten (`TradeObject.save()`) erfolgen atomar via Temp-Dateien und `os.rename`, um Datenverlust bei Systemabstürzen zu verhindern.
+*   **UUID-Garantie**: Jedes Datenobjekt (`TradeObject`) erhält bei der Erstellung eine unveränderliche, einzigartige ID zur eindeutigen Referenzierung in Logs und Dateisystem.
+

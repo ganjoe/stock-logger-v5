@@ -11,9 +11,10 @@ Modus-Wahl.
 ## Monitoring
 
 ### `status`
-Liefert vollständiges Portfolio-Objekt.
+Liefert den aktuellen **Live-Snapshot** des Portfolios direkt vom Broker.
 - **Payload**: `py_portfolio_state.objects.PortfolioSnapshot` als `dict`.
-- **Benötigte Verarbeitung**: Analysiere `equity` und `positions[]` für Sizing.
+- **Inhalt**: Enthält `cash`, `equity`, `positions[]` und **alle** aktuell beim Broker offenen `active_orders[]`.
+- **Zweck**: Primäre Datenquelle für den Bot, um den Ist-Zustand (inklusive hängender Orders) zu prüfen.
 
 ## Trading (Execution)
 
@@ -74,7 +75,21 @@ Löscht eine spezifische, aktive Order (z.B. einen nicht ausgeführten Entry).
 ```json
 {
   "action": "REFRESH",
-  "trade_id": "TRD-XXXX"
+  "trade_id": "TRD-XXXX",
+  "ticker": "AAPL"
 }
 ```
 **Effekt**: Zwingt das TradeObject, Updates vom Broker zu laden (Fills, Status).
+
+### `history [days_back]`
+Liefert einen historischen Portfolio-Snapshot.
+- **Payload**: `py_portfolio_state.objects.PortfolioSnapshot` zum Zielzeitpunkt.
+- **Standard**: `days_back=0` (heute).
+
+### `trades`
+Listenansicht aller offenen Positionen.
+- **Rückgabe**: `{"success": true, "payload": {"trades": [...]}}`
+
+### `close <trade_id> [--confirm]`
+Schließt einen Trade explizit. 
+- **Sicherheits-Check**: In PTA Mode ist `--confirm` oder `--force` zwingend erforderlich, sofern nicht `confirm_all` im Kontext gesetzt ist.

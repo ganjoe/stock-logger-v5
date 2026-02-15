@@ -19,6 +19,9 @@ Zeigt einen Live-Snapshot des Portfolios.
 ### `trades`
 Listet alle aktiven Positionen/Trades auf.
 
+### `history [tage]`
+Zeigt den Portfolio-Stand in der Vergangenheit (End-Of-Day). Standardmäßig heute (0).
+
 ## Trading (Intervention)
 
 ⚠️ **Achtung**: Manuelle Eingriffe sollten vermieden werden, wenn der Bot aktiv handelt.
@@ -26,3 +29,6 @@ Listet alle aktiven Positionen/Trades auf.
 ### `trade <json_payload>`
 Wrapper für komplexe Trade-Operationen. Siehe `commands_pta.md`.
 Im Human-Mode wird empfohlen, diesen Befehl **nicht** manuell zu tippen, da JSON fehleranfällig ist.
+
+### `close <trade_id> --confirm`
+Schließt einen Trade manuell. Erfordert die explizite Bestätigung `--confirm`.
