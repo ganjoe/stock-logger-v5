@@ -32,3 +32,13 @@ def calculate_heat(open_risks: List[float], equity: float) -> float:
     if equity <= 0: return 0.0
     total_risk = sum(open_risks)
     return (total_risk / equity) * 100.0 # Return as percentage
+
+def calculate_risk_per_share(entry_price: float, stop_loss: float) -> float:
+    """Calculates risk amount per unit."""
+    return abs(entry_price - stop_loss)
+
+def calculate_total_risk_percent(total_risk_amount: float, total_equity: float) -> float:
+    """Calculates risk as percentage of equity."""
+    if total_equity <= 0:
+        return 0.0
+    return (total_risk_amount / total_equity) * 100.0

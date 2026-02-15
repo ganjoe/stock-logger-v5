@@ -1,0 +1,18 @@
+ID,Category,Title,Description,Status
+F-INT-010,API,Unified Command Processor,Zentrale Logik zur Verarbeitung von Textbefehlen (status, close, panic) und Index-Mapping.,DONE
+F-INT-020,API,Dual-Output Engine,Unterstützung für HTML-Antworten (Web-UI) und JSON-Pakete (Bots/KI).,DONE
+F-INT-021,API,Bot-Native JSON Delivery,Liefert für MCP-Anfragen reine JSON-DTOs zur präzisen mathematischen Analyse.,DONE
+F-INT-025,API,Advanced Parameter Parsing,Unterstützung für positionale Argumente und benannte Flags (z.B. --price, --stop).,DONE
+F-INT-030,UI,3-Zone Cockpit Layout,Fixes 100vh Grid mit Header (Stats), Main Stage (Visuals) und Dual-Terminal (Input).,DONE
+F-INT-032,UI,Dual-Terminal Console,Geteilte Konsole für System-Log (Links) und Active-Input (Rechts).,DONE
+F-INT-045,UX,Emoji & Color Feedback,Statusmeldungen nutzen Emojis und CSS-Farben zur schnellen visuellen Erfassung.,DONE
+F-INT-046,UX,Contextual Help System,Detaillierte Hilfe für Root-Befehle (?) und spezifische Syntax-Hilfe (cmd ?).,DONE
+F-INT-047,UX,Visual Command Routing,Intelligentes Routing von Listen/Charts in die Main-Stage vs. Logs im Terminal.,DONE
+F-INT-050,UI,Interactive HTML Tables,Portfolio-Ansicht als optimierte HTML-Tabelle mit integrierten Action-Buttons (Close).,DONE
+F-INT-110,UX,Index-Based Trading,Ermöglicht Terminal-Befehle via Kurz-Indizes (z.B. 'close 1') statt Ticker-Symbolen.,DONE
+F-INT-120,Safety,Panic Button Logic,Spezialbefehl zum sofortigen Liquidieren des gesamten Portfolios via Market-Orders.,DONE
+F-INT-140,Security,Write-Access Confirmation,Geldwerte Befehle erfordern Bestätigung (im Web-UI via Popup/Panic-Button via Confirm).,DONE
+F-INT-200,Broker,Connection Life-Cycle,Befehle 'connect' und 'disconnect' zur Steuerung der Broker-Verbindung.,DONE
+F-INT-210,Trading,Order & Trade Control,Erweiterte Befehle 'trades', 'orders', 'cancel' und 'modify' zur Verwaltung.,DONE
+F-INT-220,Risk,Risk Analysis Tools,Befehle 'size' (Positionsberechnung) und 'risk' (Simulation) zur Planung.,DONE
+F-INT-230,Stats,Performance Insights,Befehle 'history' (Equity-Kurve) und 'stats' (Metriken) zur Auswertung.,DONE

@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from py_portfolio_state.objects import PortfolioSnapshot, PortfolioPosition
 import py_financial_math.risk as risk_math
+import py_financial_math.core as core_math
 
 from .models import AnalyticsReport, PositionRow, SummaryRow
 
@@ -39,19 +40,10 @@ class SnapshotAnalyzer:
             if stop_price is not None:
                 # Use Math Module
                 risk_exposure = risk_math.calculate_risk_exposure(pos.quantity, pos.current_price, stop_price)
-                r_per_share = abs(pos.avg_price - stop_price) # Initial R or Current R?
-                # Usually R is defined by initial risk, but here we capture "Current Open Risk".
-                # Let's define r_per_share as distance from current to stop? 
-                # Or Entry to Stop?
-                # Analytics usually wants "How much can I lose?". That is Risk Exposure.
-                # r_per_share is useful for "How many R am I up?".
-                # Let's use distance current to stop for "Risk".
-                pass
+                r_per_share = core_math.calculate_r_multiple(pos.avg_price, stop_price, pos.current_price)
             
             # Calculate Risk % of Equity
-            risk_pct = 0.0
-            if snapshot.equity > 0 and risk_exposure > 0:
-                risk_pct = (risk_exposure / snapshot.equity) * 100.0
+            risk_pct = risk_math.calculate_total_risk_percent(risk_exposure, snapshot.equity)
                 
             row = PositionRow(
                 ticker=pos.ticker,
@@ -61,7 +53,7 @@ class SnapshotAnalyzer:
                 market_val=pos.market_value,
                 unrealized_pnl=pos.unrealized_pnl,
                 stop_price=stop_price,
-                r_per_share=0.0, # Todo: Refine definition
+                r_per_share=r_per_share,
                 risk_exposure=risk_exposure,
                 risk_pct=risk_pct,
                 heat_warning=(risk_pct > 2.5) # Example threshold

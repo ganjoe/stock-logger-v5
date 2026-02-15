@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard - Cockpit</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <div class="cockpit-grid">
+        <!-- Zone 1: Header -->
+        <header class="header">
+            <div class="live-stats">
+                <span id="stat-equity">Equity: $0.00</span>
+                <span id="stat-cash">Cash: $0.00</span>
+                <span id="stat-heat">Heat: 0.00%</span>
+            </div>
+            <button id="panic-btn" class="panic-btn">🚨 PANIC</button>
+        </header>
+
+        <!-- Zone 2: Main Stage -->
+        <main id="main-stage" class="main-stage">
+            <div id="view-container" class="view-container">
+                <div id="welcome-msg">
+                    <h1>Trading Dashboard</h1>
+                    <p>Fetching initial status...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Zone 3: Dual Terminal -->
+        <footer class="terminal-zone">
+            <div class="terminal-container">
+                <div id="system-log" class="terminal-output">
+                    <div class="log-entry">System ready. ✅</div>
+                </div>
+                <div class="terminal-input-wrapper">
+                    <span>></span>
+                    <input type="text" id="cmd-input" placeholder="Type command (e.g. status, close 1, wizard)..."
+                        autofocus>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
