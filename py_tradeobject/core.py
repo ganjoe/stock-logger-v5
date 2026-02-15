@@ -110,7 +110,11 @@ class TradeObject:
         F-TO-060: Returns historical chart data.
         Syncs with broker if available.
         """
-        self._ensure_chart(timeframe, lookback)
+        try:
+            self._ensure_chart(timeframe, lookback)
+        except Exception:
+            # Silently ignore sync errors during history replay
+            pass
         return self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
 
     def _load(self):

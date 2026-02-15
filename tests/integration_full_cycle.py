@@ -124,7 +124,7 @@ def run_test():
     # We need universal_newlines=True to handle strings instead of bytes
     # buffering=1 for line buffering
     process = subprocess.Popen(
-        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--client-id", "555"],
+        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--client-id", "556"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,

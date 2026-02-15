@@ -46,17 +46,22 @@ class ChartManager:
             
         # 4. Fetch & Update if Stale
         if stale and self.provider:
-            # Smart Lookback: If we have data, only request Delta
-            fetch_lookback = lookback
-            if bars:
-                fetch_lookback = self._get_smart_duration(bars[-1].timestamp)
-            
-            new_bars = self._fetch_and_merge(ticker, timeframe, fetch_lookback, bars)
-            
-            # Save if we got data
-            if new_bars:
-                save_bars(chart_path, new_bars)
-                bars = new_bars
+            try:
+                # Smart Lookback: If we have data, only request Delta
+                fetch_lookback = lookback
+                if bars:
+                    fetch_lookback = self._get_smart_duration(bars[-1].timestamp)
+                
+                new_bars = self._fetch_and_merge(ticker, timeframe, fetch_lookback, bars)
+                
+                # Save if we got data
+                if new_bars:
+                    save_bars(chart_path, new_bars)
+                    bars = new_bars
+            except Exception as e:
+                # Graceful degradation: print warning and keep cached bars
+                print(f"  [ChartManager] Warning: Could not update {ticker} ({timeframe}): {e}")
+                # We return whatever we have (or empty list)
         
         return bars
 

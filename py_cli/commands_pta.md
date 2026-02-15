@@ -10,11 +10,15 @@ Modus-Wahl.
 
 ## Monitoring
 
-### `status`
-Liefert den aktuellen **Live-Snapshot** des Portfolios direkt vom Broker.
-- **Payload**: `py_portfolio_state.objects.PortfolioSnapshot` als `dict`.
-- **Inhalt**: Enthält `cash`, `equity`, `positions[]` und **alle** aktuell beim Broker offenen `active_orders[]`.
-- **Zweck**: Primäre Datenquelle für den Bot, um den Ist-Zustand (inklusive hängender Orders) zu prüfen.
+### `status [json_filter]`
+Liefert den aktuellen **Live-Snapshot** des Portfolios. Akzeptiert optional ein JSON-Objekt zur Filterung (Token-Ersparnis).
+
+**Beispiel (Gefiltert):**
+`status '{"ticker": "AAPL"}'`
+
+- **Payload**: `py_portfolio_state.objects.PortfolioSnapshot`.
+- **Inhalt**: Enthält `cash`, `equity` und nur die `positions[]` und `active_orders[]` des Typs **AAPL**.
+- **Zweck**: Minimierung des Payloads bei Verifizierungs-Checks (z. B. nach einer Löschung).
 
 ## Trading (Execution)
 
@@ -93,3 +97,15 @@ Listenansicht aller offenen Positionen.
 ### `close <trade_id> [--confirm]`
 Schließt einen Trade explizit. 
 - **Sicherheits-Check**: In PTA Mode ist `--confirm` oder `--force` zwingend erforderlich, sofern nicht `confirm_all` im Kontext gesetzt ist.
+
+### `analyze [live|history] [json_payload]`
+Führt Analysen auf Live- oder Historiendaten aus.
+
+#### 1. LIVE Analysis
+Analysiert den aktuellen Stand (Risk, Heat, Alerts).
+`analyze live '{"ticker": "AAPL"}'` (optionaler Ticker-Filter)
+
+- **Payload**: `AnalyticsReport` (DTO). Enthält berechnete Risiko-Metriken und Tabellen-Daten.
+
+#### 2. HISTORY Analysis
+(In Arbeit) Analysiert Zeitreihen.

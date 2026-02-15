@@ -15,6 +15,7 @@ import py_cli.handlers_execution
 import py_cli.handlers_user_mode
 import py_cli.handlers_trade
 import py_cli.handlers_history
+import py_cli.handlers_analytics
 
 def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")

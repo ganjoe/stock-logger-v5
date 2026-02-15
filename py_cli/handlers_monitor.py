@@ -20,20 +20,37 @@ class StatusCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         try:
-            # 1. Get Live Broker & Manager
+            # 1. Parse JSON Filter (Optional)
+            ticker_filter = None
+            if args:
+                raw_json = " ".join(args)
+                try:
+                    payload = json.loads(raw_json)
+                    ticker_filter = payload.get("ticker")
+                except json.JSONDecodeError:
+                    # If not JSON, maybe it's a raw ticker string? 
+                    # For Bot-First/JSON policy, we should error or try to be smart.
+                    # Let's be smart for human use: if it's one word, treat as ticker.
+                    if len(args) == 1 and not args[0].startswith("{"):
+                        ticker_filter = args[0]
+                    else:
+                        return CommandResponse(False, message="Invalid JSON filter format.", error_code="JSON_ERROR")
+
+            # 2. Get Live Broker & Manager
             if not services.has_broker():
                 return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
                 
             broker = services.get_broker()
             manager = LivePortfolioManager(broker)
             
-            # 2. Fetch Snapshot
+            # 3. Fetch Snapshot
             print("  [CLI] Fetching Live Snapshot...")
-            snap = manager.snapshot()
+            snap = manager.snapshot(ticker=ticker_filter)
             
-            # 3. Dump Data
+            # 4. Dump Data
             data_dict = snap.to_dict()
-            return CommandResponse(True, payload=data_dict, message="Live Portfolio Snapshot")
+            msg = f"Live Snapshot (Filtered: {ticker_filter})" if ticker_filter else "Live Portfolio Snapshot"
+            return CommandResponse(True, payload=data_dict, message=msg)
             
         except Exception as e:
             return CommandResponse(False, payload=None, message=f"Error: {e}", error_code="FETCH_ERROR")

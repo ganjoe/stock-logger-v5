@@ -48,6 +48,22 @@ class PortfolioSnapshot:
     # Metadata
     source: str = "LIVE" # or "HISTORY"
 
+    @property
+    def positions_df(self):
+        """Returns positions as a Pandas DataFrame."""
+        import pandas as pd
+        if not self.positions:
+            return pd.DataFrame(columns=["ticker", "quantity", "avg_price", "current_price", "market_value", "unrealized_pnl"])
+        return pd.DataFrame([p.to_dict() for p in self.positions])
+
+    @property
+    def active_orders_df(self):
+        """Returns active orders as a Pandas DataFrame."""
+        import pandas as pd
+        if not self.active_orders:
+            return pd.DataFrame(columns=["ticker", "order_id", "action", "type", "qty", "price", "trade_id"])
+        return pd.DataFrame([o.to_dict() for o in self.active_orders])
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "timestamp": self.timestamp.isoformat(),

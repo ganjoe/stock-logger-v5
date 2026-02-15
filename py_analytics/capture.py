@@ -11,58 +11,54 @@ class SnapshotAnalyzer:
     """ F-ANA-030: The Loupe. Analyzes a single point in time. """
     
     def analyze(self, snapshot: PortfolioSnapshot) -> AnalyticsReport:
+        import pandas as pd
+        
+        # 1. Get DataFrames
+        df_pos = snapshot.positions_df
+        df_ord = snapshot.active_orders_df
+        
+        # 2. Extract Stop Prices from Orders
+        # Find all stop-like orders
+        stop_types = ["STP", "TRAIL", "STP LMT"]
+        df_stops = df_ord[df_ord["type"].isin(stop_types)]
+        
+        # Group by ticker, get max price (most conservative stop for longs)
+        # Note: If no stops exist, this results in an empty Series
+        ticker_stops = df_stops.groupby("ticker")["price"].max().to_dict()
+        
+        # 3. Process Positions
         positions_rows: List[PositionRow] = []
         total_open_risk = 0.0
         
-        # 1. Analyze Positions
-        for pos in snapshot.positions:
-            # Find Stop Price from Active Orders (if any)
-            # Logic: Look for STP order with matching ticker.
-            stop_price = None
-            
-            # Filter active orders for this ticker
-            # Note: snapshot.active_orders contains PortfolioOrder objects
-            ticker_orders = [o for o in snapshot.active_orders if o.ticker == pos.ticker]
-            
-            # Find Stop Order
-            for o in ticker_orders:
-                if o.type in ["STP", "TRAIL", "STP LMT"]:
-                    # Use auxPrice (trigger) if available, or price field?
-                    # PortfolioOrder has 'price'. For STP, this is usually the trigger.
-                    # Use the highest stop for Longs?
-                    if stop_price is None or o.price > stop_price:
-                        stop_price = o.price
+        for _, pos_row in df_pos.iterrows():
+            ticker = pos_row["ticker"]
+            stop_price = ticker_stops.get(ticker)
             
             # Calculate Risk
-            r_per_share = 0.0
             risk_exposure = 0.0
-            
+            r_per_share = 0.0
             if stop_price is not None:
-                # Use Math Module
-                risk_exposure = risk_math.calculate_risk_exposure(pos.quantity, pos.current_price, stop_price)
-                r_per_share = core_math.calculate_r_multiple(pos.avg_price, stop_price, pos.current_price)
+                risk_exposure = risk_math.calculate_risk_exposure(pos_row["quantity"], pos_row["current_price"], stop_price)
+                r_per_share = core_math.calculate_r_multiple(pos_row["avg_price"], stop_price, pos_row["current_price"])
             
-            # Calculate Risk % of Equity
             risk_pct = risk_math.calculate_total_risk_percent(risk_exposure, snapshot.equity)
-                
-            row = PositionRow(
-                ticker=pos.ticker,
-                qty=pos.quantity,
-                entry_price=pos.avg_price,
-                current_price=pos.current_price,
-                market_val=pos.market_value,
-                unrealized_pnl=pos.unrealized_pnl,
+            
+            positions_rows.append(PositionRow(
+                ticker=ticker,
+                qty=pos_row["quantity"],
+                entry_price=pos_row["avg_price"],
+                current_price=pos_row["current_price"],
+                market_val=pos_row["market_value"],
+                unrealized_pnl=pos_row["unrealized_pnl"],
                 stop_price=stop_price,
                 r_per_share=r_per_share,
                 risk_exposure=risk_exposure,
                 risk_pct=risk_pct,
-                heat_warning=(risk_pct > 2.5) # Example threshold
-            )
-            
-            positions_rows.append(row)
+                heat_warning=(risk_pct > 2.5)
+            ))
             total_open_risk += risk_exposure
             
-        # 2. Build Summary
+        # 4. Build Summary
         heat_index = 0.0
         if snapshot.equity > 0:
             heat_index = risk_math.calculate_heat([p.risk_exposure for p in positions_rows], snapshot.equity)
@@ -73,7 +69,7 @@ class SnapshotAnalyzer:
             cash=snapshot.cash,
             open_risk_total=total_open_risk,
             heat_index=heat_index,
-            daily_pnl=0.0 # Snapshot doesn't know prev day. Needs series context.
+            daily_pnl=0.0
         )
         
         return AnalyticsReport(
