@@ -7,3 +7,6 @@ venv/
 *.json
 # Keep JSON files in data/trades if they are part of the core data
 !data/trades/**/*.json
+# Credentials & Secrets
+secrets/
+.env

@@ -1,9 +1,10 @@
 # py_captrader/services.py
-from typing import Optional
+from typing import Optional, Any
 from py_tradeobject.interface import IBrokerAdapter
 
 # Globale Instanz des aktiven Brokers (Service Locator)
 _BROKER_INSTANCE: Optional[IBrokerAdapter] = None
+_CLI_INSTANCE: Optional[Any] = None
 
 def register_broker(broker: IBrokerAdapter):
     """
@@ -26,3 +27,14 @@ def get_broker() -> IBrokerAdapter:
 def has_broker() -> bool:
     """Prüft, ob ein Broker verfügbar ist."""
     return _BROKER_INSTANCE is not None
+
+def register_cli(cli: Any):
+    """Registriert den aktiven CLI-Controller."""
+    global _CLI_INSTANCE
+    _CLI_INSTANCE = cli
+
+def get_cli() -> Any:
+    """Liefert den registrierten CLI-Controller."""
+    if _CLI_INSTANCE is None:
+        raise RuntimeError("CLI Controller not registered.")
+    return _CLI_INSTANCE

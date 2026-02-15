@@ -16,6 +16,7 @@ import py_cli.handlers_user_mode
 import py_cli.handlers_trade
 import py_cli.handlers_history
 import py_cli.handlers_analytics
+import py_cli.handlers_pta
 
 def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")
@@ -26,9 +27,11 @@ def main():
     args = parser.parse_args()
 
     # 1. Setup Context
+    from py_captrader import services
     mode = CLIMode.BOT if args.mode == "bot" else CLIMode.HUMAN
     controller = CLIController(mode=mode)
     controller.context.confirm_all = args.confirm_all
+    services.register_cli(controller)
 
     # 2. Execution
     # If arguments are provided, execute single command and exit
