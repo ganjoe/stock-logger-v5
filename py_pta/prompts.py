@@ -18,6 +18,7 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
 1. MONITORING (Um den Status für die Exekution zu prüfen):
    - 'status': Liefert Snapshot (Account, Positionen, offene Orders).
    - 'trades': Listet offene Trades mit IDs (erforderlich für Aktionen).
+   - 'quote SYMBOL': Liefert den aktuellen Marktpreis (z.B. 'quote NVO').
 
 2. TRADING EXEKUTION (Nur via JSON-Payload):
    - 'trade {"action": "ENTER", "ticker": "SYMBOL", "quantity": X, "limit_price": Y, "stop_loss": Z}': Position eröffnen.

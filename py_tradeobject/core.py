@@ -18,6 +18,46 @@ from py_market_data import ChartManager
 
 class TradeObject:
     @classmethod
+    def get_or_create(cls, ticker: str, broker: IBrokerAdapter, storage_dir: str = "./data/trades") -> 'TradeObject':
+        """
+        [NEW] Factory: Finds latest active trade for ticker OR creates new one.
+        Used for 'quote' command to leverage existing state or start a watchlist item.
+        """
+        ticker = ticker.upper()
+        ticker_dir = os.path.join(storage_dir, ticker)
+        
+        latest_file = None
+        latest_time = 0
+        
+        if os.path.exists(ticker_dir):
+            for f in os.listdir(ticker_dir):
+                if f.endswith(".json"):
+                    fp = os.path.join(ticker_dir, f)
+                    mtime = os.path.getmtime(fp)
+                    if mtime > latest_time:
+                        latest_time = mtime
+                        latest_file = f
+        
+        if latest_file:
+            # Load existing
+            # We assume filename is ID.json
+            trade_id = latest_file.replace(".json", "")
+            try:
+                obj = cls(ticker=ticker, id=trade_id, storage_dir=storage_dir)
+                obj.set_broker(broker)
+                return obj
+            except Exception:
+                # Fallback if load fails
+                pass
+                
+        # Create New (Watchlist/Planned)
+        obj = cls(ticker=ticker, storage_dir=storage_dir)
+        obj.set_broker(broker)
+        # Ensure it is persisted immediately as requested
+        obj.save()
+        return obj
+
+    @classmethod
     def from_dict(cls, data: Dict[str, Any], storage_dir: str = "./data/trades") -> 'TradeObject':
         """
         F-TO-021: Reconstructs a TradeObject from a dictionary (TradeState).
@@ -334,6 +374,15 @@ class TradeObject:
         self._state.active_orders[close_oid] = "EXIT"
         self.save()
         return close_oid
+
+    def get_quote(self) -> float:
+        """
+        [NEW] Fetches current price via Broker using established connection.
+        Wraps broker.get_current_price().
+        """
+        if not self.broker:
+            raise RuntimeError("Broker missing")
+        return self.broker.get_current_price(self.ticker)
 
     def refresh(self, current_price: float):
         """

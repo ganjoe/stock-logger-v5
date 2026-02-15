@@ -10,7 +10,8 @@
       "quantity": 100,
       "price": 137.99927033335058,
       "commission": 1.0,
-      "slippage": 0.0
+      "slippage": 0.0,
+      "order_id": null
     },
     {
       "id": "3ddf09fe",
@@ -19,9 +20,11 @@
       "quantity": -100,
       "price": 158.69916088335316,
       "commission": 1.0,
-      "slippage": 0.1
+      "slippage": 0.1,
+      "order_id": null
     }
   ],
+  "order_history": [],
   "active_orders": {},
   "initial_stop_price": 124.19934330001553,
   "current_stop_price": null,

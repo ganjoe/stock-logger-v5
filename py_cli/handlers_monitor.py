@@ -78,6 +78,45 @@ class TradesCommand(ICommand):
             
         return CommandResponse(True, "\n".join(lines), {"trades": trades})
 
+class QuoteCommand(ICommand):
+    name = "quote"
+    description = "Fetches the current market price for a symbol."
+    syntax = "quote SYMBOL"
+
+    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
+        if not args:
+            return CommandResponse(False, message="Usage: quote SYMBOL", error_code="INVALID_ARGS")
+            
+        ticker = args[0].upper()
+        
+        if not services.has_broker():
+            return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
+            
+        try:
+            broker = services.get_broker()
+            print(f"  [CLI] Fetching Quote for {ticker} (via Persistent TradeObject)...")
+            
+            # Use TradeObject factory
+            from py_tradeobject.core import TradeObject
+            
+            # Retrieves latest active trade OR creates new PLANNED one (persisted)
+            trade = TradeObject.get_or_create(ticker, broker)
+            
+            # Fetch Price (and update internal state if we map it later)
+            price = trade.get_quote()
+            
+            # Optionally save again if get_quote modified internal state (it currently doesn't, but good practice)
+            trade.save()
+            
+            return CommandResponse(
+                True, 
+                message=f"Quote {ticker}: {price}", 
+                payload={"ticker": ticker, "price": price}
+            )
+        except Exception as e:
+            return CommandResponse(False, message=f"Quote Error: {str(e)}", error_code="QUOTE_ERROR")
+
 # Registration
 registry.register(StatusCommand())
 registry.register(TradesCommand())
+registry.register(QuoteCommand())

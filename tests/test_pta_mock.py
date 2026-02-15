@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 from py_captrader import services
 from py_cli.controller import CLIController, CLIMode
 from py_cli.models import CLIContext
@@ -100,4 +101,6 @@ def run_pta_test(message: str):
 
 if __name__ == "__main__":
     msg = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "lösche apple orders"
-    run_pta_test(msg)
+    # TEST: Quote
+    print("--- [TEST CASE: QUOTE] ---")
+    run_pta_test("Wie ist der Preis von AAPL?")
