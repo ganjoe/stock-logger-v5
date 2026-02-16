@@ -162,7 +162,7 @@ class TradeCommand(ICommand):
         trade.set_broker(broker)
         
         # Need current price for refresh
-        price = broker.get_current_price(ticker)
+        price = trade.get_quote() # F-TO-NEW: Use interface wrapper
         trade.refresh(current_price=price)
         
         return CommandResponse(

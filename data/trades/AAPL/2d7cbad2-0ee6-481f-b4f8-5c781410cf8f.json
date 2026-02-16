@@ -1,0 +1,25 @@
+{
+  "id": "2d7cbad2-0ee6-481f-b4f8-5c781410cf8f",
+  "ticker": "AAPL",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "tx_AAPL_1771277800",
+      "timestamp": "2026-02-16T22:36:40.966720",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 150.0,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {
+    "oid_AAPL_entry": "ENTRY"
+  },
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

@@ -1,0 +1,54 @@
+{
+  "id": "4785766a-fd76-431e-bfc0-3b3b67861a39",
+  "ticker": "NFLX",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "915c29ca-3367-44c1-a5c5-9bc9d6348133",
+      "timestamp": "2025-03-20T00:00:00",
+      "type": "ENTRY",
+      "quantity": 18.0,
+      "price": 535.9284648146405,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-03-20T00:00:00",
+      "order_id": "oid_NFLX_11",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 18.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-03-20T00:00:00",
+      "order_id": "oid_NFLX_11_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -18.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 509.13204157390845,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_NFLX_11_stop": "STOP"
+  },
+  "initial_stop_price": 509.13204157390845,
+  "current_stop_price": 509.13204157390845,
+  "entry_date": "2025-03-20T00:00:00",
+  "notes": ""
+}

@@ -1,0 +1,54 @@
+{
+  "id": "edca15a7-d1c5-4129-9a0f-3a782b60f663",
+  "ticker": "TSLA",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "560588d3-756b-41bf-8be3-199a05e54f27",
+      "timestamp": "2025-06-18T00:00:00",
+      "type": "ENTRY",
+      "quantity": 59.0,
+      "price": 167.62963895983435,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-06-18T00:00:00",
+      "order_id": "oid_TSLA_31",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 59.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-06-18T00:00:00",
+      "order_id": "oid_TSLA_31_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -59.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 159.24815701184264,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_TSLA_31_stop": "STOP"
+  },
+  "initial_stop_price": 159.24815701184264,
+  "current_stop_price": 159.24815701184264,
+  "entry_date": "2025-06-18T00:00:00",
+  "notes": ""
+}

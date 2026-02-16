@@ -1,0 +1,54 @@
+{
+  "id": "0869bca3-ed79-445b-9ec2-914994e508da",
+  "ticker": "META",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "7eb15e1d-7776-4478-9d66-5e2b868bac3f",
+      "timestamp": "2025-04-07T00:00:00",
+      "type": "ENTRY",
+      "quantity": 17.0,
+      "price": 584.4584368281892,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-04-07T00:00:00",
+      "order_id": "oid_META_13",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 17.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-04-07T00:00:00",
+      "order_id": "oid_META_13_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -17.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 555.2355149867797,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_META_13_stop": "STOP"
+  },
+  "initial_stop_price": 555.2355149867797,
+  "current_stop_price": 555.2355149867797,
+  "entry_date": "2025-04-07T00:00:00",
+  "notes": ""
+}

@@ -1,0 +1,74 @@
+{
+  "id": "cd2dc5be-cdf6-4187-9777-7231b619b4dd",
+  "ticker": "AMZN",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "80ee4efb-a74b-43ca-bd1f-9f8024c6c6ca",
+      "timestamp": "2025-01-07T00:00:00",
+      "type": "ENTRY",
+      "quantity": 26.0,
+      "price": 383.278670525891,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "0805a00b-08f4-41fb-b9e0-a0127f57e79d",
+      "timestamp": "2025-01-09T00:00:00",
+      "type": "EXIT",
+      "quantity": -13,
+      "price": 377.0632678958338,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "db12cffd-5aef-4fd0-a02c-f81d99dd26ae",
+      "timestamp": "2025-01-14T00:00:00",
+      "type": "EXIT",
+      "quantity": -6,
+      "price": 395.26527978753325,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-01-07T00:00:00",
+      "order_id": "oid_AMZN_1",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 26.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-01-07T00:00:00",
+      "order_id": "oid_AMZN_1_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -26.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 364.11473699959646,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_AMZN_1_stop": "STOP"
+  },
+  "initial_stop_price": 364.11473699959646,
+  "current_stop_price": 364.11473699959646,
+  "entry_date": "2025-01-07T00:00:00",
+  "notes": ""
+}

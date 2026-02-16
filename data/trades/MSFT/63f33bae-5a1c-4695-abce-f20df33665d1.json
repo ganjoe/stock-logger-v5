@@ -1,0 +1,54 @@
+{
+  "id": "63f33bae-5a1c-4695-abce-f20df33665d1",
+  "ticker": "MSFT",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "92f0c310-a399-46df-a5a5-2d1a73fd81b7",
+      "timestamp": "2025-06-27T00:00:00",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 965.9894267910984,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-06-27T00:00:00",
+      "order_id": "oid_MSFT_35",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 10.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-06-27T00:00:00",
+      "order_id": "oid_MSFT_35_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -10.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 917.6899554515434,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_MSFT_35_stop": "STOP"
+  },
+  "initial_stop_price": 917.6899554515434,
+  "current_stop_price": 917.6899554515434,
+  "entry_date": "2025-06-27T00:00:00",
+  "notes": ""
+}

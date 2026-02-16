@@ -1,0 +1,54 @@
+{
+  "id": "b6e92118-7de5-48c9-a4f2-ad21dcc89a07",
+  "ticker": "SPY",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "bf626c12-8911-48c0-b88f-1520014a8992",
+      "timestamp": "2025-06-23T00:00:00",
+      "type": "ENTRY",
+      "quantity": 24.0,
+      "price": 405.0652200211706,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-06-23T00:00:00",
+      "order_id": "oid_SPY_33",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 24.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-06-23T00:00:00",
+      "order_id": "oid_SPY_33_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -24.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 384.81195902011206,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_SPY_33_stop": "STOP"
+  },
+  "initial_stop_price": 384.81195902011206,
+  "current_stop_price": 384.81195902011206,
+  "entry_date": "2025-06-23T00:00:00",
+  "notes": ""
+}

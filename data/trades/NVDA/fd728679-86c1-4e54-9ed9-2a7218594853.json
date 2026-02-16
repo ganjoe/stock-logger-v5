@@ -1,0 +1,25 @@
+{
+  "id": "fd728679-86c1-4e54-9ed9-2a7218594853",
+  "ticker": "NVDA",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "tx_NVDA_1771277800",
+      "timestamp": "2026-02-16T22:36:40.968011",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 450.0,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {
+    "oid_NVDA_entry": "ENTRY"
+  },
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

@@ -7,7 +7,10 @@ from py_analytics.capture import SnapshotAnalyzer
 from py_analytics.series import SeriesAnalyzer
 from py_portfolio_state.live import LivePortfolioManager
 from py_portfolio_state.history import HistoryFactory
+from py_tradeobject.core import TradeObject
 from py_captrader import services
+from py_market_data.market_clock import MarketClock
+from py_riskmanager.minervini import MinerviniSizer, TradeParameters, SizingContext
 
 class AnalyzeCommand(ICommand):
     name = "analyze"
@@ -105,6 +108,94 @@ class BulkFetchCommand(ICommand):
         except Exception as e:
             return CommandResponse(False, message=f"Failed to start bulk fetch: {e}")
 
+class MarketClockCommand(ICommand):
+    name = "market_clock"
+    description = "Returns current market status and time to next event."
+    syntax = "market_clock"
+
+    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
+        status = MarketClock.get_status()
+        return CommandResponse(True, payload=status, message=f"Market Status: {status['status']}")
+
+class WizardCommand(ICommand):
+    name = "wizard"
+    description = "Calculates Minervini Position Sizing based on parameters."
+    syntax = "wizard <json_payload>"
+
+    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
+        if not args:
+            return CommandResponse(False, "Usage: wizard <json_payload>", error_code="INVALID_ARGS")
+
+        try:
+            payload = json.loads(" ".join(args))
+        except json.JSONDecodeError:
+             return CommandResponse(False, "Invalid JSON payload.", error_code="JSON_ERROR")
+             
+        # Extraction
+        symbol = payload.get("symbol", "UNKNOWN")
+        entry = payload.get("entry", 0.0)
+        stop = payload.get("stop", 0.0)
+        risk_pct = payload.get("risk_pct", 1.0)
+        max_pos_pct = payload.get("max_pos_pct", 25.0)
+        
+        # Auto-fetch Entry Price if missing (0.0) and Broker available
+        if entry <= 0.0:
+            if services.has_broker():
+                try:
+                    broker = services.get_broker()
+                    # User Request: Use TradeObject interface for price query
+                    # And ensure trade is created/persisted! (get_or_create)
+                    temp_trade = TradeObject.get_or_create(ticker=symbol, broker=broker)
+                    fetched_price = temp_trade.get_quote()
+                    
+                    if fetched_price > 0:
+                        entry = fetched_price
+                    else:
+                        return CommandResponse(False, f"Fetched price for {symbol} is invalid/zero.", error_code="PRICE_ERROR")
+                except Exception as e:
+                    return CommandResponse(False, f"Could not fetch live price for {symbol}: {e}", error_code="PRICE_FETCH_FAILED")
+            else:
+                return CommandResponse(False, "Entry price is zero and no broker connection to fetch it.", error_code="MISSING_DATA")
+
+        # Context (Equity/Cash)
+        equity = payload.get("equity_override")
+        cash = payload.get("exposure_override") # User map this to Buying Power/Cash? Let's assume available cash.
+        
+        # If no override, try to get from Broker
+        if equity is None or cash is None:
+            if services.has_broker():
+                broker = services.get_broker()
+                acct = broker.accountSummary()
+                # broker.accountSummary returns list of AccountValue or similar? 
+                # Actually ib_insync accountSummary returns list of TagValue.
+                # Simplify: Use LivePortfolioManager snapshot if possible or just broker values.
+                # LivePortfolioManager uses reqAccountUpdates usually.
+                # Let's try manager.snapshot().
+                try:
+                    manager = LivePortfolioManager(broker)
+                    snap = manager.snapshot()
+                    if equity is None: equity = snap.equity
+                    if cash is None: cash = snap.cash
+                except:
+                    pass
+            
+            # Fallback if still None
+            if equity is None: equity = 100000.0 # Default fallback? Or Error?
+            if cash is None: cash = 100000.0
+            
+        # Sizing
+        sizer = MinerviniSizer()
+        ctx_obj = SizingContext(total_equity=float(equity), available_cash=float(cash), current_exposure=0.0)
+        params = TradeParameters(symbol=symbol, entry_price=float(entry), stop_loss=float(stop), risk_pct=float(risk_pct), max_pos_pct=float(max_pos_pct))
+        
+        result = sizer.calculate_sizing(ctx_obj, params)
+        
+        # Convert dataclass to dict for JSON response
+        from dataclasses import asdict
+        return CommandResponse(True, payload=asdict(result), message=f"Wizard Result for {symbol}")
+
 # Register
 registry.register(AnalyzeCommand())
 registry.register(BulkFetchCommand())
+registry.register(MarketClockCommand())
+registry.register(WizardCommand())

@@ -1,0 +1,54 @@
+{
+  "id": "4de29353-78f4-4a8b-96fc-05c2f5a9d510",
+  "ticker": "AAPL",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "43c3ce09-8f6a-406f-9998-3e8e146abb98",
+      "timestamp": "2025-05-16T00:00:00",
+      "type": "ENTRY",
+      "quantity": 15.0,
+      "price": 660.0180095195469,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-05-16T00:00:00",
+      "order_id": "oid_AAPL_23",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 15.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-05-16T00:00:00",
+      "order_id": "oid_AAPL_23_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -15.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 627.0171090435696,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_AAPL_23_stop": "STOP"
+  },
+  "initial_stop_price": 627.0171090435696,
+  "current_stop_price": 627.0171090435696,
+  "entry_date": "2025-05-16T00:00:00",
+  "notes": ""
+}

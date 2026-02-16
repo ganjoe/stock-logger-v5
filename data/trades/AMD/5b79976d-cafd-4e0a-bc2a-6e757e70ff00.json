@@ -1,0 +1,54 @@
+{
+  "id": "5b79976d-cafd-4e0a-bc2a-6e757e70ff00",
+  "ticker": "AMD",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "50e71b97-0a4c-4a7d-9294-3f3f46bcc7b5",
+      "timestamp": "2025-01-21T00:00:00",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 982.6735997317603,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-01-21T00:00:00",
+      "order_id": "oid_AMD_5",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 10.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-01-21T00:00:00",
+      "order_id": "oid_AMD_5_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -10.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 933.5399197451723,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_AMD_5_stop": "STOP"
+  },
+  "initial_stop_price": 933.5399197451723,
+  "current_stop_price": 933.5399197451723,
+  "entry_date": "2025-01-21T00:00:00",
+  "notes": ""
+}

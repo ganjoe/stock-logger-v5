@@ -1,0 +1,78 @@
+{
+  "id": "c453507a-2ba6-43cd-9bf0-8c4f58984f8f",
+  "ticker": "AAPL",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "c32d7297-f387-4026-8b13-dd50f7e8ac52",
+      "timestamp": "2025-07-07T00:00:00",
+      "type": "ENTRY",
+      "quantity": -19.0,
+      "price": 501.4788478109288,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "de8c93da-05be-430b-bed7-caa2d8b5b2e0",
+      "timestamp": "2025-07-15T00:00:00",
+      "type": "EXIT",
+      "quantity": 9,
+      "price": 482.67377717773746,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-07-07T00:00:00",
+      "order_id": "oid_AAPL_37",
+      "action": "SELL",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": -19.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-07-07T00:00:00",
+      "order_id": "oid_AAPL_37_stop",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": 19.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 526.5527902014753,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-07-10T00:00:00",
+      "order_id": "oid_AAPL_39_adj",
+      "action": "Adjust",
+      "status": "SUBMITTED",
+      "message": "Trail Stop",
+      "quantity": 0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 537.0838460055048,
+      "trigger_price": null,
+      "note": "Trail",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_AAPL_37_stop": "STOP"
+  },
+  "initial_stop_price": 526.5527902014753,
+  "current_stop_price": 537.0838460055048,
+  "entry_date": "2025-07-07T00:00:00",
+  "notes": ""
+}

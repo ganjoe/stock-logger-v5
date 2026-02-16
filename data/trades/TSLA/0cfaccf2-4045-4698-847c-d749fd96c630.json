@@ -1,0 +1,25 @@
+{
+  "id": "0cfaccf2-4045-4698-847c-d749fd96c630",
+  "ticker": "TSLA",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "tx_TSLA_1771277800",
+      "timestamp": "2026-02-16T22:36:40.967440",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 200.0,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {
+    "oid_TSLA_entry": "ENTRY"
+  },
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

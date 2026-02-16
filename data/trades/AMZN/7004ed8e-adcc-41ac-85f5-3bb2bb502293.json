@@ -1,0 +1,54 @@
+{
+  "id": "7004ed8e-adcc-41ac-85f5-3bb2bb502293",
+  "ticker": "AMZN",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "760b757a-b8f4-4699-bb0e-c82c450506fd",
+      "timestamp": "2025-08-18T00:00:00",
+      "type": "ENTRY",
+      "quantity": -12.0,
+      "price": 811.9297357073439,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-08-18T00:00:00",
+      "order_id": "oid_AMZN_48",
+      "action": "SELL",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": -12.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-08-18T00:00:00",
+      "order_id": "oid_AMZN_48_stop",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": 12.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 852.5262224927111,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_AMZN_48_stop": "STOP"
+  },
+  "initial_stop_price": 852.5262224927111,
+  "current_stop_price": 852.5262224927111,
+  "entry_date": "2025-08-18T00:00:00",
+  "notes": ""
+}

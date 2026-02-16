@@ -1,0 +1,12 @@
+{
+  "id": "da76287a-895a-48ff-8cf4-e11bacca711a",
+  "ticker": "AAPL",
+  "status": "PLANNED",
+  "transactions": [],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

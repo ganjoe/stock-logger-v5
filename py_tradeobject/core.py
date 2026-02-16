@@ -58,6 +58,18 @@ class TradeObject:
         return obj
 
     @classmethod
+    def create_new(cls, ticker: str, broker: Optional[IBrokerAdapter] = None, storage_dir: str = "./data/trades") -> 'TradeObject':
+        """
+        [NEW] Factory: Explicitly creates a NEW TradeObject (with fresh UUID).
+        Does NOT check for existing active trades.
+        """
+        obj = cls(ticker=ticker, storage_dir=storage_dir)
+        if broker:
+            obj.set_broker(broker)
+        obj.save()
+        return obj
+
+    @classmethod
     def from_dict(cls, data: Dict[str, Any], storage_dir: str = "./data/trades") -> 'TradeObject':
         """
         F-TO-021: Reconstructs a TradeObject from a dictionary (TradeState).

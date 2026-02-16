@@ -1,0 +1,54 @@
+{
+  "id": "21cc2d33-2e40-4c4e-be3a-ef77e15f19b5",
+  "ticker": "GOOGL",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "c5c823b1-dfc5-4d01-a1f0-6b20038dd178",
+      "timestamp": "2025-04-10T00:00:00",
+      "type": "ENTRY",
+      "quantity": 14.0,
+      "price": 713.0120947329874,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-04-10T00:00:00",
+      "order_id": "oid_GOOGL_14",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 14.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-04-10T00:00:00",
+      "order_id": "oid_GOOGL_14_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -14.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 677.361489996338,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_GOOGL_14_stop": "STOP"
+  },
+  "initial_stop_price": 677.361489996338,
+  "current_stop_price": 677.361489996338,
+  "entry_date": "2025-04-10T00:00:00",
+  "notes": ""
+}

@@ -75,3 +75,22 @@ Die Market-Order für AAPL wurde als Limit-Order (Preis: 500.0 zur Sicherstellun
 2026-02-16 17:53:04 - [PTA_RESPONSE] Die verfügbaren Tools liefern keine Informationen zu einer "User ID". Ich habe nur Zugriff auf `trade_id` und `broker_order_id` zur Exekution.
 
 Für Informationen außerhalb der Handelsausführung wende dich bitte an das System-Management oder den STM.
+2026-02-16 23:07:59 - [USER] kaufe 5 aapl market
+2026-02-16 23:08:03 - [PTA_THOUGHT] Calling Function: execute_cli_command with args: <proto.marshal.collections.maps.MapComposite object at 0x11514da90>
+2026-02-16 23:08:03 - [SYSTEM_EXEC] status
+2026-02-16 23:08:03 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "No Active Broker Connection.", "error_code": "NO_CONNECTION"}
+2026-02-16 23:08:04 - [PTA_THOUGHT] Calling Function: execute_cli_command with args: <proto.marshal.collections.maps.MapComposite object at 0x1151634d0>
+2026-02-16 23:08:04 - [SYSTEM_EXEC] connect
+2026-02-16 23:08:04 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "Connection failed: module 'py_captrader.session' has no attribute 'is_connected'", "error_code": "CONNECTION_ERROR"}
+2026-02-16 23:08:05 - [PTA_THOUGHT] Calling Function: execute_cli_command with args: <proto.marshal.collections.maps.MapComposite object at 0x1146e8770>
+2026-02-16 23:08:05 - [SYSTEM_EXEC] connect 127.0.0.1 4001
+2026-02-16 23:08:05 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "Connection failed: module 'py_captrader.session' has no attribute 'is_connected'", "error_code": "CONNECTION_ERROR"}
+2026-02-16 23:08:08 - [PTA_THOUGHT] Calling Function: execute_cli_command with args: <proto.marshal.collections.maps.MapComposite object at 0x115157ce0>
+2026-02-16 23:08:08 - [SYSTEM_EXEC] status
+2026-02-16 23:08:08 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "No Active Broker Connection.", "error_code": "NO_CONNECTION"}
+2026-02-16 23:08:10 - [PTA_RESPONSE] Verbindung zu Paper (4002) und Live (4001) fehlgeschlagen. Bitte IP und Port für die manuelle Verbindung angeben.
+2026-02-16 23:10:33 - [USER] 127.0.0.1 4001
+2026-02-16 23:10:37 - [PTA_THOUGHT] Calling Function: execute_cli_command with args: <proto.marshal.collections.maps.MapComposite object at 0x1150f5c50>
+2026-02-16 23:10:37 - [SYSTEM_EXEC] connect 127.0.0.1 4001
+2026-02-16 23:10:37 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "Connection failed: module 'py_captrader.session' has no attribute 'is_connected'", "error_code": "CONNECTION_ERROR"}
+2026-02-16 23:10:38 - [PTA_RESPONSE] Es besteht weiterhin ein technischer Fehler bei der Verbindung ("CONNECTION_ERROR"). Die Ausführung ist aktuell nicht möglich. Bitte prüfe, ob die Trader Workstation (TWS) oder das IB Gateway gestartet und der API-Zugriff erlaubt ist.

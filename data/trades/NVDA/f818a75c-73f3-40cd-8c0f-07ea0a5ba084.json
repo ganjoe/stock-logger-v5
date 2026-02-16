@@ -1,0 +1,54 @@
+{
+  "id": "f818a75c-73f3-40cd-8c0f-07ea0a5ba084",
+  "ticker": "NVDA",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "24f3d001-5ef2-4434-888b-610b5de9476b",
+      "timestamp": "2025-05-08T00:00:00",
+      "type": "ENTRY",
+      "quantity": 67.0,
+      "price": 147.49665900393114,
+      "commission": 1.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2025-05-08T00:00:00",
+      "order_id": "oid_NVDA_21",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Initial Entry",
+      "quantity": 67.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Generated Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-05-08T00:00:00",
+      "order_id": "oid_NVDA_21_stop",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -67.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 140.12182605373457,
+      "trigger_price": null,
+      "note": "Protection",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "oid_NVDA_21_stop": "STOP"
+  },
+  "initial_stop_price": 140.12182605373457,
+  "current_stop_price": 140.12182605373457,
+  "entry_date": "2025-05-08T00:00:00",
+  "notes": ""
+}
