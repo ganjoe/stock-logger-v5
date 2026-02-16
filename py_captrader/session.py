@@ -20,6 +20,11 @@ def get_active_client() -> IBKRClient:
         
     return _ACTIVE_CLIENT
 
+def is_connected() -> bool:
+    """Checks if global client is active and connected."""
+    global _ACTIVE_CLIENT
+    return _ACTIVE_CLIENT is not None and _ACTIVE_CLIENT.is_connected()
+
 def connect(host: str, port: int, client_id: int):
     """
     Stellt die globale Verbindung her.

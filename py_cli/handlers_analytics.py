@@ -164,23 +164,18 @@ class WizardCommand(ICommand):
         # If no override, try to get from Broker
         if equity is None or cash is None:
             if services.has_broker():
-                broker = services.get_broker()
-                acct = broker.accountSummary()
-                # broker.accountSummary returns list of AccountValue or similar? 
-                # Actually ib_insync accountSummary returns list of TagValue.
-                # Simplify: Use LivePortfolioManager snapshot if possible or just broker values.
-                # LivePortfolioManager uses reqAccountUpdates usually.
-                # Let's try manager.snapshot().
                 try:
-                    manager = LivePortfolioManager(broker)
-                    snap = manager.snapshot()
-                    if equity is None: equity = snap.equity
-                    if cash is None: cash = snap.cash
-                except:
+                    broker = services.get_broker()
+                    # Optimized: Use get_account_summary directly
+                    summary = broker.get_account_summary()
+                    
+                    if equity is None: equity = summary.get('NetLiquidation', 0.0)
+                    if cash is None: cash = summary.get('TotalCashValue', 0.0)
+                except Exception:
                     pass
             
             # Fallback if still None
-            if equity is None: equity = 100000.0 # Default fallback? Or Error?
+            if equity is None: equity = 100000.0 
             if cash is None: cash = 100000.0
             
         # Sizing

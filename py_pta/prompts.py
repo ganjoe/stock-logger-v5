@@ -27,6 +27,9 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'trade {"action": "CANCEL", "ticker": "SYMBOL", "trade_id": "ID", "broker_order_id": "OID"}': Order löschen.
    - 'trade {"action": "REFRESH", "ticker": "SYMBOL", "trade_id": "ID"}': Trade-Daten aktualisieren.
 
+3. PRE-TRADE TOOLS (Erlaubte Hilfsmittel):
+   - 'wizard {"symbol": "NVDA", "entry": 100, "stop": 95}': Berechnet Positionsgröße nach Risiko-Regeln. Nutze dies, wenn der User nach "Sizing" oder "Wizard" fragt.
+   - 'market_clock': Prüft Börsenzeiten.
 
 WICHTIG: 
 - Bevor du eine Aktion (UPDATE, EXIT, CANCEL) ausführst, prüfe IMMER erst mit 'status' oder 'trades' die aktuellen IDs.

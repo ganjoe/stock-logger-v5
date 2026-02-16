@@ -162,17 +162,45 @@ class IBKRClient:
         reqTickers is more robust than reqMktData for snapshots as it waits for data.
         """
         import math
+        
+        # [F-CAP-160] Adaptive Data Type: Try Live (1) -> Frozen (2) -> Delayed (3)
+        # However, reqTickers logic is internal to ib_insync.
+        # We must set ib.reqMarketDataType(3) globally or contextually.
+        # Strategy: 
+        # 1. Try Live (Default)
+        # 2. If NaN or Fail, switch to Delayed (3) and Retry
+        
+        # Attempt 1: Default (Live/Frozen)
+        self.ib.reqMarketDataType(1) 
         tickers = self.ib.reqTickers(contract)
+        
+        price = 0.0
         if tickers:
             t = tickers[0]
-            # Use marketPrice() helper which handles last/close/bid-ask fallback
             price = t.marketPrice()
             if math.isnan(price):
-                # Hard fallback logic
+                # Fallback to Last/Close
                 price = t.last if not math.isnan(t.last) else t.close
-                if math.isnan(price): price = 0.0
-            return price
-        return 0.0
+                
+        # Attempt 2: Delayed (if price is still invalid or zero)
+        if math.isnan(price) or price <= 0.0:
+            # print(f"DEBUG: Live/Frozen price invalid ({price}). Switch to Delayed (3).")
+            self.ib.reqMarketDataType(3) # Delayed
+            # Re-Request
+            tickers_delayed = self.ib.reqTickers(contract)
+            if tickers_delayed:
+                t = tickers_delayed[0]
+                price = t.marketPrice()
+                if math.isnan(price):
+                    price = t.last if not math.isnan(t.last) else t.close
+
+        # Reset to Default (Live) to avoid side effects? 
+        # Or keep it delayed if user has no data? 
+        # Let's reset to keep state clean.
+        self.ib.reqMarketDataType(1)
+
+        if math.isnan(price): return 0.0
+        return price
 
     def get_account_summary(self) -> List[Any]:
         """
