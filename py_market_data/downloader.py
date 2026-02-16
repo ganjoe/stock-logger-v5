@@ -1,10 +1,11 @@
 # py_market_data/downloader.py
 import asyncio
-from typing import List, Dict
+import os
+import json
+from typing import List, Dict, Optional, Any
 from datetime import datetime
 from ib_insync import IB, Stock, Contract
 from .domain import HistoryRequest, BatchDownloadResult, BatchConfig
-from .storage import save_bars
 from py_tradeobject.interface import BarData
 
 class BulkDownloader:
@@ -12,171 +13,150 @@ class BulkDownloader:
         self.ib = ib_client
         self.semaphore = asyncio.Semaphore(max_concurrent)
         self.pacing_delay = 0.1 # Default live pacing
-
-    async def run_batch(self, requests: List[HistoryRequest]) -> List[BatchDownloadResult]:
-        """Startet den Bulk-Download Prozess."""
-        if not requests:
-            return []
-
-        # 1. Qualify Contracts Batch
-        contracts: Dict[str, Contract] = {} 
-        stock_list = []
-        
-        print(f"  🔍 Qualifying {len(requests)} contracts...")
-        for req in requests:
-            c = Stock(req.symbol, 'SMART', 'USD')
-            contracts[req.symbol] = c
-            stock_list.append(c)
-            
-        try:
-            await self.ib.qualifyContractsAsync(*stock_list)
-        except Exception as e:
-            print(f"  ⚠️ Warning: Bulk qualification partial failure: {e}")
-
-        # 2. Parallel Execution
-        tasks = []
-        for req in requests:
-            contract = contracts[req.symbol]
-            tasks.append(self._download_single(req, contract))
-            
-        results = await asyncio.gather(*tasks)
-        return list(results)
-
-    async def _download_single(self, req: HistoryRequest, contract: Contract) -> BatchDownloadResult:
-        """Lädt einen einzelnen Ticker unter Beachtung der Semaphore und Retry-Logik."""
-        
-        if contract.conId == 0:
-             return BatchDownloadResult(req.symbol, False, 0, "Qualify Failed (Unknown Symbol)")
-
-        async with self.semaphore:
-            RETRIES = 3
-            for attempt in range(RETRIES):
-                try:
-                    bars = await self.ib.reqHistoricalDataAsync(
-                        contract,
-                        endDateTime=req.end_date,
-                        durationStr=req.duration,
-                        barSizeSetting=req.bar_size,
-                        whatToShow=req.what_to_show,
-                        useRTH=req.use_rth,
-                        formatDate=1
-                    )
-                    
-                    if not bars:
-                         return BatchDownloadResult(req.symbol, False, 0, "No Data Returned")
-
-                    mapped_bars = []
-                    for b in bars:
-                        ts = b.date
-                        if not isinstance(ts, datetime):
-                             try:
-                                 ts = datetime(ts.year, ts.month, ts.day)
-                             except:
-                                 pass 
-                        
-                        mapped_bars.append(BarData(
-                            timestamp=ts,
-                            open=float(b.open), 
-                            high=float(b.high), 
-                            low=float(b.low), 
-                            close=float(b.close), 
-                            volume=float(b.volume)
-                        ))
-
-                    save_bars(f"./data/market_cache/{req.symbol}/charts/{self._map_bar_size(req.bar_size)}.json", mapped_bars)
-                    
-                    # Success -> Break loop
-                    return BatchDownloadResult(req.symbol, True, len(mapped_bars))
-
-                except Exception as e:
-                    msg = str(e)
-                    # Check for Pacing Violation
-                    # Error 162: Historical Market Data Service error message:HMDS query returned no data: ...
-                    # OR: "API historical data query cancelled" (which happens on timeout/limit)
-                    
-                    if attempt < RETRIES - 1:
-                        wait_time = 10 * (attempt + 1) # Linear backoff: 10s, 20s, 30s
-                        print(f"    ⚠️ Retry {req.symbol} ({attempt+1}/{RETRIES}) after {wait_time}s due to error: {msg}")
-                        # Pacing Breath (We need to pass delay somehow, or move delay to downloader init)
-                        # But downloader was initialized before config was known in bulk_fetch...
-                        # Wait, bulk_fetch re-assigns semaphore but not delay.
-                        # Let's just fix downloader init to allow updating delay.
-                        await asyncio.sleep(self.pacing_delay) # Apply pacing delay before retry
-                        await asyncio.sleep(wait_time) # Apply backoff delay
-                    else:
-                        return BatchDownloadResult(req.symbol, False, 0, f"Failed after {RETRIES} retries. Last error: {msg}")
-
-            return BatchDownloadResult(req.symbol, False, 0, "Unknown Error Loop")
-    
-    def _map_bar_size(self, bar_size: str) -> str:
-        if "day" in bar_size: return "1D"
-        if "min" in bar_size: return "1min" 
-        return "1D" # Default
+        self.base_path = "./data/market_cache" 
 
     async def verify_market_data_type(self) -> BatchConfig:
-        """Determines market data permissions (Live vs Delayed) and returns config."""
+        """Determines market data permissions (Live vs Delayed) via robust smoke test."""
         print("🕵️ Detecting Market Data Permissions...")
         
         # Test Contract (SPY is liquid and standard)
         contract = Stock('SPY', 'SMART', 'USD')
         await self.ib.qualifyContractsAsync(contract)
         
-        # Default: Paid / Live
-        config = BatchConfig(
-            market_data_type=1, # Real-time
-            max_concurrent=20, # User specified 20-50 limit
-            default_duration='30 Y',
-            pacing_delay=0.1,
-            description="Paid Subscription (Live)"
-        )
-
+        # Test 1: Live (1)
         try:
-            # Switch to Live (1) to test
             self.ib.reqMarketDataType(1)
             bars = await self.ib.reqHistoricalDataAsync(
-                contract,
-                endDateTime='',
-                durationStr='1 D', # Short test
-                barSizeSetting='1 day',
-                whatToShow='TRADES',
-                useRTH=True,
-                formatDate=1
+                contract, endDateTime='', durationStr='1 D', barSizeSetting='1 day',
+                whatToShow='TRADES', useRTH=True, formatDate=1
             )
-            if not bars:
-                raise Exception("No data returned for SPY (Live)")
-                
-            print(f"✅ Live Data Confirmed. Using: {config.description}")
-            return config
+            if bars:
+                print("✅ Live Data Confirmed. Using: Paid (Live)")
+                return BatchConfig(1, 20, '30 Y', 0.1, "Paid Subscription (Live)") 
+        except Exception:
+            pass # Fail silently, try delayed
 
+        # Test 2: Delayed (3)
+        print("🔄 Switching to Delayed Data check...")
+        try:
+            self.ib.reqMarketDataType(3)
+            bars = await self.ib.reqHistoricalDataAsync(
+                contract, endDateTime='', durationStr='1 D', barSizeSetting='1 day',
+                whatToShow='TRADES', useRTH=True, formatDate=1
+            )
+            if bars:
+                print("✅ Delayed Data Confirmed. Using: Free (Delayed)")
+                return BatchConfig(3, 1, '1 Y', 3.0, "Free Subscription (Delayed / Strict Pacing)") # 3.0s pacing as user suggested
         except Exception as e:
-            # Fallback to Delayed (3)
-            print(f"⚠️ Live Data Check Failed: {e}")
-            print(f"🔄 Switching to Delayed Data (Type 3)...")
+            print(f"❌ Market Data Check Failed: {e}")
+
+        # Fallback
+        return BatchConfig(4, 1, '1 Y', 5.0, "Frozen/Unknown (Fallback)")
+
+    def _save_bars_merged(self, symbol: str, bars: List[Any]) -> int:
+        """Merge logic: Loads existing data and appends new non-duplicate entries."""
+        file_path = os.path.join(self.base_path, symbol.upper(), "charts", "1D.json")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        existing_data = []
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, 'r') as f:
+                    existing_data = json.load(f)
+            except json.JSONDecodeError:
+                existing_data = []
+
+        # Standard Keys: t, o, h, l, c, v
+        seen_timestamps = set()
+        for entry in existing_data:
+            if 't' in entry:
+                seen_timestamps.add(entry['t'])
+            elif 'date' in entry: # Legacy support
+                 seen_timestamps.add(entry['date'])
+
+        new_entries = []
+        for bar in bars:
+            # Parse Date/Timestamp
+            ts_str = bar.date.isoformat() if hasattr(bar.date, 'isoformat') else str(bar.date)
+            # Normalize timestamp to match storage format (t)
+            # If storage uses '2023-01-01', we use that.
             
-            self.ib.reqMarketDataType(3) # Delayed
+            if ts_str not in seen_timestamps:
+                new_entries.append({
+                    "t": ts_str,
+                    "o": float(bar.open),
+                    "h": float(bar.high),
+                    "l": float(bar.low),
+                    "c": float(bar.close),
+                    "v": int(bar.volume)
+                })
+
+        if new_entries:
+            combined = existing_data + new_entries
+            # Sort by timestamp
+            combined.sort(key=lambda x: x.get('t', x.get('date', '')))
+            with open(file_path, 'w') as f:
+                json.dump(combined, f, indent=2)
+                
+        return len(new_entries)
+
+    async def run_batch(self, requests: List[HistoryRequest]) -> List[BatchDownloadResult]:
+        """Starts batch download with pre-qualification."""
+        if not requests: return []
+
+        # 1. Qualify All Contracts Batch
+        print(f"  🔍 Qualifying {len(requests)} contracts...")
+        contracts = {}
+        batch_stocks = []
+        for req in requests:
+            s = Stock(req.symbol, 'SMART', 'USD')
+            contracts[req.symbol] = s
+            batch_stocks.append(s)
             
-            # Re-test with Delayed
+        try:
+            await self.ib.qualifyContractsAsync(*batch_stocks)
+        except Exception as e:
+            print(f"  ⚠️ Qualify Warning: {e}")
+
+        # 2. Execute Parallel
+        tasks = []
+        for req in requests:
+            c = contracts[req.symbol]
+            if c.conId == 0:
+                # Mock result for failure
+                # Note: run_batch expects awaitable tasks
+                async def fail_task(r): return BatchDownloadResult(r.symbol, False, 0, "Qualify Failed")
+                tasks.append(fail_task(req))
+            else:
+                tasks.append(self._download_single(req, c))
+                
+        results = await asyncio.gather(*tasks)
+        return list(results)
+
+    async def _download_single(self, req: HistoryRequest, contract: Contract) -> BatchDownloadResult:
+        """Downloads single ticker with semaphore and strict finally-pacing."""
+        async with self.semaphore:
             try:
                 bars = await self.ib.reqHistoricalDataAsync(
-                    contract, 
-                    endDateTime='', 
-                    durationStr='1 D', 
-                    barSizeSetting='1 day', 
-                    whatToShow='TRADES', 
-                    useRTH=True, 
+                    contract,
+                    endDateTime=req.end_date,
+                    durationStr=req.duration,
+                    barSizeSetting=req.bar_size,
+                    whatToShow=req.what_to_show,
+                    useRTH=req.use_rth,
                     formatDate=1
                 )
-                if bars:
-                    print("✅ Delayed Data Confirmed.")
-                    return BatchConfig(
-                        market_data_type=3,
-                        max_concurrent=1,         # Strict Serial
-                        default_duration='1 Y',   # Free Limit per Request!
-                        pacing_delay=10.0,        # 60 reqs / 10 min = 1 req / 10s strict
-                        description="Free Subscription (Delayed / Strict Pacing)"
-                    )
-            except Exception as e2:
-                print(f"❌ Delayed Data Check Also Failed: {e2}")
                 
-            # If all fails, return Frozen or just default with warning
-            return BatchConfig(4, 1, '1 Y', 10.0, "Frozen/Unknown (Fallback)")
+                if not bars:
+                    return BatchDownloadResult(req.symbol, False, 0, "No Data Returned")
+
+                # Map and Save
+                count = self._save_bars_merged(req.symbol, bars)
+                return BatchDownloadResult(req.symbol, True, count)
+
+            except Exception as e:
+                return BatchDownloadResult(req.symbol, False, 0, str(e))
+            
+            finally:
+                # Enforce Pacing (Crucial for Free Data stability)
+                await asyncio.sleep(self.pacing_delay)

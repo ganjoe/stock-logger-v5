@@ -9,9 +9,6 @@ class HistoryRequest:
     duration: str  # e.g. '5 D', '33 D', '1 Y', '30 Y'
     bar_size: str = '1 day' 
     what_to_show: str = 'TRADES'
-    duration: str  # e.g. '5 D', '33 D', '1 Y', '30 Y'
-    bar_size: str = '1 day' 
-    what_to_show: str = 'TRADES'
     use_rth: bool = True  # Regular Trading Hours
     end_date: str = ''   # Optional end date (YYYYMMDD HH:mm:ss)
 
