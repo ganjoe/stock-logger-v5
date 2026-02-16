@@ -8,3 +8,7 @@ F-DATA-060,Serialization,Compact Storage / Typed RAM,"Disk-Optimierung: Speicher
 F-DATA-080,Logic,Gap Handling (Append Strategy),"Vermeidet Lücken robust: Wenn Cache existiert, wird nur das Delta (ab letzter Kerze) geladen und angehängt. Bei Konflikten gewinnt neue Datenquelle.",-
 F-DATA-090,Protection,Request Throttling,Verhindert API-Spamming durch zu häufige Requests für denselben Ticker innerhalb kurzer Zeit (Rate Limiting).,-
 F-DATA-100,Optimization,Smart Duration Request,"Berechnet dynamisch die minimal benötigte Dauer (Lookback) seit der letzten Kerze, um API-Last und Latenz zu minimieren.",-
+F-DATA-110,Feature,Bulk Fetch,"Ermöglicht den Massen-Download historischer Daten über separate Reader-IDs, um Pacing-Limits zu umgehen.",-
+F-DATA-120,Feature,Adaptive Permissions,"Prüft automatisch auf Live- vs. Delayed-Daten (Free). Passt Concurrency (20 vs 1) und Pacing (0.1s vs 10s) dynamisch an.",-
+F-DATA-130,Feature,Deep History Chunking,"Ermöglicht den Download von 30 Jahren Historie durch Zerlegung in 1-Jahres-Blöcke (Loop), um API-Timeouts zu verhindern.",-
+F-DATA-140,Reliability,Robust Retry Logic,"Fängt Pacing-Fehler (162) ab, wartet exponentiell (10s-30s) und versucht den Request erneut, statt abzubrechen.",-

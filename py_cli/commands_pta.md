@@ -2,11 +2,7 @@
 
 Dies ist die technische Referenz für Bots (Gemini PTA). Alle Antworten sind **JSON**.
 
-## System Control
 
-### `user pta | user human`
-Modus-Wahl.
-- **Rückgabe**: `{"success": true, "payload": {"mode": "BOT", ...}}`
 
 ## Monitoring
 
@@ -108,4 +104,19 @@ Analysiert den aktuellen Stand (Risk, Heat, Alerts).
 - **Payload**: `AnalyticsReport` (DTO). Enthält berechnete Risiko-Metriken und Tabellen-Daten.
 
 #### 2. HISTORY Analysis
-(In Arbeit) Analysiert Zeitreihen.
+
+## System Control
+
+### `connect [ip] [port] [client_id]` 
+Verbindet den Bot mit dem Gateway.
+- **Default**: `ip=127.0.0.1`, `port=4002`, `client_id=0`.
+- **Rückgabe**: `{"success": true, "message": "Connected to Paper (4002)"}` oder Fehler.
+
+### `disconnect`
+Trennt die Verbindung.
+- **Rückgabe**: `{"success": true}`
+
+### `bulk_fetch [client_id]`
+Startet den Massen-Download historischer Daten im Hintergrund.
+- **Argumente**: `client_id` (Default 999).
+- **Rückgabe**: `{"success": true, "message": "Bulk fetch started (Client 999)"}`

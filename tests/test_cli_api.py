@@ -13,7 +13,7 @@ from py_cli.models import CLIMode
 from py_cli.commands import ICommand, registry
 import py_cli.handlers_execution
 import py_cli.handlers_monitor
-import py_cli.handlers_user_mode
+
 # Wir benötigen KEINEN Broker, da wir Mocks nutzen oder den Service Locator manipulieren
 
 from py_captrader import services
@@ -42,24 +42,7 @@ def get_bot_controller():
 
 # --- Tests ---
 
-def test_user_mode_switching():
-    print("Testing User Mode Switching...")
-    cli = get_bot_controller()
-    
-    # 2. Switch to Human
-    resp_text = cli.process_input("user human")
-    # Rendering happens AFTER mode change, so this is now TEXT
-    assert "Switched to Human Mode" in resp_text
-    assert cli.context.mode == CLIMode.HUMAN
-    
-    # 3. Switch back to PTA (Bot)
-    resp_json = cli.process_input("user pta")
-    # Rendering happens AFTER mode change, so this is now JSON
-    print(f"DEBUG Output: {resp_json}")
-    resp2 = json.loads(resp_json)
-    assert resp2["success"] is True
-    assert resp2["payload"]["mode"] == "BOT"
-    print("✅ User Mode Switching Passed.")
+
 
 def test_status_command_bot():
     print("Testing Status Command (BOT)...")
@@ -78,7 +61,7 @@ def test_status_command_bot():
 
 if __name__ == "__main__":
     try:
-        test_user_mode_switching()
+
         test_status_command_bot()
         print("\n[SUCCESS] CLI API Verification PASSED")
     except Exception as e:

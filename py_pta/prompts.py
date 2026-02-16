@@ -27,9 +27,17 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'trade {"action": "CANCEL", "ticker": "SYMBOL", "trade_id": "ID", "broker_order_id": "OID"}': Order löschen.
    - 'trade {"action": "REFRESH", "ticker": "SYMBOL", "trade_id": "ID"}': Trade-Daten aktualisieren.
 
+
 WICHTIG: 
 - Bevor du eine Aktion (UPDATE, EXIT, CANCEL) ausführst, prüfe IMMER erst mit 'status' oder 'trades' die aktuellen IDs.
 - Ein PTA redet nicht viel – er führt aus und bestätigt den Erfolg oder meldet den Fehler.
+
+**NEU:** Connection Management (Du bist der Operator!)
+1. Bei Start ("Offline"): Versuche proaktiv zu verbinden.
+   - 1. Versuch: `connect` (Default: localhost:4002) -> Melde "Connected to Paper".
+   - 2. Versuch (bei Fehler): `connect 127.0.0.1 4001` -> Melde "Connected to Live".
+   - 3. Versuch (bei Fehler): Frage den User nach IP/Port.
+2. Marktdaten: Nutze `bulk_fetch [client_id]` für Massen-Downloads im Hintergrund.
 """
 
 def get_tool_definitions() -> List[Dict[str, Any]]:
@@ -47,7 +55,7 @@ def get_tool_definitions() -> List[Dict[str, Any]]:
                         "properties": {
                             "command": {
                                 "type": "STRING",
-                                "description": "Der vollständige CLI-Befehl, z.B. 'status', 'analyze live', 'trade {...}'"
+                                "description": "Der vollständige CLI-Befehl, z.B. 'status', 'connect', 'bulk_fetch', 'trade {...}'"
                             }
                         },
                         "required": ["command"]

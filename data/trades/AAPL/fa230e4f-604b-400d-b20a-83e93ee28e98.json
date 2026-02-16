@@ -1,0 +1,44 @@
+{
+  "id": "fa230e4f-604b-400d-b20a-83e93ee28e98",
+  "ticker": "AAPL",
+  "status": "OPENING",
+  "transactions": [],
+  "order_history": [
+    {
+      "timestamp": "2026-02-16T17:52:02.313513",
+      "order_id": "383",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Initial Entry",
+      "quantity": 5.0,
+      "type": "LMT",
+      "limit_price": 500.0,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2026-02-16T17:52:02.476342",
+      "order_id": "385",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Stop",
+      "quantity": -5.0,
+      "type": "STP",
+      "limit_price": null,
+      "stop_price": 50.0,
+      "trigger_price": 50.0,
+      "note": "Initial Stop",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "383": "ENTRY",
+    "385": "STOP"
+  },
+  "initial_stop_price": 50.0,
+  "current_stop_price": 50.0,
+  "entry_date": null,
+  "notes": ""
+}

@@ -12,11 +12,12 @@ from py_cli.controller import CLIController
 # Import handlers to trigger registration
 import py_cli.handlers_monitor
 import py_cli.handlers_execution
-import py_cli.handlers_user_mode
+
 import py_cli.handlers_trade
 import py_cli.handlers_history
 import py_cli.handlers_analytics
 import py_cli.handlers_pta
+import py_cli.handlers_connection
 
 def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")
@@ -44,28 +45,16 @@ def main():
         print(response)
         return
 
-    # 3. Interactive Loop (Only for Human Mode)
+    # 3. Headless / ChatOps Loop (Default for Human Mode)
     if mode == CLIMode.HUMAN:
-        print(f"🚀 Trading CLI (Mode: {mode.value})")
-        print("Type 'exit' or 'quit' to stop.")
-        while True:
-            try:
-                if controller.context.mode == CLIMode.HUMAN:
-                    print(">> ", end="", flush=True)
-                user_input = sys.stdin.readline()
-                if not user_input:
-                     # EOF
-                     break
-                user_input = user_input.strip()
-                
-                if user_input.lower() in ["exit", "quit"]:
-                    break
-                
-                response = controller.process_input(user_input)
-                print(response, flush=True)
-            except KeyboardInterrupt:
-                print("\nExiting...")
-                break
+        print(f"🚀 Stock-Logger v5 (Headless/ChatOps Mode)")
+        print(f"🤖 Initializing Personal Trading Assistant (PTA)...")
+        
+        # Execute 'chat' command immediately
+        # This blocks until the user types 'exit' inside the chat session
+        response = controller.process_input("chat")
+        
+        print(response.message)
     else:
         # Bot Mode without args? Expect stdin? 
         # For now, just print error if no command passed
