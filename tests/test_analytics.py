@@ -1,7 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 from datetime import datetime
-from py_analytics.capture import SnapshotAnalyzer
-from py_analytics.series import SeriesAnalyzer
-from py_analytics.performance import PerformanceAnalyzer
+from py_riskmanager.analytics import SnapshotAnalyzer, SeriesAnalyzer, PerformanceAnalyzer
 from py_portfolio_state.objects import PortfolioSnapshot, PortfolioPosition, PortfolioOrder, TradeResult
 
 def test_snapshot_analyzer():

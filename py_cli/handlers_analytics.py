@@ -3,8 +3,7 @@ import json
 from typing import List, Dict, Any
 from .models import CLIContext, CommandResponse, CLIMode
 from .commands import ICommand, registry
-from py_analytics.capture import SnapshotAnalyzer
-from py_analytics.series import SeriesAnalyzer
+from py_riskmanager.analytics import SnapshotAnalyzer, SeriesAnalyzer
 from py_portfolio_state.live import LivePortfolioManager
 from py_portfolio_state.history import HistoryFactory
 from py_tradeobject.core import TradeObject

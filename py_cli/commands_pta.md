@@ -116,7 +116,7 @@ Führt Analysen auf Live- oder Historiendaten aus.
 Analysiert den aktuellen Stand (Risk, Heat, Alerts).
 `analyze live '{"ticker": "AAPL"}'` (optionaler Ticker-Filter)
 
-- **Payload**: `AnalyticsReport` (DTO). Enthält berechnete Risiko-Metriken und Tabellen-Daten.
+- **Payload**: `py_riskmanager.models.AnalyticsReport` (DTO). Enthält berechnete Risiko-Metriken und Tabellen-Daten.
 #### 2. HISTORY Analysis
 
 
