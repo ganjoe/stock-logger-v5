@@ -1,0 +1,52 @@
+{
+  "id": "488790e0-c0f5-48c2-b283-67c3c6e88c44",
+  "ticker": "ONDS",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "0000dc8f.69c80b73.01.01",
+      "timestamp": "2026-02-17T19:06:47+00:00",
+      "type": "ENTRY",
+      "quantity": -10.0,
+      "price": 10.13,
+      "commission": 1.00195,
+      "slippage": 0.0,
+      "order_id": "457"
+    }
+  ],
+  "order_history": [
+    {
+      "timestamp": "2026-02-17T20:06:47.971211",
+      "order_id": "457",
+      "action": "SELL",
+      "status": "SUBMITTED",
+      "message": "Initial Entry",
+      "quantity": -10.0,
+      "type": "LMT",
+      "limit_price": 10.09,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial Entry",
+      "details": {}
+    },
+    {
+      "timestamp": "2026-02-17T20:12:11.432540",
+      "order_id": "457",
+      "action": "SELL",
+      "status": "FILLED",
+      "message": "Filled -10.0 @ 10.13",
+      "quantity": -10.0,
+      "type": "FILL",
+      "limit_price": 10.13,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "",
+      "details": {}
+    }
+  ],
+  "active_orders": {},
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": ""
+}

@@ -56,8 +56,8 @@ class ChartManager:
                 
                 # Save if we got data
                 if new_bars:
-                    save_bars(chart_path, new_bars)
-                    bars = new_bars
+                    # save_bars handles normalization, deduplication (last wins), and sorting
+                    bars = save_bars(chart_path, new_bars, timeframe=timeframe)
             except Exception as e:
                 # Graceful degradation: print warning and keep cached bars
                 print(f"  [ChartManager] Warning: Could not update {ticker} ({timeframe}): {e}")
@@ -84,30 +84,14 @@ class ChartManager:
 
     def _fetch_and_merge(self, ticker: str, timeframe: str, lookback: str, existing_bars: List[BarData]) -> List[BarData]:
         """
-        Fetched new data and merges it with existing.
-        [F-DATA-080] Gap Handling / Append Strategy.
+        Fetched new data and returns a combined list.
+        Deduplication and sorting happens in save_bars().
         """
-        # Determine effective lookback?
-        # If we have data, we might only need "1 M" instead of "1 Y".
-        # But IBKR lookback strings are static. 
-        # Strategy:
-        # If existing data is robust, we could query shorter period.
-        # But simplistic approach: Query requested lookback, then merge dict-based by timestamp.
-        
         # 1. Fetch
         incoming_bars = self.provider.get_historical_data(ticker, timeframe, lookback)
         if not incoming_bars:
-            return existing_bars # Keep old if fetch fails? Or return empty?
+            return existing_bars
             
-        # 2. Merge (Dict based on timestamp to dedup/overwrite)
-        # Last write wins (Incoming overwrites existing)
-        merged_map = {}
-        for b in existing_bars:
-            merged_map[b.timestamp] = b
-            
-        for b in incoming_bars:
-            merged_map[b.timestamp] = b
-            
-        # 3. Sort back to list
-        sorted_bars = sorted(merged_map.values(), key=lambda x: x.timestamp)
-        return sorted_bars
+        # 2. Simple Concatenation
+        # save_bars() will handle the deduplication and sorting.
+        return existing_bars + incoming_bars

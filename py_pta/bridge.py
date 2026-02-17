@@ -39,10 +39,17 @@ class PTABridge:
             
             response = chat.send_message(user_input, tools=tools)
             
-            # 2. Loop while model wants to call tools
-            while response.candidates[0].content.parts[0].function_call:
-                fc = response.candidates[0].content.parts[0].function_call
+            # 2. Main Loop for Function Calling
+            while True:
+                # IMPORTANT: We check if ANY part of the current response is a function call
+                parts = response.candidates[0].content.parts
+                # Find the first function call if any
+                fc = next((p.function_call for p in parts if p.function_call), None)
                 
+                if not fc:
+                    # Break when no more tools are requested
+                    break
+                    
                 # LOG: PTA Decision
                 log_event("PTA_THOUGHT", f"Calling Function: {fc.name} with args: {fc.args}")
                 
@@ -63,7 +70,6 @@ class PTABridge:
                     log_event("SYSTEM_RESULT", str(cli_resp))
                     
                     # Send function response back to the chat
-                    # We must pass the response to the same conversation
                     response = chat.send_message(
                         genai.protos.Content(
                             parts=[genai.protos.Part(
@@ -76,6 +82,7 @@ class PTABridge:
                         tools=tools
                     )
                 else:
+                    # Generic exit for unknown tools
                     break
 
             # 3. Synchronize history

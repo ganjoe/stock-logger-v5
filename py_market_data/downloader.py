@@ -91,50 +91,34 @@ class BulkDownloader:
 
     def _save_bars_merged(self, symbol: str, bars: List[Any]) -> int:
         """Merge logic: Loads existing data and appends new non-duplicate entries."""
+        from .storage import load_bars, save_bars
         file_path = os.path.join(self.base_path, symbol.upper(), "charts", "1D.json")
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        # 1. Load Existing (as our BarData objects)
+        existing_bars = load_bars(file_path)
 
-        existing_data = []
-        if os.path.exists(file_path):
-            try:
-                with open(file_path, 'r') as f:
-                    existing_data = json.load(f)
-            except json.JSONDecodeError:
-                existing_data = []
+        # 2. Convert incoming IB bars to our BarData format
+        new_bars = []
+        for b in bars:
+            # IB bar.date can be date or datetime
+            dt = b.date if isinstance(b.date, datetime) else datetime.combine(b.date, datetime.min.time())
+            new_bars.append(BarData(
+                timestamp=dt,
+                open=float(b.open),
+                high=float(b.high),
+                low=float(b.low),
+                close=float(b.close),
+                volume=float(b.volume)
+            ))
 
-        # Standard Keys: t, o, h, l, c, v
-        seen_timestamps = set()
-        for entry in existing_data:
-            if 't' in entry:
-                seen_timestamps.add(entry['t'])
-            elif 'date' in entry: # Legacy support
-                 seen_timestamps.add(entry['date'])
-
-        new_entries = []
-        for bar in bars:
-            # Parse Date/Timestamp
-            ts_str = bar.date.isoformat() if hasattr(bar.date, 'isoformat') else str(bar.date)
-            # Normalize timestamp to match storage format (t)
-            # If storage uses '2023-01-01', we use that.
-            
-            if ts_str not in seen_timestamps:
-                new_entries.append({
-                    "t": ts_str,
-                    "o": float(bar.open),
-                    "h": float(bar.high),
-                    "l": float(bar.low),
-                    "c": float(bar.close),
-                    "v": int(bar.volume)
-                })
-
-        if new_entries:
-            combined = existing_data + new_entries
-            # Sort by timestamp
-            combined.sort(key=lambda x: x.get('t', x.get('date', '')))
-            with open(file_path, 'w') as f:
-                json.dump(combined, f, indent=2)
-                
-        return len(new_entries)
+        # 3. Save Combined
+        # storage.save_bars handles deduplication (last wins) and sorting
+        combined = existing_bars + new_bars
+        save_bars(file_path, combined, timeframe="1D")
+        
+        # Note: new_count is tricky now because dedupe happens in save_bars.
+        # But for reporting, seeing the incoming count is usually what's expected.
+        return len(new_bars)
 
     async def run_batch(self, requests: List[HistoryRequest]) -> List[BatchDownloadResult]:
         """Starts batch download with pre-qualification."""

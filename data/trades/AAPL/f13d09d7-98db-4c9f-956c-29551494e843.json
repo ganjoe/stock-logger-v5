@@ -1,18 +1,18 @@
 {
-  "id": "7cfa7387-529b-4023-b6d3-82c6a324fd6d",
-  "ticker": "ONDS",
-  "status": "CLOSED",
+  "id": "f13d09d7-98db-4c9f-956c-29551494e843",
+  "ticker": "AAPL",
+  "status": "OPENING",
   "transactions": [],
   "order_history": [
     {
-      "timestamp": "2026-02-17T19:58:16.543648",
-      "order_id": "437",
-      "action": "BUY",
+      "timestamp": "2026-02-17T20:06:33.733584",
+      "order_id": "451",
+      "action": "SELL",
       "status": "SUBMITTED",
       "message": "Initial Entry",
-      "quantity": 10.0,
+      "quantity": -15.0,
       "type": "LMT",
-      "limit_price": 9.97,
+      "limit_price": 265,
       "stop_price": null,
       "trigger_price": null,
       "note": "Initial Entry",
@@ -20,7 +20,7 @@
     }
   ],
   "active_orders": {
-    "437": "ENTRY"
+    "451": "ENTRY"
   },
   "initial_stop_price": null,
   "current_stop_price": null,

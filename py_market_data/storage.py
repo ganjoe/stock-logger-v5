@@ -16,32 +16,50 @@ from py_tradeobject.interface import BarData
 # c = close
 # v = volume
 
-def save_bars(path: str, bars: List[BarData]):
+def normalize_timestamp(dt: datetime, timeframe: str) -> str:
+    """Standardizes timestamp strings based on timeframe."""
+    if timeframe.upper() in ["1D", "1 DAY"]:
+        return dt.strftime('%Y-%m-%d')
+    return dt.isoformat()
+
+def save_bars(path: str, bars: List[BarData], timeframe: str = "1D") -> List[BarData]:
     """
     Saves BarData list to JSON with compact keys.
+    Enforces normalization, deduplication (last wins), and sorting.
+    Returns the cleaned BarData list.
     """
-    data = []
+    if not bars:
+        return []
+
+    # 1. Normalize and Deduplicate
+    unique_map = {}
     for bar in bars:
-        # Convert datetime to ISO string YYYY-MM-DD (if daily) or full ISO?
-        # Requirement F-DATA-060: "t": "2023-10-27" example suggests date string for daily.
-        # But we need to support intraday too. ISO format is safest.
-        ts_str = bar.timestamp.isoformat()
+        ts_str = normalize_timestamp(bar.timestamp, timeframe)
+        # We store both the bar and the normalized string for sorting
+        unique_map[ts_str] = bar
         
-        row = {
-            "t": ts_str,
+    # 2. Sort by timestamp string
+    sorted_keys = sorted(unique_map.keys())
+    cleaned_bars = [unique_map[k] for k in sorted_keys]
+        
+    # 3. Serialize for saving
+    data_to_save = []
+    for bar in cleaned_bars:
+        data_to_save.append({
+            "t": normalize_timestamp(bar.timestamp, timeframe),
             "o": bar.open,
             "h": bar.high,
             "l": bar.low,
             "c": bar.close,
             "v": bar.volume
-        }
-        data.append(row)
-        
-    # Ensure directory exists
+        })
+
+    # 4. Save
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    
     with open(path, 'w') as f:
-        json.dump(data, f, separators=(',', ':')) # Minimal whitespace
+        json.dump(data_to_save, f, separators=(',', ':')) # Minimal whitespace
+        
+    return cleaned_bars
 
 def load_bars(path: str) -> List[BarData]:
     """

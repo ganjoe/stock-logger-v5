@@ -1,15 +1,8 @@
-"""
-py_cli/handlers_monitor.py
-Implementation of Monitoring Commands (status, trades).
-"""
+import json
+import sys
 from typing import List, Dict, Any
 from .models import CLIContext, CommandResponse
 from .commands import ICommand, registry
-# Note: In a real scenario, we would inject the TradeManager/Broker here.
-# For now, we'll mock the data fetching or use placeholders.
-# We should probably have a 'ServiceLocator' or import a singleton 'system'.
-
-import json
 from py_captrader import services
 from py_portfolio_state.live import LivePortfolioManager
 
@@ -116,7 +109,75 @@ class QuoteCommand(ICommand):
         except Exception as e:
             return CommandResponse(False, message=f"Quote Error: {str(e)}", error_code="QUOTE_ERROR")
 
+class ChartCommand(ICommand):
+    name = "chart"
+    description = "Fetches historical chart data for a symbol."
+    syntax = "chart SYMBOL [JSON_PAYLOAD]"
+
+    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
+        if not args:
+            return CommandResponse(False, message="Usage: chart SYMBOL [--to-dashboard] [JSON_PAYLOAD]", error_code="INVALID_ARGS")
+            
+        ticker = args[0].upper()
+        
+        # Check for piping flag
+        to_dashboard = "--to-dashboard" in args
+        clean_args = [a for a in args[1:] if a != "--to-dashboard"]
+        
+        payload = {}
+        if clean_args:
+            try:
+                payload = json.loads(" ".join(clean_args))
+            except json.JSONDecodeError:
+                pass 
+
+        timeframe = payload.get("timeframe", "1D")
+        lookback = payload.get("lookback", "1Y")
+
+        if not services.has_broker():
+            return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
+            
+        try:
+            broker = services.get_broker()
+            from py_tradeobject.core import TradeObject
+            from py_market_data.storage import normalize_timestamp
+            trade = TradeObject.get_or_create(ticker, broker)
+            
+            bars = trade.get_chart(timeframe=timeframe, lookback=lookback)
+            data = [{"t": normalize_timestamp(b.timestamp, timeframe), "v": float(b.close)} for b in bars]
+            
+            if to_dashboard:
+                # PIPE DATA DIRECTLY (Prevents LLM Context Bloat)
+                import requests
+                url = "http://localhost:8000/broadcast"
+                push_payload = {
+                    "msg_type": "CHART_UPDATE",
+                    "payload_type": "PRICE",
+                    "data": data
+                }
+                try:
+                    requests.post(url, json=push_payload, timeout=2)
+                    return CommandResponse(
+                        True, 
+                        message=f"Chart for {ticker} direct-piped to Dashboard ({len(data)} bars).",
+                        payload={"status": "PIPED", "count": len(data)} # Small payload
+                    )
+                except Exception as e:
+                    return CommandResponse(False, message=f"Piping failed: {e}", error_code="PIPE_ERROR")
+
+            # Normal behavior: Return all data
+            return CommandResponse(
+                True, 
+                message=f"Fetched {len(data)} bars for {ticker}", 
+                payload={"ticker": ticker, "data": data}
+            )
+        except Exception as e:
+            import traceback
+            sys.stderr.write(traceback.format_exc())
+            return CommandResponse(False, message=f"Chart Error: {str(e)}", error_code="CHART_ERROR")
+
 # Registration
 registry.register(StatusCommand())
 registry.register(TradesCommand())
 registry.register(QuoteCommand())
+registry.register(ChartCommand())

@@ -1,5 +1,6 @@
 # py_cli/handlers_analytics.py
 import json
+import sys
 from typing import List, Dict, Any
 from .models import CLIContext, CommandResponse, CLIMode
 from .commands import ICommand, registry
@@ -59,22 +60,32 @@ class AnalyzeCommand(ICommand):
     def _handle_history(self, p: Dict[str, Any]) -> CommandResponse:
         days = p.get("days", 30)
         ticker = p.get("ticker")
+        to_dashboard = p.get("to_dashboard", False)
         
         # 1. Setup Factory
         factory = HistoryFactory(trades_dir="./data/trades")
         factory.load_all_trades()
         
-        # 2. Get Series of Snapshots
-        # Note: In a real scenario we'd query a DB or a list of saved daily files.
-        # For now, we simulate by fetching the last N days if available.
-        snapshots = [] # Implementation of bulk history fetch needed in Factory?
-        # Placeholder: SeriesAnalyzer needs a list.
-        # Since we just implemented it, we assume we have a way to get the list.
-        # Let's keep it minimal for now as proof of concept.
+        # ... (Implementation of history fetch simulation) ...
+        # Assumption: SeriesAnalyzer returns a report with a 'curve' [{t: ..., v: ...}]
         
-        analyzer = SeriesAnalyzer()
-        # report = analyzer.analyze(snapshots) 
+        # Placeholder result for now
+        dummy_curve = [{"t": "2024-01-01", "v": 100.0}, {"t": "2024-01-02", "v": 105.0}]
         
+        if to_dashboard:
+            import requests
+            url = "http://localhost:8000/broadcast"
+            push_payload = {
+                "msg_type": "CHART_UPDATE",
+                "payload_type": "PNL",
+                "data": dummy_curve
+            }
+            try:
+                requests.post(url, json=push_payload, timeout=2)
+                return CommandResponse(True, message="PnL Curve direct-piped to Dashboard.", payload={"status": "PIPED"})
+            except Exception as e:
+                return CommandResponse(False, message=f"Piping failed: {e}", error_code="PIPE_ERROR")
+
         return CommandResponse(False, "History Analytics not yet fully linked to storage.", error_code="NOT_IMPLEMENTED")
 
 

@@ -1,18 +1,18 @@
 {
-  "id": "7cfa7387-529b-4023-b6d3-82c6a324fd6d",
-  "ticker": "ONDS",
-  "status": "CLOSED",
+  "id": "681f7c81-43aa-446d-bf59-8aa3935ab033",
+  "ticker": "NVO",
+  "status": "OPENING",
   "transactions": [],
   "order_history": [
     {
-      "timestamp": "2026-02-17T19:58:16.543648",
-      "order_id": "437",
-      "action": "BUY",
+      "timestamp": "2026-02-17T20:06:44.335589",
+      "order_id": "454",
+      "action": "SELL",
       "status": "SUBMITTED",
       "message": "Initial Entry",
-      "quantity": 10.0,
+      "quantity": -20.0,
       "type": "LMT",
-      "limit_price": 9.97,
+      "limit_price": 49.63,
       "stop_price": null,
       "trigger_price": null,
       "note": "Initial Entry",
@@ -20,7 +20,7 @@
     }
   ],
   "active_orders": {
-    "437": "ENTRY"
+    "454": "ENTRY"
   },
   "initial_stop_price": null,
   "current_stop_price": null,
