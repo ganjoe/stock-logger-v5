@@ -34,11 +34,20 @@ class BulkDownloader:
         # Count entries per year
         year_counts = {}
         for entry in data:
-            # Entry format: "t": "2023-01-01..."
-            ts = entry.get('t', entry.get('date', ''))
-            if len(ts) >= 4:
-                y = int(ts[:4])
-                year_counts[y] = year_counts.get(y, 0) + 1
+            raw_t = entry.get('t', entry.get('date', ''))
+            
+            # Extract year robustly
+            if isinstance(raw_t, (int, float)):
+                y = datetime.fromtimestamp(raw_t).year
+            elif isinstance(raw_t, str) and len(raw_t) >= 4:
+                try:
+                    y = int(raw_t[:4])
+                except ValueError:
+                    continue
+            else:
+                continue
+                
+            year_counts[y] = year_counts.get(y, 0) + 1
                 
         # Threshold: 200 trading days implies full year
         # (Trading years have ~252 days)

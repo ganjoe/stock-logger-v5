@@ -57,10 +57,23 @@ def main():
         
         print(response.message)
     else:
-        # Bot Mode without args? Expect stdin? 
-        # For now, just print error if no command passed
-        print('{"success": false, "message": "No command provided", "error_code": "NO_INPUT"}')
-        sys.exit(1)
+        # 4. Continuous Bot Loop (Reads from stdin)
+        # This allows external scripts (like integration tests) to pipe commands
+        # print() is used for line-buffering in subshells
+        print('{"success": true, "message": "BOT Mode Initialized. Waiting for stdin..."}', flush=True)
+        
+        try:
+            for line in sys.stdin:
+                line = line.strip()
+                if not line:
+                    continue
+                if line.lower() in ["exit", "quit"]:
+                    break
+                    
+                response = controller.process_input(line)
+                print(response, flush=True)
+        except EOFError:
+            pass
 
 if __name__ == "__main__":
     main()

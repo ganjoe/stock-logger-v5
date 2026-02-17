@@ -16,16 +16,14 @@ from py_tradeobject.interface import BarData
 # c = close
 # v = volume
 
-def normalize_timestamp(dt: datetime, timeframe: str) -> str:
-    """Standardizes timestamp strings based on timeframe."""
-    if timeframe.upper() in ["1D", "1 DAY"]:
-        return dt.strftime('%Y-%m-%d')
-    return dt.isoformat()
+def normalize_timestamp(dt: datetime, timeframe: str = "any") -> int:
+    """Standardizes timestamp to Unix seconds (integer)."""
+    return int(dt.timestamp())
 
 def save_bars(path: str, bars: List[BarData], timeframe: str = "1D") -> List[BarData]:
     """
     Saves BarData list to JSON with compact keys.
-    Enforces normalization, deduplication (last wins), and sorting.
+    Enforces Unix Timestamp normalization, deduplication (last wins), and sorting.
     Returns the cleaned BarData list.
     """
     if not bars:
@@ -34,11 +32,11 @@ def save_bars(path: str, bars: List[BarData], timeframe: str = "1D") -> List[Bar
     # 1. Normalize and Deduplicate
     unique_map = {}
     for bar in bars:
-        ts_str = normalize_timestamp(bar.timestamp, timeframe)
-        # We store both the bar and the normalized string for sorting
-        unique_map[ts_str] = bar
+        ts_unix = normalize_timestamp(bar.timestamp)
+        # We store both the bar and the normalized unix timestamp for sorting
+        unique_map[ts_unix] = bar
         
-    # 2. Sort by timestamp string
+    # 2. Sort by unix timestamp
     sorted_keys = sorted(unique_map.keys())
     cleaned_bars = [unique_map[k] for k in sorted_keys]
         
@@ -46,7 +44,7 @@ def save_bars(path: str, bars: List[BarData], timeframe: str = "1D") -> List[Bar
     data_to_save = []
     for bar in cleaned_bars:
         data_to_save.append({
-            "t": normalize_timestamp(bar.timestamp, timeframe),
+            "t": normalize_timestamp(bar.timestamp),
             "o": bar.open,
             "h": bar.high,
             "l": bar.low,
@@ -64,7 +62,7 @@ def save_bars(path: str, bars: List[BarData], timeframe: str = "1D") -> List[Bar
 def load_bars(path: str) -> List[BarData]:
     """
     Loads BarData list from compact JSON.
-    Returns empty list if file not found or error.
+    Supports both legacy ISO strings and new Unix integer timestamps.
     """
     if not os.path.exists(path):
         return []
@@ -75,8 +73,16 @@ def load_bars(path: str) -> List[BarData]:
             
         bars = []
         for row in data:
+            raw_t = row["t"]
+            # Flexible Parsing: Handle both int/float and string formats
+            if isinstance(raw_t, (int, float)):
+                dt = datetime.fromtimestamp(raw_t)
+            else:
+                # Fallback for ISO strings in legacy files
+                dt = datetime.fromisoformat(raw_t)
+
             bars.append(BarData(
-                timestamp=datetime.fromisoformat(row["t"]),
+                timestamp=dt,
                 open=float(row["o"]),
                 high=float(row["h"]),
                 low=float(row["l"]),

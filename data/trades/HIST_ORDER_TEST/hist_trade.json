@@ -1,0 +1,75 @@
+{
+  "id": "HIST_SCENARIO_1",
+  "ticker": "HIST_ORDER_TEST",
+  "status": "OPEN",
+  "transactions": [
+    {
+      "id": "TX_B",
+      "timestamp": "2026-02-15T23:42:13.793376",
+      "type": "ENTRY",
+      "quantity": 10,
+      "price": 100.0,
+      "commission": 1.0,
+      "slippage": 0.0
+    }
+  ],
+  "active_orders": {},
+  "order_history": [
+    {
+      "timestamp": "2026-02-07T23:42:13.793376",
+      "order_id": "ORD_A",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Entry A",
+      "quantity": 10,
+      "type": "LMT",
+      "limit_price": 99.0,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial A",
+      "details": {}
+    },
+    {
+      "timestamp": "2026-02-12T23:42:13.793376",
+      "order_id": "ORD_A",
+      "action": "CANCEL",
+      "status": "CANCELLED",
+      "message": "Cancelled A",
+      "quantity": 0,
+      "type": "CANCEL",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "",
+      "details": {}
+    },
+    {
+      "timestamp": "2026-02-12T23:42:13.793376",
+      "order_id": "ORD_B",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Entry B",
+      "quantity": 10,
+      "type": "LMT",
+      "limit_price": 100.0,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Entry B",
+      "details": {}
+    },
+    {
+      "timestamp": "2026-02-15T23:42:13.793376",
+      "order_id": "ORD_B",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Filled B",
+      "quantity": 10,
+      "type": "FILL",
+      "limit_price": 100.0,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "",
+      "details": {}
+    }
+  ]
+}
