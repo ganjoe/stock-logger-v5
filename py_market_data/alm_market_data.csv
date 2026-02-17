@@ -13,3 +13,4 @@ F-DATA-120,Feature,Adaptive Permissions,"Prüft automatisch auf Live- vs. Delaye
 F-DATA-130,Feature,Deep History Chunking,"Ermöglicht den Download von 30 Jahren Historie durch Zerlegung in 1-Jahres-Blöcke (Loop), um API-Timeouts zu verhindern.",-
 F-DATA-140,Reliability,Robust Retry Logic,"Fängt Pacing-Fehler (162) ab, wartet exponentiell (10s-30s) und versucht den Request erneut, statt abzubrechen.",-
 F-DATA-150,Optimization,Incremental Coverage Check,"Prüft jahresweise (>200 Tage) ob Daten bereits vorliegen und überspringt ggf. den Download, um API-Calls zu sparen.",-
+F-DATA-200,Serialization,Unix-Native Unification,Systemweite Umstellung auf Unix-Zeitstempel. Zukünftige Entfernung aller Legacy-Formate (ISO/Business-Strings) zur Performance-Steigerung.,-

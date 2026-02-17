@@ -64,7 +64,11 @@ class HistoryFactory:
             trade_active = False
             
             for tx in state.transactions:
-                if tx.timestamp > date: continue
+                # Ensure both are naive for comparison
+                tx_ts = tx.timestamp.replace(tzinfo=None) if tx.timestamp.tzinfo else tx.timestamp
+                target_dt = date.replace(tzinfo=None) if date.tzinfo else date
+                
+                if tx_ts > target_dt: continue
                 
                 # Apply TX
                 # Cash Flow
@@ -125,7 +129,11 @@ class HistoryFactory:
             orders_state = {} # order_id -> status, details
             
             for log in sorted(state.order_history, key=lambda x: x.timestamp):
-                if log.timestamp > date: 
+                # Ensure both are naive for comparison
+                log_ts = log.timestamp.replace(tzinfo=None) if log.timestamp.tzinfo else log.timestamp
+                target_dt = date.replace(tzinfo=None) if date.tzinfo else date
+                
+                if log_ts > target_dt: 
                     break
                 
                 # Update state
@@ -187,7 +195,12 @@ class HistoryFactory:
                 sorted_tx = sorted(state.transactions, key=lambda x: x.timestamp)
                 last_tx = sorted_tx[-1]
                 
-                if start <= last_tx.timestamp <= end:
+                # Ensure all are naive for comparison
+                last_tx_ts = last_tx.timestamp.replace(tzinfo=None) if last_tx.timestamp.tzinfo else last_tx.timestamp
+                start_dt = start.replace(tzinfo=None) if start.tzinfo else start
+                end_dt = end.replace(tzinfo=None) if end.tzinfo else end
+                
+                if start_dt <= last_tx_ts <= end_dt:
                     entry_tx = sorted_tx[0]
                     entry_date = entry_tx.timestamp
                     exit_date = last_tx.timestamp
@@ -232,7 +245,13 @@ class HistoryFactory:
         results = []
         current = start_date
         
-        while current <= end_date:
+        while True:
+            # Ensure both are naive for comparison
+            curr_ts = current.replace(tzinfo=None) if current.tzinfo else current
+            end_ts = end_date.replace(tzinfo=None) if end_date.tzinfo else end_date
+            
+            if curr_ts > end_ts:
+                break
             # Set to End of Day (23:59:59)
             eod_timestamp = current.replace(hour=23, minute=59, second=59, microsecond=999999)
             

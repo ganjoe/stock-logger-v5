@@ -118,13 +118,11 @@ def run_test():
     # Setup Data
     ts_start, ts_mid, ts_end = create_historical_scenarios()
     
-    print(f"🚀 Launching {RUN_PAPER_SCRIPT}...")
+    RUN_PAPER_SCRIPT = "main_cli.py"
     
     # Start Process
-    # We need universal_newlines=True to handle strings instead of bytes
-    # buffering=1 for line buffering
     process = subprocess.Popen(
-        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--client-id", "556"],
+        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--mode", "bot"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -136,12 +134,12 @@ def run_test():
     try:
         # 1. Wait for Startup
         print("Waiting for startup...")
-        _wait_for_output(process, "🚀 Trading CLI", timeout=30)
+        _wait_for_output(process, "BOT Mode Initialized", timeout=30)
         
-        # 2. Switch to Bot Mode
-        _send_command(process, "user pta")
+        # 2. Connect (Needed because main_cli starts offline)
+        _send_command(process, "connect")
         resp = _read_json_response(process)
-        if not resp.get("success"): raise RuntimeError(f"Failed to switch to BOT mode: {resp}")
+        if not resp.get("success"): raise RuntimeError(f"Failed to connect: {resp}")
         
         # --- VERIFY HISTORICAL RECONSTRUCTION ---
         # Query at T_START + 1 day (Should show Order A Active, B not exist)
