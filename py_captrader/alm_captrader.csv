@@ -13,3 +13,5 @@ F-CAP-110,Mapping,Unique Execution Mapping,"Mappt `TradeTransaction.id` strikt a
 F-CAP-120,Mapping,Commission Handling,"Behandelt verzögerte CommissionReports. Merged Commission nachträglich in existierende Fills (basierend auf execId) oder speichert vorläufig 0.0.",-
 F-CAP-130,Validation,Order Status Mapping,"Mappt alle IBKR Status (ApiPending, PendingSubmit, PreSubmitted etc.) korrekt auf die TradeStatus Logik (OPENING, CLOSING).",-
 F-CAP-140,Recovery,Execution Reconciliation,"Beim Start (oder auf Befehl) führt der Adapter eine reqExecutions Query aus, um verpasste Fills (während Downtime) nachzuladen und den Status zu korrigieren.",-
+F-CAP-160,Error Handling,Suppress MarketData Error 10089,"Log-Filter fängt Fehler 10089 ab, da Fallback-Logik in `get_market_snapshot` existiert.",-
+F-CAP-170,Configuration,Global Market Data Switch,"Ermöglicht Umschalten zwischen FREE (Keine Live-Daten) und LIVE Modus.",-

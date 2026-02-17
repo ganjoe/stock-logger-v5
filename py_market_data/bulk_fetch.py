@@ -82,7 +82,14 @@ async def main_async(ticker_args: List[str], client_id: int, port: int):
     else:
         symbols = get_all_tickers()
 
-    print(f"\n📚 Starting 30-Year History Build ({config.description})...")
+    print(f"\n📚 Starting Smart History Build ({config.description})...")
+    
+    # [F-DATA-050] Pre-Scan Coverage to avoid redundant fetches
+    print("🔍 Scanning existing coverage...")
+    coverage_map = {}
+    for s in symbols:
+        coverage_map[s] = downloader.check_coverage(s)
+        
     current_year = datetime.now().year
     start_year = current_year - 30
     
@@ -93,11 +100,23 @@ async def main_async(ticker_args: List[str], client_id: int, port: int):
     for year in range(current_year, start_year - 1, -1):
         processed_batch += 1
         end_date = f"{year}1231 23:59:59" 
-        print(f"\n📅 Batch {processed_batch}/{total_batches}: Year {year} (End={end_date})")
+        print(f"\n📅 Batch {processed_batch}/{total_batches}: Year {year}")
         
-        # Create Requests for this year
-        # Note: '1 Y' is the max duration for robustness as per user hint.
-        reqs = [HistoryRequest(s, '1 Y', end_date=end_date) for s in symbols]
+        # Create Requests for this year (Filter by Coverage)
+        reqs = []
+        skipped = 0
+        for s in symbols:
+            # If we already have this year fully covered, and it's not the current year (always update current)
+            if year in coverage_map[s] and year != current_year:
+                skipped += 1
+                continue
+            reqs.append(HistoryRequest(s, '1 Y', end_date=end_date))
+            
+        if not reqs:
+            print(f"   -> Skipped (All {skipped} symbols have data).")
+            continue
+            
+        print(f"   -> Fetching {len(reqs)} symbols ({skipped} skipped)...")
         
         # Execute Batch
         # Downloader handles concurrency/pacing details

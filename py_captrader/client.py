@@ -16,6 +16,12 @@ class IBKRClient:
     Provides blocking methods for synchronous callers (TradeObject).
     """
     
+    # [F-CAP-170] Global Data Mode
+    from enum import Enum
+    class MarketDataMode(Enum):
+        FREE = "FREE"   # No Live Data (Snapshots return 0.0 or Last)
+        LIVE = "LIVE"   # Try Live -> Fallback to Delayed
+
     def __init__(self, host: str = "127.0.0.1", port: int = 7497, client_id: int = 1):
         self.host = host
         self.port = port
@@ -28,6 +34,20 @@ class IBKRClient:
         self._contract_cache: Dict[str, Contract] = {} 
         # Key: Symbol
         # Value: Qualified Contract with minTick, etc.
+
+        # [F-CAP-160] Suppress "Market Data Not Subscribed" Error (10089)
+        # We handle this via fallback, so the log noise is confusing.
+        import logging
+        class Filter10089(logging.Filter):
+            def filter(self, record):
+                # Suppress Error 10089
+                if "10089" in str(record.msg) or "market data is not subscribed" in str(record.msg):
+                    return False
+                return True
+        
+        logging.getLogger("ib_insync").addFilter(Filter10089())
+        
+        self.market_data_mode = self.MarketDataMode.FREE # Default to SAFE
 
     def connect(self):
         """Connects to TWS (Blocking)."""
@@ -156,16 +176,45 @@ class IBKRClient:
         )
         return bars
 
+
+        
+    def set_market_data_mode(self, mode_str: str):
+        """Sets the data mode (FREE or LIVE)."""
+        try:
+            self.market_data_mode = self.MarketDataMode[mode_str.upper()]
+            print(f"📡 Market Data Mode set to: {self.market_data_mode.value}")
+        except KeyError:
+            print(f"❌ Invalid Mode: {mode_str}. Use FREE or LIVE.")
+
     def get_market_snapshot(self, contract: Contract) -> float:
         """
-        Gets a live price snapshot using reqTickers.
-        reqTickers is more robust than reqMktData for snapshots as it waits for data.
+        Gets a live price snapshot.
+        Respects MarketDataMode.
         """
         import math
         
+        # 1. FREE MODE (DELAYED ONLY)
+        if self.market_data_mode == self.MarketDataMode.FREE:
+            # Force Delayed Data (3)
+            self.ib.reqMarketDataType(3)
+            tickers = self.ib.reqTickers(contract)
+            
+            if tickers:
+                t = tickers[0]
+                price = t.marketPrice()
+                if math.isnan(price):
+                     # Fallback to Last/Close
+                    price = t.last if not math.isnan(t.last) else t.close
+                
+                if math.isnan(price): return 0.0
+                return price
+            return 0.0
+            
+        # 2. LIVE MODE LOGIC (Existing)
         # [F-CAP-160] Adaptive Data Type: Try Live (1) -> Frozen (2) -> Delayed (3)
-        # However, reqTickers logic is internal to ib_insync.
-        # We must set ib.reqMarketDataType(3) globally or contextually.
+
+        
+
         # Strategy: 
         # 1. Try Live (Default)
         # 2. If NaN or Fail, switch to Delayed (3) and Retry

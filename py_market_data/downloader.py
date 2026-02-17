@@ -13,7 +13,43 @@ class BulkDownloader:
         self.ib = ib_client
         self.semaphore = asyncio.Semaphore(max_concurrent)
         self.pacing_delay = 0.1 # Default live pacing
+        self.pacing_delay = 0.1 # Default live pacing
         self.base_path = "./data/market_cache" 
+
+    def check_coverage(self, symbol: str) -> set:
+        """
+        Scans existing 1D.json to find fully covered years.
+        Returns a set of years (int) that have significant data (>200 days).
+        """
+        file_path = os.path.join(self.base_path, symbol.upper(), "charts", "1D.json")
+        if not os.path.exists(file_path):
+            return set()
+            
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+        except:
+            return set()
+            
+        # Count entries per year
+        year_counts = {}
+        for entry in data:
+            # Entry format: "t": "2023-01-01..."
+            ts = entry.get('t', entry.get('date', ''))
+            if len(ts) >= 4:
+                y = int(ts[:4])
+                year_counts[y] = year_counts.get(y, 0) + 1
+                
+        # Threshold: 200 trading days implies full year
+        # (Trading years have ~252 days)
+        covered_years = {y for y, count in year_counts.items() if count > 200}
+        
+        # Always exclude current year from "Coverage" to force update
+        current_year = datetime.now().year
+        if current_year in covered_years:
+            covered_years.remove(current_year)
+            
+        return covered_years 
 
     async def verify_market_data_type(self) -> BatchConfig:
         """Determines market data permissions (Live vs Delayed) via robust smoke test."""
