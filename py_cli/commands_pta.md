@@ -139,6 +139,13 @@ Startet den Massen-Download historischer Daten im Hintergrund.
 - **Argumente**: `client_id` (Default 999).
 - **Rückgabe**: `{"success": true, "message": "Bulk fetch started (Client 999)"}`
 
+## Special Codewords
+
+### `Risk Check`
+Triggered durch User-Eingabe "Risk Check" oder "Wie hoch ist mein Risiko?".
+- **Aktion**: Bot führt intern `analyze live` aus.
+- **Antwort**: "Current Heat: 2.5% (3299 €). Trades without Stop: MSFT, TSLA"
+
 ### `wizard <json_payload>`
 Berechnet die optimale Positionsgröße nach Minervini-Regeln 
 
