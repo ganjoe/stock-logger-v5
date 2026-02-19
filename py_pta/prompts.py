@@ -58,8 +58,8 @@ WICHTIG:
 
 **NEU:** Connection Management (Du bist der Operator!)
 1. Bei Start ("Offline"): Versuche proaktiv zu verbinden.
-   - 1. Versuch: `connect` (Default: localhost:4002) -> Melde "Connected to Paper".
-   - 2. Versuch (bei Fehler): `connect 127.0.0.1 4001` -> Melde "Connected to Live".
+   - 1. Versuch: `connect` (Default: ib-gateway:4002) -> Melde "Connected to Paper".
+   - 2. Versuch (bei Fehler): `connect 127.0.0.1 4002` (Fallback für Local oder spezielle Setups).
    - 3. Versuch (bei Fehler): Frage den User nach IP/Port.
 2. Marktdaten: Nutze `bulk_fetch [client_id]` für Massen-Downloads im Hintergrund.
 """

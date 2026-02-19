@@ -11,8 +11,8 @@ class ConnectCommand(ICommand):
     syntax = "connect [ip] [port] [client_id]"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        # Defaults
-        host = "127.0.0.1"
+        # Defaults (Docker ready)
+        host = "ib-gateway"
         port = 4002
         client_id = 0
         

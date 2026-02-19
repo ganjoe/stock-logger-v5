@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Dein Python Programm
   stock-logger:
     build: .
     container_name: stock_logger_app
@@ -12,6 +13,21 @@ services:
       - ./logs:/app/logs
     environment:
       - PYTHONUNBUFFERED=1
-    stdin_open: true # Allows interactive CLI usage if needed
+    stdin_open: true
     tty: true
     restart: always
+    depends_on:
+      - ib-gateway
+
+  # Das IB Gateway (Hinzugefügt!)
+  ib-gateway:
+    image: gnzsnz/ib-gateway:latest
+    container_name: ib_gateway_app
+    restart: always
+    environment:
+      - TWS_USERID=DEIN_USER
+      - TWS_PASSWORD=DEIN_PASSWORT
+      - TRADING_MODE=paper # oder live
+    ports:
+      - "4002:4002" # API Port für Paper Trading
+      - "5900:5900" # VNC Port (um mal reinzuschauen)
