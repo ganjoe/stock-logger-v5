@@ -1,5 +1,5 @@
 # Base Image
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 # Install system dependencies (Git as requested)
 RUN apt-get update && apt-get install -y \
@@ -9,15 +9,15 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install
+# Step 1: Copy requirements FIRST for better layer caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Step 2: Copy the rest of the code
 COPY . .
 
 # Expose Dashboard Port
 EXPOSE 8000
 
-# Default Command: Start the Dashboard
-CMD ["python", "run_dashboard_foreground.py"]
+# Start script (Note: main_cli.py for CLI or run_dashboard_foreground.py for Web)
+CMD ["python", "main_cli.py"]
