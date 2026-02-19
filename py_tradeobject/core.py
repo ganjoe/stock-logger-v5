@@ -46,8 +46,9 @@ class TradeObject:
                 obj = cls(ticker=ticker, id=trade_id, storage_dir=storage_dir)
                 obj.set_broker(broker)
                 return obj
-            except Exception:
+            except Exception as e:
                 # Fallback if load fails
+                print(f"  [TradeObject] Warning: Could not load existing trade {trade_id}: {e}")
                 pass
                 
         # Create New (Watchlist/Planned)
@@ -117,8 +118,7 @@ class TradeObject:
         except Exception as e:
             # Handle unknown symbols or connection errors gracefully
             # This allows historical reconstruction for dummy/delisted tickers.
-            # print(f"WARNING: Could not sync chart for {self.ticker}: {e}")
-            pass
+            print(f"  [TradeObject] Warning: Could not sync chart for {self.ticker}: {e}")
 
     @property
     def id(self) -> str:
@@ -164,9 +164,9 @@ class TradeObject:
         """
         try:
             self._ensure_chart(timeframe, lookback)
-        except Exception:
-            # Silently ignore sync errors during history replay
-            pass
+        except Exception as e:
+            # Informative log instead of silence
+            print(f"  [TradeObject] Warning: Sync failed during get_chart for {self.ticker}: {e}")
         return self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
 
     def _load(self):

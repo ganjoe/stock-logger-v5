@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  stock-logger:
+    build: .
+    container_name: stock_logger_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./secrets:/app/secrets
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true # Allows interactive CLI usage if needed
+    tty: true
+    restart: always

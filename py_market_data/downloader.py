@@ -28,7 +28,8 @@ class BulkDownloader:
         try:
             with open(file_path, 'r') as f:
                 data = json.load(f)
-        except:
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"  [BulkDownloader] Warning: Could not read coverage for {symbol}: {e}")
             return set()
             
         # Count entries per year
@@ -78,8 +79,9 @@ class BulkDownloader:
             if bars:
                 print("✅ Live Data Confirmed. Using: Paid (Live)")
                 return BatchConfig(1, 20, '30 Y', 0.1, "Paid Subscription (Live)") 
-        except Exception:
-            pass # Fail silently, try delayed
+        except Exception as e:
+            # Fallback to delayed check
+            pass 
 
         # Test 2: Delayed (3)
         print("🔄 Switching to Delayed Data check...")
@@ -93,7 +95,9 @@ class BulkDownloader:
                 print("✅ Delayed Data Confirmed. Using: Free (Delayed)")
                 return BatchConfig(3, 1, '1 Y', 3.0, "Free Subscription (Delayed / Strict Pacing)") # 3.0s pacing as user suggested
         except Exception as e:
-            print(f"❌ Market Data Check Failed: {e}")
+            print(f"❌ Market Data Permission Check Failed (Symbol: SPY): {e}")
+            if "pacing" in str(e).lower() or "162" in str(e):
+                print("💡 Hint: Possible IBKR Pacing Violation. Wait a few seconds and try again.")
 
         # Fallback
         return BatchConfig(4, 1, '1 Y', 5.0, "Frozen/Unknown (Fallback)")

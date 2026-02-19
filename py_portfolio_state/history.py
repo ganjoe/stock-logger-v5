@@ -39,7 +39,7 @@ class HistoryFactory:
                                 
                             self._cache.append(trade_obj)
                     except Exception as e:
-                        pass
+                        print(f"  [HistoryFactory] Warning: Failed to load trade {full_path}: {e}")
 
     def get_snapshot_at(self, date: datetime) -> PortfolioSnapshot:
         """
