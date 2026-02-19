@@ -1,1 +1,4 @@
 ib-insync>=0.9.86
+google-generativeai
+requests
+pandas
