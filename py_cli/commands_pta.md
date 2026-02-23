@@ -37,6 +37,8 @@ Liefert den Status der Börse (NYSE), Zeit bis zum nächsten Event und Zeitstemp
 Der zentrale Endpoint für alle Handelsaktionen. Parsed das JSON und delegiert an `py_tradeobject`.
 
 #### 1. ENTER (Neuer Trade)
+
+**Limit Order** (mit Preis):
 ```json
 {
   "action": "ENTER",
@@ -46,6 +48,18 @@ Der zentrale Endpoint für alle Handelsaktionen. Parsed das JSON und delegiert a
   "stop_loss": 140.0
 }
 ```
+
+**Market Order** (ohne `limit_price`):
+```json
+{
+  "action": "ENTER",
+  "ticker": "AAPL",
+  "quantity": 10
+}
+```
+> Wird `limit_price` weggelassen oder auf `null` gesetzt, erzeugt `TradeObject.enter` eine **Market Order**.
+> `stop_loss` ist ebenfalls optional.
+
 **Antwort**:
 ```json
 {

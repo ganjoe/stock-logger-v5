@@ -74,6 +74,7 @@ class TradeCommand(ICommand):
         trade.set_broker(broker)
         
         # Execute
+        # limit=None → Market Order, limit=float → Limit Order
         broker_oid = trade.enter(quantity=float(qty), limit_price=limit, stop_loss=stop)
         
         return CommandResponse(

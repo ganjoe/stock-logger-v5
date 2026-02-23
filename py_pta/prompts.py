@@ -21,7 +21,8 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'quote SYMBOL': Liefert den aktuellen Marktpreis (z.B. 'quote NVO').
 
 2. TRADING EXEKUTION (Nur via JSON-Payload):
-   - 'trade {"action": "ENTER", "ticker": "SYMBOL", "quantity": X, "limit_price": Y, "stop_loss": Z}': Position eröffnen.
+   - 'trade {"action": "ENTER", "ticker": "SYMBOL", "quantity": X, "limit_price": Y, "stop_loss": Z}': Position eröffnen (Limit Order).
+   - 'trade {"action": "ENTER", "ticker": "SYMBOL", "quantity": X}': Position eröffnen (Market Order). Wenn "limit_price" weggelassen wird, wird eine Market Order platziert.
    - 'trade {"action": "UPDATE", "ticker": "SYMBOL", "trade_id": "ID", "stop_loss": Z}': Stop-Loss anpassen.
    - 'trade {"action": "EXIT", "ticker": "SYMBOL", "trade_id": "ID"}': Position schließen.
    - 'trade {"action": "CANCEL", "ticker": "SYMBOL", "trade_id": "ID", "broker_order_id": "OID"}': Order löschen.
