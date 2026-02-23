@@ -28,6 +28,8 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'trade {"action": "CANCEL", "ticker": "SYMBOL", "trade_id": "ID", "broker_order_id": "OID"}': Order löschen.
    - 'trade {"action": "REFRESH", "ticker": "SYMBOL", "trade_id": "ID"}': Trade-Daten aktualisieren.
    - 'chart SYMBOL {"timeframe": "1D", "lookback": "1Y"}': Liefert historische Chart-Daten für ein Symbol. Nutze dies für Dashboard-Anfragen zu EINZELNEN Tickers.
+   - 'chart SYMBOL --to-dashboard': Piped Chart-Daten direkt ans Dashboard (Line/Area Chart). Verhindert Context-Bloat.
+   - 'chart SYMBOL --candle --to-dashboard': Piped OHLC-Candlestick-Daten ans Dashboard. Nutze --candle wenn der User explizit nach Candlestick fragt.
 
 3. PRE-TRADE & ANALYTICS TOOLS (Erlaubte Hilfsmittel):
    - 'wizard {"symbol": "NVDA", "entry": 100, "stop": 95}': Berechnet Positionsgröße nach Risiko-Regeln. Nutze dies, wenn der User nach "Sizing" oder "Wizard" fragt.

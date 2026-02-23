@@ -124,6 +124,15 @@
             lineWidth: 2,
         }) : null;
 
+        const candleSeries = chart ? chart.addCandlestickSeries({
+            upColor: '#22c55e',
+            downColor: '#ef4444',
+            borderUpColor: '#16a34a',
+            borderDownColor: '#dc2626',
+            wickUpColor: '#22c55e',
+            wickDownColor: '#ef4444',
+        }) : null;
+
         // Resize handling
         window.addEventListener('resize', () => {
             if (chart) chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
@@ -147,27 +156,40 @@
 
             eventSource.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
-                logDebug('📩 Received SSE: ' + msg.msg_type);
+                logDebug('📩 Received SSE: ' + msg.msg_type + ' (' + msg.payload_type + ')');
 
                 if (msg.msg_type === 'CHART_UPDATE') {
                     document.getElementById('payload-info').innerText = 'Viewing: ' + msg.payload_type;
 
                     if (msg.data && msg.data.length > 0) {
-                        // Trusting Backend for sorting and deduplication [Structural Fix 2026]
-                        const chartData = msg.data.map(item => ({
-                            time: item.t,
-                            value: item.v || item.c || 0
-                        }));
-
-                        areaSeries.setData(chartData);
+                        if (msg.payload_type === 'CANDLE') {
+                            // OHLC Candlestick mode
+                            areaSeries.setData([]);
+                            const ohlc = msg.data.map(item => ({
+                                time: item.t,
+                                open: item.o, high: item.h,
+                                low: item.l, close: item.c
+                            }));
+                            candleSeries.setData(ohlc);
+                            logDebug('🕯️ Candlestick chart updated with ' + ohlc.length + ' bars');
+                        } else {
+                            // Area chart (PRICE, PNL, etc.) – existing behavior
+                            candleSeries.setData([]);
+                            const chartData = msg.data.map(item => ({
+                                time: item.t,
+                                value: item.v || item.c || 0
+                            }));
+                            areaSeries.setData(chartData);
+                            logDebug('📊 Area chart updated with ' + chartData.length + ' points');
+                        }
                         chart.timeScale().fitContent();
-                        logDebug('📊 Chart updated with ' + chartData.length + ' points (Structural Integrity)');
                     } else {
                         logDebug('⚠️ Received empty data array');
                     }
                 }
                 else if (msg.msg_type === 'CLEAR') {
                     areaSeries.setData([]);
+                    candleSeries.setData([]);
                     document.getElementById('payload-info').innerText = 'Waiting for data...';
                     logDebug('🧹 Chart cleared');
                 }
