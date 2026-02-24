@@ -1,0 +1,26 @@
+{
+  "id": "82c583c4-bf0d-44e4-83ee-153f8e9e9cb5",
+  "ticker": "CTKB",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "775cf6d2",
+      "timestamp": "2025-11-14T14:40:00",
+      "type": "ENTRY",
+      "quantity": 50.0,
+      "price": 5.65,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2025-11-14T14:40:00",
+  "notes": "legacy | CYTEK BIOSCIENCES INC | ISIN:US23285D1090",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,32 @@
+{
+  "id": "d0d1479d-8cfb-455c-b3d0-808a6493c087",
+  "ticker": "NVO",
+  "status": "OPENING",
+  "trade_type": "STOCK",
+  "transactions": [],
+  "order_history": [
+    {
+      "timestamp": "2026-02-24T22:18:58.674089",
+      "order_id": "481",
+      "action": "BUY",
+      "status": "SUBMITTED",
+      "message": "Initial Entry",
+      "quantity": 2.0,
+      "type": "MKT",
+      "limit_price": null,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial Entry",
+      "details": {}
+    }
+  ],
+  "active_orders": {
+    "481": "ENTRY"
+  },
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": null,
+  "notes": "",
+  "currency": "USD",
+  "exchange": ""
+}

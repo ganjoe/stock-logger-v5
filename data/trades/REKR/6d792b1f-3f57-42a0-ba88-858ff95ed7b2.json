@@ -1,0 +1,36 @@
+{
+  "id": "6d792b1f-3f57-42a0-ba88-858ff95ed7b2",
+  "ticker": "REKR",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "a53c0048",
+      "timestamp": "2025-10-13T09:37:59",
+      "type": "ENTRY",
+      "quantity": 100.0,
+      "price": 2.02,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "d6e7d8ae",
+      "timestamp": "2025-10-16T14:00:51",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 2.54,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-13T09:37:59",
+  "notes": "legacy | REKOR SYSTEMS INC | ISIN:US7594191048",
+  "currency": "USD",
+  "exchange": ""
+}

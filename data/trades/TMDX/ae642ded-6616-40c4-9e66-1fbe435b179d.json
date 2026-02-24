@@ -1,0 +1,26 @@
+{
+  "id": "ae642ded-6616-40c4-9e66-1fbe435b179d",
+  "ticker": "TMDX",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "fde072f6",
+      "timestamp": "2025-10-23T15:40:35",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 128.64,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2025-10-23T15:40:35",
+  "notes": "legacy | TRANSMEDICS GROUP INC | ISIN:US89377M1099",
+  "currency": "USD",
+  "exchange": ""
+}

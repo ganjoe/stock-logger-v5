@@ -1,0 +1,36 @@
+{
+  "id": "f117c8ab-3482-47bd-8f18-080b7c2fcf37",
+  "ticker": "MREO",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "213b4336",
+      "timestamp": "2025-10-20T11:34:29",
+      "type": "ENTRY",
+      "quantity": 200.0,
+      "price": 2.2,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "c32dffab",
+      "timestamp": "2025-10-20T15:06:38",
+      "type": "EXIT",
+      "quantity": -200.0,
+      "price": 2.22,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-20T11:34:29",
+  "notes": "legacy | MEREO BIOPHARMA GROUP PL-ADR | ISIN:US5894921072",
+  "currency": "USD",
+  "exchange": ""
+}
