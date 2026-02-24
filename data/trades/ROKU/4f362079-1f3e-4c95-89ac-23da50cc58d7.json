@@ -1,0 +1,36 @@
+{
+  "id": "4f362079-1f3e-4c95-89ac-23da50cc58d7",
+  "ticker": "ROKU",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "8687abff",
+      "timestamp": "2025-02-14T11:16:35",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 96.92,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "55dedd38",
+      "timestamp": "2025-02-24T10:46:49",
+      "type": "EXIT",
+      "quantity": -5.0,
+      "price": 88.28,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T11:16:35",
+  "notes": "legacy | ROKU INC | ISIN:US77543R1023",
+  "currency": "USD",
+  "exchange": ""
+}

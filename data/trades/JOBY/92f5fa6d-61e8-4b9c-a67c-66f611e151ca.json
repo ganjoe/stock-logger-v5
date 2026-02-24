@@ -1,0 +1,36 @@
+{
+  "id": "92f5fa6d-61e8-4b9c-a67c-66f611e151ca",
+  "ticker": "JOBY",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "2573410b",
+      "timestamp": "2025-10-20T15:38:33",
+      "type": "ENTRY",
+      "quantity": 15.0,
+      "price": 17.3,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "5a09ae8d",
+      "timestamp": "2025-10-21T14:08:05",
+      "type": "EXIT",
+      "quantity": -15.0,
+      "price": 16.12,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-20T15:38:33",
+  "notes": "legacy | JOBY AVIATION INC | ISIN:KYG651631007",
+  "currency": "USD",
+  "exchange": ""
+}

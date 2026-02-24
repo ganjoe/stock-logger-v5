@@ -1,0 +1,36 @@
+{
+  "id": "4d12f707-e43d-4a41-9e52-e0e0bddb2013",
+  "ticker": "PCT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "d7243054",
+      "timestamp": "2025-11-14T09:50:13",
+      "type": "ENTRY",
+      "quantity": 30.0,
+      "price": 8.83,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "47f5ed5e",
+      "timestamp": "2025-11-21T13:06:08",
+      "type": "EXIT",
+      "quantity": -30.0,
+      "price": 8.35,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-14T09:50:13",
+  "notes": "legacy | PURECYCLE TECHNOLOGIES INC | ISIN:US74623V1035",
+  "currency": "USD",
+  "exchange": ""
+}

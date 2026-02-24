@@ -1,0 +1,26 @@
+{
+  "id": "50db2b77-a69c-4391-a257-1d7598ad930f",
+  "ticker": "NVDA",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1c96b09d",
+      "timestamp": "2026-01-22T12:00:17",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 185.55,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-22T12:00:17",
+  "notes": "legacy | NVIDIA CORP | ISIN:US67066G1040",
+  "currency": "USD",
+  "exchange": ""
+}

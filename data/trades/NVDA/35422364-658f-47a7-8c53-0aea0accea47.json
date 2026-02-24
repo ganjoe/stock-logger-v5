@@ -50,5 +50,7 @@
   "initial_stop_price": 589.594827262067,
   "current_stop_price": 589.594827262067,
   "entry_date": "2025-03-03T00:00:00",
-  "notes": ""
+  "notes": "",
+  "currency": "USD",
+  "exchange": ""
 }

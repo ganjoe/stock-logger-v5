@@ -1,0 +1,36 @@
+{
+  "id": "ec94e5cb-fe02-4a1f-9c81-1c62bf4702ae",
+  "ticker": "NXT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "66accf79",
+      "timestamp": "2025-02-26T15:23:09",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 47.2,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "dea09ba2",
+      "timestamp": "2025-02-27T15:08:11",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 45.46,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-26T15:23:09",
+  "notes": "legacy | NEXTRACKER INC-CL A | ISIN:US65290E1010",
+  "currency": "USD",
+  "exchange": ""
+}

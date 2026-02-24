@@ -1,0 +1,36 @@
+{
+  "id": "2a6412f7-3e08-4be8-ba1c-6c7446875b38",
+  "ticker": "WRAP",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "26b126fd",
+      "timestamp": "2026-01-15T12:43:49",
+      "type": "ENTRY",
+      "quantity": 100.0,
+      "price": 3.21,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "da01db05",
+      "timestamp": "2026-01-16T09:45:43",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 2.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2026-01-15T12:43:49",
+  "notes": "legacy | WRAP TECHNOLOGIES INC | ISIN:US98212N1072",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ba1eed20-f0a3-43fb-8044-40416519894b",
+  "ticker": "IREN",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "e537342b",
+      "timestamp": "2026-02-04T15:13:28",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 45.33,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-02-04T15:13:28",
+  "notes": "legacy | IREN LTD | ISIN:AU0000185993",
+  "currency": "USD",
+  "exchange": ""
+}

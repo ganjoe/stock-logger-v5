@@ -1,0 +1,36 @@
+{
+  "id": "457a6d42-d560-4e45-9c39-c568329742ec",
+  "ticker": "CLDI",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "0f99b9e6",
+      "timestamp": "2025-02-05T19:08:44",
+      "type": "ENTRY",
+      "quantity": 250.0,
+      "price": 1.54,
+      "commission": 2.5,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "218db30b",
+      "timestamp": "2025-02-28T10:10:20",
+      "type": "EXIT",
+      "quantity": -250.0,
+      "price": 0.84,
+      "commission": 2.11,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-05T19:08:44",
+  "notes": "legacy | CALIDI BIOTHERAPEUTICS INC | ISIN:US3207033099",
+  "currency": "USD",
+  "exchange": ""
+}

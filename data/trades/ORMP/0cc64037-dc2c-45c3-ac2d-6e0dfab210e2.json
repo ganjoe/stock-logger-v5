@@ -1,0 +1,36 @@
+{
+  "id": "0cc64037-dc2c-45c3-ac2d-6e0dfab210e2",
+  "ticker": "ORMP",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "e80989a4",
+      "timestamp": "2025-02-11T12:51:14",
+      "type": "ENTRY",
+      "quantity": 50.0,
+      "price": 2.92,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e4f4d25d",
+      "timestamp": "2025-02-11T13:39:09",
+      "type": "EXIT",
+      "quantity": -50.0,
+      "price": 2.69,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-11T12:51:14",
+  "notes": "legacy | ORAMED PHARMACEUTICALS INC | ISIN:US68403P2039",
+  "currency": "USD",
+  "exchange": ""
+}

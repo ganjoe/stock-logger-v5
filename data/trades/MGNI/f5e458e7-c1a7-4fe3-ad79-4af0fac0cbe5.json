@@ -1,0 +1,36 @@
+{
+  "id": "f5e458e7-c1a7-4fe3-ad79-4af0fac0cbe5",
+  "ticker": "MGNI",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1c028330",
+      "timestamp": "2025-02-10T09:30:14",
+      "type": "ENTRY",
+      "quantity": 26.0,
+      "price": 20.21,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "5c690fff",
+      "timestamp": "2025-02-26T15:36:14",
+      "type": "EXIT",
+      "quantity": -26.0,
+      "price": 17.04,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-10T09:30:14",
+  "notes": "legacy | MAGNITE INC | ISIN:US55955D1000",
+  "currency": "USD",
+  "exchange": ""
+}

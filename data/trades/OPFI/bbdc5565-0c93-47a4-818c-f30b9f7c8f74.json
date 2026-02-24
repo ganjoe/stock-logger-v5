@@ -1,0 +1,36 @@
+{
+  "id": "bbdc5565-0c93-47a4-818c-f30b9f7c8f74",
+  "ticker": "OPFI",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "70013ec4",
+      "timestamp": "2025-02-05T15:53:56",
+      "type": "ENTRY",
+      "quantity": 30.0,
+      "price": 15.51,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "58872853",
+      "timestamp": "2025-02-14T10:42:10",
+      "type": "EXIT",
+      "quantity": -30.0,
+      "price": 13.35,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-05T15:53:56",
+  "notes": "legacy | OPPFI INC | ISIN:US68386H1032",
+  "currency": "USD",
+  "exchange": ""
+}

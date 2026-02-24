@@ -1,0 +1,36 @@
+{
+  "id": "bbef6722-49a2-4cef-8963-5e03592a1897",
+  "ticker": "ABAT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "f48b7a8a",
+      "timestamp": "2025-09-24T15:55:40",
+      "type": "ENTRY",
+      "quantity": 50.0,
+      "price": 4.68,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e9f43da0",
+      "timestamp": "2025-10-06T09:30:01",
+      "type": "EXIT",
+      "quantity": -50.0,
+      "price": 5.22,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-24T15:55:40",
+  "notes": "legacy | AMERICAN BATTERY TECHNOLOGY | ISIN:US02451V3096",
+  "currency": "USD",
+  "exchange": ""
+}

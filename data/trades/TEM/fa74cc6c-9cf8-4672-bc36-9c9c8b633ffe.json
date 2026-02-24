@@ -1,0 +1,36 @@
+{
+  "id": "fa74cc6c-9cf8-4672-bc36-9c9c8b633ffe",
+  "ticker": "TEM",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "98355a41",
+      "timestamp": "2025-08-27T12:14:57",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 72.91,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "0b880819",
+      "timestamp": "2025-09-24T15:32:40",
+      "type": "EXIT",
+      "quantity": -3.0,
+      "price": 79.89,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-08-27T12:14:57",
+  "notes": "legacy | TEMPUS AI INC | ISIN:US88023B1035",
+  "currency": "USD",
+  "exchange": ""
+}

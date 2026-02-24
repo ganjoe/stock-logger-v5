@@ -1,0 +1,36 @@
+{
+  "id": "5cc0bc68-3bfe-4e9b-aaef-7d88a04fbb73",
+  "ticker": "FLS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1d329e03",
+      "timestamp": "2026-01-13T10:53:41",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 74.93,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "cab785ce",
+      "timestamp": "2026-01-14T10:34:36",
+      "type": "EXIT",
+      "quantity": -4.0,
+      "price": 73.57,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2026-01-13T10:53:41",
+  "notes": "legacy | FLOWSERVE CORP | ISIN:US34354P1057",
+  "currency": "USD",
+  "exchange": ""
+}

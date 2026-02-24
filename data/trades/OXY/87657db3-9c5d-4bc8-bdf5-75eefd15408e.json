@@ -1,0 +1,36 @@
+{
+  "id": "87657db3-9c5d-4bc8-bdf5-75eefd15408e",
+  "ticker": "OXY",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "59477451",
+      "timestamp": "2025-02-18T15:52:13",
+      "type": "ENTRY",
+      "quantity": 12.0,
+      "price": 48.91,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "04bfd358",
+      "timestamp": "2025-02-28T10:10:01",
+      "type": "EXIT",
+      "quantity": -12.0,
+      "price": 48.45,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-18T15:52:13",
+  "notes": "legacy | OCCIDENTAL PETROLEUM CORP | ISIN:US6745991058",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,36 @@
+{
+  "id": "d705d70b-3e16-448d-8d93-0c21e9e090a3",
+  "ticker": "IREN",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "e0aea238",
+      "timestamp": "2025-09-10T09:49:47",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 32.01,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "6e17dd33",
+      "timestamp": "2025-10-08T09:30:07",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 59.53,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-10T09:49:47",
+  "notes": "legacy | IREN LTD | ISIN:AU0000185993",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,36 @@
+{
+  "id": "37587833-074c-48ef-8f8f-fb28089cacb7",
+  "ticker": "BE",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "ac851152",
+      "timestamp": "2025-11-13T09:44:27",
+      "type": "ENTRY",
+      "quantity": -2.0,
+      "price": 112.12,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "89fc15b8",
+      "timestamp": "2025-12-01T09:36:37",
+      "type": "EXIT",
+      "quantity": 2.0,
+      "price": 109.69,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-13T09:44:27",
+  "notes": "legacy | BLOOM ENERGY CORP- A | ISIN:US0937121079",
+  "currency": "USD",
+  "exchange": ""
+}

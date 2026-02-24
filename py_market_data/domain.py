@@ -11,6 +11,9 @@ class HistoryRequest:
     what_to_show: str = 'TRADES'
     use_rth: bool = True  # Regular Trading Hours
     end_date: str = ''   # Optional end date (YYYYMMDD HH:mm:ss)
+    save_as: str = ''    # If set, save data under this ticker name instead of symbol
+    currency: str = 'USD'   # Currency for contract qualification
+    exchange: str = 'SMART' # Exchange for contract qualification
 
 @dataclass
 class BatchDownloadResult:
@@ -19,6 +22,7 @@ class BatchDownloadResult:
     success: bool
     data_points_count: int
     error_message: Optional[str] = None
+    error_category: Optional[str] = None  # QUALIFY_FAILED, NO_DATA, NO_PERMISSIONS, TIMEOUT, PACING, UNKNOWN
 
 @dataclass(frozen=True)
 class BatchConfig:

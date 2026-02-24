@@ -1,0 +1,36 @@
+{
+  "id": "7672a5c1-5621-46f2-866d-b0b31f0683c9",
+  "ticker": "AMD",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "5fa3c4d6",
+      "timestamp": "2025-10-24T10:02:39",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 250.8,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "cf0ec29c",
+      "timestamp": "2025-10-28T14:12:04",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 259.48,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-24T10:02:39",
+  "notes": "legacy | ADVANCED MICRO DEVICES | ISIN:US0079031078",
+  "currency": "USD",
+  "exchange": ""
+}

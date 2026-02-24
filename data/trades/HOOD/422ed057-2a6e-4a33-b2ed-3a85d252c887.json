@@ -1,0 +1,36 @@
+{
+  "id": "422ed057-2a6e-4a33-b2ed-3a85d252c887",
+  "ticker": "HOOD",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "378c05e6",
+      "timestamp": "2025-10-20T11:01:54",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 137.67,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "2c10d19b",
+      "timestamp": "2025-10-21T09:43:08",
+      "type": "EXIT",
+      "quantity": -4.0,
+      "price": 132.72,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-20T11:01:54",
+  "notes": "legacy | ROBINHOOD MARKETS INC - A | ISIN:US7707001027",
+  "currency": "USD",
+  "exchange": ""
+}

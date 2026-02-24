@@ -1,0 +1,26 @@
+{
+  "id": "88f256a5-be7d-42e8-a93a-931f52d5cbd8",
+  "ticker": "BMY",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "4b631db0",
+      "timestamp": "2026-01-08T15:23:53",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 55.86,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-08T15:23:53",
+  "notes": "legacy | BRISTOL-MYERS SQUIBB CO | ISIN:US1101221083",
+  "currency": "USD",
+  "exchange": ""
+}

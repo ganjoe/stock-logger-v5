@@ -1,0 +1,36 @@
+{
+  "id": "991478fa-10fd-4674-96e5-84439da45596",
+  "ticker": "BMNR",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "762ededd",
+      "timestamp": "2025-12-04T12:43:00",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 34.56,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "45cdb080",
+      "timestamp": "2026-01-12T10:54:40",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 30.84,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-12-04T12:43:00",
+  "notes": "legacy | BITMINE IMMERSION TECHNOLOGI | ISIN:US09175A2069",
+  "currency": "USD",
+  "exchange": ""
+}

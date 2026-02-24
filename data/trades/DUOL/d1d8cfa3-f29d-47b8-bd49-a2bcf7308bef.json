@@ -1,0 +1,46 @@
+{
+  "id": "d1d8cfa3-f29d-47b8-bd49-a2bcf7308bef",
+  "ticker": "DUOL",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "a62a8e0e",
+      "timestamp": "2025-09-08T10:14:29",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 272.31,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "50d13746",
+      "timestamp": "2025-09-11T09:49:13",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 295.76,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "169f7e4c",
+      "timestamp": "2025-09-18T11:20:39",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 287.99,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-08T10:14:29",
+  "notes": "legacy | DUOLINGO | ISIN:US26603R1068",
+  "currency": "USD",
+  "exchange": ""
+}

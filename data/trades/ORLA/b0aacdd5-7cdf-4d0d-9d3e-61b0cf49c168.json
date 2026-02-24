@@ -1,0 +1,36 @@
+{
+  "id": "b0aacdd5-7cdf-4d0d-9d3e-61b0cf49c168",
+  "ticker": "ORLA",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "2dd8ee72",
+      "timestamp": "2025-10-23T15:34:46",
+      "type": "ENTRY",
+      "quantity": 25.0,
+      "price": 10.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "634d96d5",
+      "timestamp": "2025-11-05T13:54:56",
+      "type": "EXIT",
+      "quantity": -25.0,
+      "price": 9.65,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-23T15:34:46",
+  "notes": "legacy | ORLA MINING LTD | ISIN:CA68634K1066",
+  "currency": "USD",
+  "exchange": ""
+}

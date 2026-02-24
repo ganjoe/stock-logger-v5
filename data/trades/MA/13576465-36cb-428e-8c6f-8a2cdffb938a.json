@@ -1,0 +1,36 @@
+{
+  "id": "13576465-36cb-428e-8c6f-8a2cdffb938a",
+  "ticker": "MA",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1bbc6dcd",
+      "timestamp": "2025-11-26T11:49:19",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 547.13,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "142c1190",
+      "timestamp": "2026-01-13T09:30:25",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 555.17,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-26T11:49:19",
+  "notes": "legacy | MASTERCARD INC - A | ISIN:US57636Q1040",
+  "currency": "USD",
+  "exchange": ""
+}

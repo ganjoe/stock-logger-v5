@@ -1,0 +1,36 @@
+{
+  "id": "442b0efd-867e-4942-a764-6d13f26be2a1",
+  "ticker": "SSYS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "181d0e42",
+      "timestamp": "2025-08-27T13:18:24",
+      "type": "ENTRY",
+      "quantity": 21.0,
+      "price": 10.82,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "90379842",
+      "timestamp": "2025-11-20T14:45:09",
+      "type": "EXIT",
+      "quantity": -21.0,
+      "price": 8.25,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-08-27T13:18:24",
+  "notes": "legacy | STRATASYS LTD | ISIN:IL0011267213",
+  "currency": "USD",
+  "exchange": ""
+}

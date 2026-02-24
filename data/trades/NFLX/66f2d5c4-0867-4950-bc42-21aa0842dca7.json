@@ -1,0 +1,46 @@
+{
+  "id": "66f2d5c4-0867-4950-bc42-21aa0842dca7",
+  "ticker": "NFLX",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "d3fc4e05",
+      "timestamp": "2025-12-09T15:21:29",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 96.64,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "962b3673",
+      "timestamp": "2025-12-11T12:05:44",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 94.63,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "878dfdf3",
+      "timestamp": "2026-01-12T10:40:40",
+      "type": "EXIT",
+      "quantity": -6.0,
+      "price": 89.74,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-12-09T15:21:29",
+  "notes": "legacy | NETFLIX INC | ISIN:US64110L1061",
+  "currency": "USD",
+  "exchange": ""
+}

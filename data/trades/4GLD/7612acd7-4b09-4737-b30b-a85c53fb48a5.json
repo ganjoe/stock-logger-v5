@@ -1,0 +1,36 @@
+{
+  "id": "7612acd7-4b09-4737-b30b-a85c53fb48a5",
+  "ticker": "4GLD",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "0ef862ef",
+      "timestamp": "2025-10-23T07:32:33",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 114.14,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "839d3c3f",
+      "timestamp": "2026-01-06T06:44:10",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 122.5,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-23T07:32:33",
+  "notes": "legacy | XETRA-GOLD | ISIN:DE000A0S9GB0",
+  "currency": "EUR",
+  "exchange": ""
+}

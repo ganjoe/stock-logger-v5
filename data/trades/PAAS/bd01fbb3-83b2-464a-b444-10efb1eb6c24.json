@@ -1,0 +1,36 @@
+{
+  "id": "bd01fbb3-83b2-464a-b444-10efb1eb6c24",
+  "ticker": "PAAS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "807aff92",
+      "timestamp": "2025-09-15T12:23:39",
+      "type": "ENTRY",
+      "quantity": 7.0,
+      "price": 37.55,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "d36f27f4",
+      "timestamp": "2025-10-09T13:17:02",
+      "type": "EXIT",
+      "quantity": -7.0,
+      "price": 38.63,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-15T12:23:39",
+  "notes": "legacy | PAN AMERICAN SILVER CORP | ISIN:CA6979001089",
+  "currency": "USD",
+  "exchange": ""
+}

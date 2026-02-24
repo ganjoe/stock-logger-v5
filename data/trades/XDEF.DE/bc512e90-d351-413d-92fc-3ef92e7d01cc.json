@@ -1,0 +1,26 @@
+{
+  "id": "bc512e90-d351-413d-92fc-3ef92e7d01cc",
+  "ticker": "XDEF.DE",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "263c2b32",
+      "timestamp": "2026-01-08T03:28:54",
+      "type": "ENTRY",
+      "quantity": 15.0,
+      "price": 32.92,
+      "commission": 4.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-08T03:28:54",
+  "notes": "legacy | XEUROPE DEFENCE TECHNOLOG 1C | ISIN:LU3061478973",
+  "currency": "EUR",
+  "exchange": ""
+}

@@ -1,0 +1,36 @@
+{
+  "id": "7aa3bd51-18c0-49f0-b907-cac452c403c1",
+  "ticker": "ONDS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "aee34542",
+      "timestamp": "2025-10-10T11:34:18",
+      "type": "ENTRY",
+      "quantity": 50.0,
+      "price": 9.37,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e5ecdba2",
+      "timestamp": "2025-10-15T11:33:01",
+      "type": "EXIT",
+      "quantity": -50.0,
+      "price": 9.65,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-10T11:34:18",
+  "notes": "legacy | ONDAS HOLDINGS INC | ISIN:US68236H2040",
+  "currency": "USD",
+  "exchange": ""
+}

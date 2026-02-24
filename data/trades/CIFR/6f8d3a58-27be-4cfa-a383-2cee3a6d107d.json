@@ -1,0 +1,36 @@
+{
+  "id": "6f8d3a58-27be-4cfa-a383-2cee3a6d107d",
+  "ticker": "CIFR",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "39cff413",
+      "timestamp": "2025-10-14T10:38:44",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 20.45,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "893a42b5",
+      "timestamp": "2025-10-17T09:30:19",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 17.69,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-14T10:38:44",
+  "notes": "legacy | CIPHER MINING INC | ISIN:US17253J1060",
+  "currency": "USD",
+  "exchange": ""
+}

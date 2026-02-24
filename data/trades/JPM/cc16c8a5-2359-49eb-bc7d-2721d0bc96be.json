@@ -1,0 +1,36 @@
+{
+  "id": "cc16c8a5-2359-49eb-bc7d-2721d0bc96be",
+  "ticker": "JPM",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "cc6eb8da",
+      "timestamp": "2025-10-28T13:49:52",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 305.1,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "8850b633",
+      "timestamp": "2025-11-13T10:47:03",
+      "type": "EXIT",
+      "quantity": -4.0,
+      "price": 314.71,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-28T13:49:52",
+  "notes": "legacy | JPMORGAN CHASE & CO | ISIN:US46625H1005",
+  "currency": "USD",
+  "exchange": ""
+}

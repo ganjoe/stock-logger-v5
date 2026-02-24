@@ -1,0 +1,36 @@
+{
+  "id": "b402dae3-4f32-4aa2-bebc-521f78c2a24a",
+  "ticker": "UBER",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "01a9cc25",
+      "timestamp": "2025-10-27T09:30:01",
+      "type": "ENTRY",
+      "quantity": 6.0,
+      "price": 95.0,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "400ece1e",
+      "timestamp": "2025-10-28T14:15:04",
+      "type": "EXIT",
+      "quantity": -6.0,
+      "price": 97.16,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-27T09:30:01",
+  "notes": "legacy | UBER TECHNOLOGIES INC | ISIN:US90353T1007",
+  "currency": "USD",
+  "exchange": ""
+}

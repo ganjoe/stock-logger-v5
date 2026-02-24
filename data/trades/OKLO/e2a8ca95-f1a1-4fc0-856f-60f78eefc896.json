@@ -1,0 +1,36 @@
+{
+  "id": "e2a8ca95-f1a1-4fc0-856f-60f78eefc896",
+  "ticker": "OKLO",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "9f02fc1d",
+      "timestamp": "2025-10-13T09:41:00",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 164.48,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "66221ce1",
+      "timestamp": "2025-10-14T15:32:20",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 178.05,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-13T09:41:00",
+  "notes": "legacy | OKLO INC | ISIN:US02156V1098",
+  "currency": "USD",
+  "exchange": ""
+}

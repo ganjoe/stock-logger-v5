@@ -1,0 +1,46 @@
+{
+  "id": "315627df-3ac8-4ec4-80b1-35c4953d4f21",
+  "ticker": "LMND",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "4084a0af",
+      "timestamp": "2025-10-27T14:20:52",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 57.02,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "5f8e0549",
+      "timestamp": "2026-01-22T11:52:00",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 99.41,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "f232311d",
+      "timestamp": "2026-01-22T11:54:30",
+      "type": "EXIT",
+      "quantity": 97.0,
+      "price": 99.61,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-27T14:20:52",
+  "notes": "legacy | LEMONADE INC | ISIN:US52567D1072",
+  "currency": "USD",
+  "exchange": ""
+}

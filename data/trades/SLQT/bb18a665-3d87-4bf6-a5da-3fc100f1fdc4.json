@@ -1,0 +1,36 @@
+{
+  "id": "bb18a665-3d87-4bf6-a5da-3fc100f1fdc4",
+  "ticker": "SLQT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "d07e1bcb",
+      "timestamp": "2025-02-11T12:41:46",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 5.83,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "6bcaaa89",
+      "timestamp": "2025-02-21T09:53:53",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 5.21,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-11T12:41:46",
+  "notes": "legacy | SELECTQUOTE INC | ISIN:US8163073005",
+  "currency": "USD",
+  "exchange": ""
+}

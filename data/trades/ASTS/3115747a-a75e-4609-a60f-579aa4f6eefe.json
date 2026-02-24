@@ -1,0 +1,36 @@
+{
+  "id": "3115747a-a75e-4609-a60f-579aa4f6eefe",
+  "ticker": "ASTS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "51519432",
+      "timestamp": "2025-11-18T12:48:31",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 58.38,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "8981cb98",
+      "timestamp": "2026-01-12T10:29:27",
+      "type": "EXIT",
+      "quantity": -5.0,
+      "price": 94.66,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-18T12:48:31",
+  "notes": "legacy | AST SPACEMOBILE INC | ISIN:US00217D1000",
+  "currency": "USD",
+  "exchange": ""
+}

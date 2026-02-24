@@ -1,0 +1,36 @@
+{
+  "id": "21f22b0d-baa9-4940-80c0-416d76cd048d",
+  "ticker": "SGML",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "5595919b",
+      "timestamp": "2026-01-05T10:39:51",
+      "type": "ENTRY",
+      "quantity": 20.0,
+      "price": 14.18,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "59c91d13",
+      "timestamp": "2026-01-16T09:48:53",
+      "type": "EXIT",
+      "quantity": -20.0,
+      "price": 12.27,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2026-01-05T10:39:51",
+  "notes": "legacy | SIGMA LITHIUM CORP | ISIN:CA8265991023",
+  "currency": "USD",
+  "exchange": ""
+}

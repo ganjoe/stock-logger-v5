@@ -1,0 +1,36 @@
+{
+  "id": "1cae744d-715f-44de-94d1-ef327a7ec23e",
+  "ticker": "XERS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1ff3cbd0",
+      "timestamp": "2025-12-08T12:13:54",
+      "type": "ENTRY",
+      "quantity": 50.0,
+      "price": 6.87,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "1d17f78d",
+      "timestamp": "2026-01-06T17:35:29",
+      "type": "EXIT",
+      "quantity": -50.0,
+      "price": 6.95,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-12-08T12:13:54",
+  "notes": "legacy | XERIS BIOPHARMA HOLDINGS INC | ISIN:US98422E1038",
+  "currency": "USD",
+  "exchange": ""
+}

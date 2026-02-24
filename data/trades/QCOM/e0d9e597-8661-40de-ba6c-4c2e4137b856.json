@@ -1,0 +1,36 @@
+{
+  "id": "e0d9e597-8661-40de-ba6c-4c2e4137b856",
+  "ticker": "QCOM",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "4794c606",
+      "timestamp": "2025-10-28T10:29:59",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 179.64,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "114dea8c",
+      "timestamp": "2025-11-17T14:03:11",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 167.8,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-28T10:29:59",
+  "notes": "legacy | QUALCOMM INC | ISIN:US7475251036",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,36 @@
+{
+  "id": "8f1e3dd6-0696-472a-b7a5-a32a4400444b",
+  "ticker": "NBIS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "c8e10f16",
+      "timestamp": "2025-10-31T15:48:05",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 131.71,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e1f6d2d3",
+      "timestamp": "2025-11-21T10:28:30",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 83.83,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-31T15:48:05",
+  "notes": "legacy | NEBIUS GROUP NV | ISIN:NL0009805522",
+  "currency": "USD",
+  "exchange": ""
+}

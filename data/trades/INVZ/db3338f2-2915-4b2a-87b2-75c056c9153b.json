@@ -1,0 +1,36 @@
+{
+  "id": "db3338f2-2915-4b2a-87b2-75c056c9153b",
+  "ticker": "INVZ",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "453c76b8",
+      "timestamp": "2025-02-14T10:10:42",
+      "type": "ENTRY",
+      "quantity": 100.0,
+      "price": 1.05,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "fec9e72b",
+      "timestamp": "2025-02-18T09:59:17",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 0.95,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T10:10:42",
+  "notes": "legacy | INNOVIZ TECHNOLOGIES LTD | ISIN:IL0011745804",
+  "currency": "USD",
+  "exchange": ""
+}

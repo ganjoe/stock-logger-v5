@@ -1,0 +1,36 @@
+{
+  "id": "796d1aca-3f0f-4cd8-80c2-be9f3adaf055",
+  "ticker": "RKLB",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1de6ea65",
+      "timestamp": "2026-01-12T15:57:26",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 87.99,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "a61b064d",
+      "timestamp": "2026-01-23T10:54:47",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 91.71,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-12T15:57:26",
+  "notes": "legacy | ROCKET LAB CORP | ISIN:US7731211089",
+  "currency": "USD",
+  "exchange": ""
+}

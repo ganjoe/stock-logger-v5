@@ -1,0 +1,26 @@
+{
+  "id": "303bd352-6143-403b-9b22-bf91bee1648c",
+  "ticker": "TE",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "956aa43f",
+      "timestamp": "2026-01-23T10:54:20",
+      "type": "ENTRY",
+      "quantity": 25.0,
+      "price": 9.21,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-23T10:54:20",
+  "notes": "legacy | T1 ENERGY INC | ISIN:US35834F1049",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,26 @@
+{
+  "id": "e19fe23a-5930-4136-887b-58f0b8b5e85c",
+  "ticker": "LMND",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "98216431",
+      "timestamp": "2026-01-23T15:00:21",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 92.58,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-23T15:00:21",
+  "notes": "legacy | LEMONADE INC | ISIN:US52567D1072",
+  "currency": "USD",
+  "exchange": ""
+}

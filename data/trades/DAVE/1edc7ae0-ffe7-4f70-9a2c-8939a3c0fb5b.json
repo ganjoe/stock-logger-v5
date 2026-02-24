@@ -1,0 +1,36 @@
+{
+  "id": "1edc7ae0-ffe7-4f70-9a2c-8939a3c0fb5b",
+  "ticker": "DAVE",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "a9454ba7",
+      "timestamp": "2025-02-14T10:42:51",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 118.11,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "fa294e72",
+      "timestamp": "2025-02-24T10:46:45",
+      "type": "EXIT",
+      "quantity": -4.0,
+      "price": 97.59,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T10:42:51",
+  "notes": "legacy | DAVE INC | ISIN:US23834J2015",
+  "currency": "USD",
+  "exchange": ""
+}

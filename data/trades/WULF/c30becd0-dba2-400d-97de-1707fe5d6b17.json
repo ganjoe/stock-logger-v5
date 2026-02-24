@@ -1,0 +1,46 @@
+{
+  "id": "c30becd0-dba2-400d-97de-1707fe5d6b17",
+  "ticker": "WULF",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "89d7edd6",
+      "timestamp": "2025-10-28T14:22:25",
+      "type": "ENTRY",
+      "quantity": 25.0,
+      "price": 16.91,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e0aa1126",
+      "timestamp": "2025-11-14T09:30:01",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 11.27,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e7de643f",
+      "timestamp": "2026-01-12T10:54:34",
+      "type": "EXIT",
+      "quantity": -35.0,
+      "price": 13.54,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-28T14:22:25",
+  "notes": "legacy | TERAWULF INC | ISIN:US88080T1043",
+  "currency": "USD",
+  "exchange": ""
+}

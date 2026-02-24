@@ -1,0 +1,36 @@
+{
+  "id": "e031d920-2841-444d-be25-c39dd1f0d5f7",
+  "ticker": "COMP",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "cbe5dde7",
+      "timestamp": "2025-02-19T10:13:23",
+      "type": "ENTRY",
+      "quantity": 60.0,
+      "price": 8.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "889bff61",
+      "timestamp": "2025-02-21T13:13:21",
+      "type": "EXIT",
+      "quantity": -60.0,
+      "price": 9.04,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-19T10:13:23",
+  "notes": "legacy | COMPASS INC - CLASS A | ISIN:US20464U1007",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,46 @@
+{
+  "id": "a8652f57-0232-43e9-8c18-25685e893d57",
+  "ticker": "HIMS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "42634aff",
+      "timestamp": "2025-11-13T09:45:01",
+      "type": "ENTRY",
+      "quantity": -6.0,
+      "price": 37.91,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "ee8284ad",
+      "timestamp": "2025-11-18T12:46:15",
+      "type": "EXIT",
+      "quantity": 12.0,
+      "price": 35.93,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "3474978b",
+      "timestamp": "2025-11-25T11:51:24",
+      "type": "EXIT",
+      "quantity": -6.0,
+      "price": 37.13,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-13T09:45:01",
+  "notes": "legacy | HIMS & HERS HEALTH INC | ISIN:US4330001060",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,26 @@
+{
+  "id": "24d72ecb-22d4-4c41-8a66-89e8cb161f5d",
+  "ticker": "INTC",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "d92e0847",
+      "timestamp": "2026-01-20T15:47:11",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 48.6,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-20T15:47:11",
+  "notes": "legacy | INTEL CORP | ISIN:US4581401001",
+  "currency": "USD",
+  "exchange": ""
+}

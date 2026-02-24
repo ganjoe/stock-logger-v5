@@ -1,0 +1,36 @@
+{
+  "id": "a79b19a0-7e58-4895-aa51-eb9e867f4ee7",
+  "ticker": "LGO",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "3375a01d",
+      "timestamp": "2025-10-13T09:34:52",
+      "type": "ENTRY",
+      "quantity": 125.0,
+      "price": 2.42,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "386e03b4",
+      "timestamp": "2025-10-15T10:36:24",
+      "type": "EXIT",
+      "quantity": -125.0,
+      "price": 1.41,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-13T09:34:52",
+  "notes": "legacy | LARGO INC | ISIN:CA5170971017",
+  "currency": "USD",
+  "exchange": ""
+}

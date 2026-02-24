@@ -1,0 +1,36 @@
+{
+  "id": "feecb210-4bcf-4eb0-95cd-e31c76b0bc6d",
+  "ticker": "TSLA",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "dd144c92",
+      "timestamp": "2025-02-12T15:37:19",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 342.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "58336c6a",
+      "timestamp": "2025-02-14T09:53:22",
+      "type": "EXIT",
+      "quantity": -2.0,
+      "price": 353.71,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-12T15:37:19",
+  "notes": "legacy | TESLA INC | ISIN:US88160R1014",
+  "currency": "USD",
+  "exchange": ""
+}

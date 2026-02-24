@@ -1,0 +1,26 @@
+{
+  "id": "cca233a5-db8d-4a0c-ac39-dd513940bce9",
+  "ticker": "MRK",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "4925c7db",
+      "timestamp": "2025-11-24T09:39:24",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 100.86,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2025-11-24T09:39:24",
+  "notes": "legacy | MERCK & CO INC | ISIN:US58933Y1055",
+  "currency": "USD",
+  "exchange": ""
+}

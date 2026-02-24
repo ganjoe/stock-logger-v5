@@ -1,0 +1,56 @@
+{
+  "id": "73e50615-63ac-4dc4-9118-7f1d14c40c14",
+  "ticker": "SOFI",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "8747bd5d",
+      "timestamp": "2025-09-15T12:22:21",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 27.48,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "201430c7",
+      "timestamp": "2025-09-18T15:57:52",
+      "type": "ENTRY",
+      "quantity": 20.0,
+      "price": 28.09,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "d6f5ee6a",
+      "timestamp": "2025-09-24T15:31:10",
+      "type": "EXIT",
+      "quantity": -15.0,
+      "price": 28.48,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "d20ab907",
+      "timestamp": "2025-09-29T10:39:22",
+      "type": "EXIT",
+      "quantity": -15.0,
+      "price": 27.2,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-15T12:22:21",
+  "notes": "legacy | SOFI TECHNOLOGIES INC | ISIN:US83406F1021",
+  "currency": "USD",
+  "exchange": ""
+}

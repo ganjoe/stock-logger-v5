@@ -1,0 +1,36 @@
+{
+  "id": "45cdb9f1-0cf8-4e7b-8336-cf9bb1fea4ba",
+  "ticker": "RMBS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "173922dd",
+      "timestamp": "2025-10-27T14:34:00",
+      "type": "ENTRY",
+      "quantity": 4.0,
+      "price": 112.12,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "b072ed03",
+      "timestamp": "2025-10-28T09:30:04",
+      "type": "EXIT",
+      "quantity": -4.0,
+      "price": 95.69,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-27T14:34:00",
+  "notes": "legacy | RAMBUS INC | ISIN:US7509171069",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,76 @@
+{
+  "id": "4cf67b6b-aa6a-46a9-9666-e6b88dd21d1b",
+  "ticker": "WRD",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1cc0bee5",
+      "timestamp": "2025-02-14T09:36:10",
+      "type": "ENTRY",
+      "quantity": 8.0,
+      "price": 40.41,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e1aaaa4d",
+      "timestamp": "2025-02-14T09:50:20",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 33.77,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "79cceb00",
+      "timestamp": "2025-02-18T09:55:46",
+      "type": "EXIT",
+      "quantity": -5.0,
+      "price": 40.23,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "777221c2",
+      "timestamp": "2025-02-19T10:08:26",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 33.99,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "665fce08",
+      "timestamp": "2025-02-25T14:13:26",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 23.06,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "0adfe94b",
+      "timestamp": "2025-02-28T10:10:17",
+      "type": "EXIT",
+      "quantity": -12.0,
+      "price": 19.35,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T09:36:10",
+  "notes": "legacy | WERIDE INC-ADR | ISIN:US9509151083",
+  "currency": "USD",
+  "exchange": ""
+}

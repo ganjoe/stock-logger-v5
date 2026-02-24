@@ -150,6 +150,8 @@ class TradeState:
     current_stop_price: Optional[float] = None
     entry_date: Optional[datetime] = None
     notes: str = ""
+    currency: str = "USD"   # Trade currency (e.g. USD, EUR)
+    exchange: str = ""      # Exchange hint (e.g. SMART, FWB2) – empty = unknown
 
     @property
     def is_cash(self) -> bool:
@@ -168,7 +170,9 @@ class TradeState:
             "initial_stop_price": self.initial_stop_price,
             "current_stop_price": self.current_stop_price,
             "entry_date": self.entry_date.isoformat() if self.entry_date else None,
-            "notes": self.notes
+            "notes": self.notes,
+            "currency": self.currency,
+            "exchange": self.exchange
         }
 
     @staticmethod
@@ -194,5 +198,7 @@ class TradeState:
         if data.get("entry_date"):
             state.entry_date = datetime.fromisoformat(data["entry_date"])
         state.notes = data.get("notes", "")
+        state.currency = data.get("currency", "USD")  # Backward compat
+        state.exchange = data.get("exchange", "")      # Backward compat
             
         return state

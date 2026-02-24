@@ -1,0 +1,36 @@
+{
+  "id": "fa800e0f-a1ad-4389-841a-b75ea8f7f46b",
+  "ticker": "FLNC",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "0586eb49",
+      "timestamp": "2025-11-12T14:47:34",
+      "type": "ENTRY",
+      "quantity": 12.0,
+      "price": 19.56,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "0320701b",
+      "timestamp": "2026-01-06T17:33:37",
+      "type": "EXIT",
+      "quantity": -12.0,
+      "price": 21.8,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-12T14:47:34",
+  "notes": "legacy | FLUENCE ENERGY INC | ISIN:US34379V1035",
+  "currency": "USD",
+  "exchange": ""
+}

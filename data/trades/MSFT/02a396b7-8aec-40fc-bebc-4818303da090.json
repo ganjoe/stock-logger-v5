@@ -1,0 +1,46 @@
+{
+  "id": "02a396b7-8aec-40fc-bebc-4818303da090",
+  "ticker": "MSFT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "569b2cc7",
+      "timestamp": "2025-02-19T15:28:43",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 414.6,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "dadfd676",
+      "timestamp": "2025-02-21T09:52:19",
+      "type": "EXIT",
+      "quantity": -1.0,
+      "price": 415.52,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "daa20cb9",
+      "timestamp": "2025-02-24T10:44:15",
+      "type": "EXIT",
+      "quantity": -1.0,
+      "price": 401.13,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-19T15:28:43",
+  "notes": "legacy | MICROSOFT CORP | ISIN:US5949181045",
+  "currency": "USD",
+  "exchange": ""
+}

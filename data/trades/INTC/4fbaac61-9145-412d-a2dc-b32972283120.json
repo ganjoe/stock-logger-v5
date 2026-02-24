@@ -25,5 +25,7 @@
   "initial_stop_price": null,
   "current_stop_price": null,
   "entry_date": null,
-  "notes": ""
+  "notes": "",
+  "currency": "USD",
+  "exchange": ""
 }

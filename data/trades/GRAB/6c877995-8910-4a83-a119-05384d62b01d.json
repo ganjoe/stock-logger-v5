@@ -1,0 +1,36 @@
+{
+  "id": "6c877995-8910-4a83-a119-05384d62b01d",
+  "ticker": "GRAB",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "e88473ed",
+      "timestamp": "2025-02-14T13:36:14",
+      "type": "ENTRY",
+      "quantity": 100.0,
+      "price": 4.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "10a50fbe",
+      "timestamp": "2025-02-28T10:10:06",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 4.83,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T13:36:14",
+  "notes": "legacy | GRAB HOLDINGS LTD - CL A | ISIN:KYG4124C1096",
+  "currency": "USD",
+  "exchange": ""
+}

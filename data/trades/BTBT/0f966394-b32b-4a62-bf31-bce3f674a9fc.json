@@ -1,0 +1,36 @@
+{
+  "id": "0f966394-b32b-4a62-bf31-bce3f674a9fc",
+  "ticker": "BTBT",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "ade60f3c",
+      "timestamp": "2025-09-10T12:46:56",
+      "type": "ENTRY",
+      "quantity": 100.0,
+      "price": 2.98,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "23872482",
+      "timestamp": "2025-09-22T09:30:00",
+      "type": "EXIT",
+      "quantity": -100.0,
+      "price": 3.02,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-10T12:46:56",
+  "notes": "legacy | BIT DIGITAL INC | ISIN:KYG1144A1058",
+  "currency": "USD",
+  "exchange": ""
+}

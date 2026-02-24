@@ -1,0 +1,36 @@
+{
+  "id": "69cd49fc-06bd-4f8a-ae6b-53b5b0be5833",
+  "ticker": "VBTC",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "59af8118",
+      "timestamp": "2025-10-13T10:27:54",
+      "type": "ENTRY",
+      "quantity": 20.0,
+      "price": 52.52,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "1f4e9031",
+      "timestamp": "2025-10-17T03:04:02",
+      "type": "EXIT",
+      "quantity": -20.0,
+      "price": 48.34,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-13T10:27:54",
+  "notes": "legacy | VANECK BITCOIN ETN | ISIN:DE000A28M8D0",
+  "currency": "EUR",
+  "exchange": ""
+}

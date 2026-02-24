@@ -1,0 +1,36 @@
+{
+  "id": "c48ba399-6169-4465-a2bb-a711748403fc",
+  "ticker": "UUUU",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "eddffb16",
+      "timestamp": "2025-10-23T11:11:42",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 22.17,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "bd411437",
+      "timestamp": "2025-11-05T13:55:15",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 15.79,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-23T11:11:42",
+  "notes": "legacy | ENERGY FUELS INC | ISIN:CA2926717083",
+  "currency": "USD",
+  "exchange": ""
+}

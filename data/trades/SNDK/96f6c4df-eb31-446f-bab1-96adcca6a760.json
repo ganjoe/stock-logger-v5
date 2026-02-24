@@ -1,0 +1,36 @@
+{
+  "id": "96f6c4df-eb31-446f-bab1-96adcca6a760",
+  "ticker": "SNDK",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "ded69d39",
+      "timestamp": "2025-11-05T15:25:38",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 217.37,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "f2a2c7b6",
+      "timestamp": "2025-11-20T14:44:00",
+      "type": "EXIT",
+      "quantity": -1.0,
+      "price": 201.14,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-05T15:25:38",
+  "notes": "legacy | SANDISK CORP | ISIN:US80004C2008",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,36 @@
+{
+  "id": "85043ed2-5a86-4fce-a547-343e98d595a0",
+  "ticker": "MDGL",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "6b0ecba0",
+      "timestamp": "2025-02-26T14:16:20",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 362.44,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "dbac9343",
+      "timestamp": "2025-02-28T09:30:32",
+      "type": "EXIT",
+      "quantity": -1.0,
+      "price": 332.48,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-26T14:16:20",
+  "notes": "legacy | MADRIGAL PHARMACEUTICALS INC | ISIN:US5588681057",
+  "currency": "USD",
+  "exchange": ""
+}

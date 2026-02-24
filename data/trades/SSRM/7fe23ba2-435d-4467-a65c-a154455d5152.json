@@ -1,0 +1,36 @@
+{
+  "id": "7fe23ba2-435d-4467-a65c-a154455d5152",
+  "ticker": "SSRM",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "f79b1f9f",
+      "timestamp": "2026-01-13T09:45:21",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 24.18,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "14af3ac6",
+      "timestamp": "2026-01-16T10:26:09",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 22.8,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2026-01-13T09:45:21",
+  "notes": "legacy | SSR MINING INC | ISIN:CA7847301032",
+  "currency": "USD",
+  "exchange": ""
+}

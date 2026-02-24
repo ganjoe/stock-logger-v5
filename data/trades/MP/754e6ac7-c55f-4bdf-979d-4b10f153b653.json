@@ -1,0 +1,36 @@
+{
+  "id": "754e6ac7-c55f-4bdf-979d-4b10f153b653",
+  "ticker": "MP",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "4f3fb1c4",
+      "timestamp": "2025-10-20T14:45:15",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 83.73,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e5cbfa97",
+      "timestamp": "2025-10-21T09:45:07",
+      "type": "EXIT",
+      "quantity": -5.0,
+      "price": 77.88,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-20T14:45:15",
+  "notes": "legacy | MP MATERIALS CORP | ISIN:US5533681012",
+  "currency": "USD",
+  "exchange": ""
+}

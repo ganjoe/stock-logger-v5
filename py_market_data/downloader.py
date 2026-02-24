@@ -8,6 +8,25 @@ from ib_insync import IB, Stock, Contract
 from .domain import HistoryRequest, BatchDownloadResult, BatchConfig
 from py_tradeobject.interface import BarData
 
+
+def classify_error(error_msg: str) -> str:
+    """Classifies an IBKR error message into a category."""
+    msg_lower = error_msg.lower()
+    if "qualify" in msg_lower or "no security definition" in msg_lower:
+        return "QUALIFY_FAILED"
+    elif "no data" in msg_lower or "hmds" in msg_lower or "keine daten" in msg_lower or "ergab keine" in msg_lower:
+        return "NO_DATA"
+    elif "permission" in msg_lower or "not allowed" in msg_lower:
+        return "NO_PERMISSIONS"
+    elif "timeout" in msg_lower:
+        return "TIMEOUT"
+    elif "pacing" in msg_lower or "violation" in msg_lower:
+        return "PACING"
+    elif "cancelled" in msg_lower or "query cancelled" in msg_lower:
+        return "CANCELLED"
+    else:
+        return "UNKNOWN"
+
 class BulkDownloader:
     def __init__(self, ib_client: IB, max_concurrent: int = 20):
         self.ib = ib_client
@@ -142,8 +161,9 @@ class BulkDownloader:
         contracts = {}
         batch_stocks = []
         for req in requests:
-            s = Stock(req.symbol, 'SMART', 'USD')
-            contracts[req.symbol] = s
+            s = Stock(req.symbol, req.exchange, req.currency)
+            key = f"{req.symbol}:{req.currency}:{req.exchange}"
+            contracts[key] = s
             batch_stocks.append(s)
             
         try:
@@ -154,12 +174,14 @@ class BulkDownloader:
         # 2. Execute Parallel
         tasks = []
         for req in requests:
-            c = contracts[req.symbol]
+            key = f"{req.symbol}:{req.currency}:{req.exchange}"
+            c = contracts[key]
             if c.conId == 0:
-                # Mock result for failure
-                # Note: run_batch expects awaitable tasks
-                async def fail_task(r): return BatchDownloadResult(r.symbol, False, 0, "Qualify Failed")
-                tasks.append(fail_task(req))
+                # Mock result for failure – report under original ticker name
+                original = req.save_as or req.symbol
+                async def fail_task(sym): return BatchDownloadResult(
+                    sym, False, 0, "Qualify Failed", "QUALIFY_FAILED")
+                tasks.append(fail_task(original))
             else:
                 tasks.append(self._download_single(req, c))
                 
@@ -168,6 +190,8 @@ class BulkDownloader:
 
     async def _download_single(self, req: HistoryRequest, contract: Contract) -> BatchDownloadResult:
         """Downloads single ticker with semaphore and strict finally-pacing."""
+        # Use save_as (original ticker) for reporting and storage, symbol for IBKR API
+        report_symbol = req.save_as or req.symbol
         async with self.semaphore:
             try:
                 bars = await self.ib.reqHistoricalDataAsync(
@@ -181,14 +205,15 @@ class BulkDownloader:
                 )
                 
                 if not bars:
-                    return BatchDownloadResult(req.symbol, False, 0, "No Data Returned")
+                    return BatchDownloadResult(report_symbol, False, 0, "No Data Returned", "NO_DATA")
 
-                # Map and Save
-                count = self._save_bars_merged(req.symbol, bars)
-                return BatchDownloadResult(req.symbol, True, count)
+                # Map and Save – use original ticker name for storage
+                count = self._save_bars_merged(report_symbol, bars)
+                return BatchDownloadResult(report_symbol, True, count)
 
             except Exception as e:
-                return BatchDownloadResult(req.symbol, False, 0, str(e))
+                err_msg = str(e)
+                return BatchDownloadResult(report_symbol, False, 0, err_msg, classify_error(err_msg))
             
             finally:
                 # Enforce Pacing (Crucial for Free Data stability)

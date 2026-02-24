@@ -1,0 +1,36 @@
+{
+  "id": "fb355b75-7cdc-47d6-aced-9968110cde95",
+  "ticker": "MU",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "853c12e4",
+      "timestamp": "2026-01-22T12:05:05",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 389.04,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "76d9dc8f",
+      "timestamp": "2026-01-22T12:05:49",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 389.44,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-22T12:05:05",
+  "notes": "legacy | MICRON TECHNOLOGY INC | ISIN:US5951121038",
+  "currency": "USD",
+  "exchange": ""
+}

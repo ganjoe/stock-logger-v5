@@ -1,0 +1,66 @@
+{
+  "id": "00356494-afef-4dc6-b604-bb01bca2bd75",
+  "ticker": "BMNR",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "8b53504c",
+      "timestamp": "2025-08-27T12:07:53",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 47.76,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "d870655c",
+      "timestamp": "2025-09-04T09:42:40",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 42.36,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "8bc01a76",
+      "timestamp": "2025-09-12T15:59:44",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 55.09,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "ab52b6b7",
+      "timestamp": "2025-09-24T15:28:01",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 52.06,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "e3b8755f",
+      "timestamp": "2025-10-08T09:47:29",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 57.47,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-08-27T12:07:53",
+  "notes": "legacy | BITMINE IMMERSION TECHNOLOGI | ISIN:US09175A2069",
+  "currency": "USD",
+  "exchange": ""
+}

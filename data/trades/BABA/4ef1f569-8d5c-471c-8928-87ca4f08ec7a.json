@@ -1,0 +1,46 @@
+{
+  "id": "4ef1f569-8d5c-471c-8928-87ca4f08ec7a",
+  "ticker": "BABA",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "6d9fd974",
+      "timestamp": "2025-09-09T09:57:47",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 146.96,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "48a934d3",
+      "timestamp": "2025-09-17T10:23:50",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 165.94,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "38d2f128",
+      "timestamp": "2025-10-08T09:34:18",
+      "type": "EXIT",
+      "quantity": -3.0,
+      "price": 179.78,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-09T09:57:47",
+  "notes": "legacy | ALIBABA GROUP HOLDING-SP ADR | ISIN:US01609W1027",
+  "currency": "USD",
+  "exchange": ""
+}

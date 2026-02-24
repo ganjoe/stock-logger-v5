@@ -1,0 +1,36 @@
+{
+  "id": "3be5dfa6-2fde-4461-be32-95e952830b0d",
+  "ticker": "AGI",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "cf284cdd",
+      "timestamp": "2025-02-14T15:40:58",
+      "type": "ENTRY",
+      "quantity": 25.0,
+      "price": 22.29,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "65d32ae9",
+      "timestamp": "2025-02-28T10:10:02",
+      "type": "EXIT",
+      "quantity": -25.0,
+      "price": 22.2,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-14T15:40:58",
+  "notes": "legacy | ALAMOS GOLD INC-CLASS A | ISIN:CA0115321089",
+  "currency": "USD",
+  "exchange": ""
+}

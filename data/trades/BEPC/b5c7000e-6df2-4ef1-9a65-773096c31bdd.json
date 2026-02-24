@@ -1,0 +1,36 @@
+{
+  "id": "b5c7000e-6df2-4ef1-9a65-773096c31bdd",
+  "ticker": "BEPC",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "7b252da4",
+      "timestamp": "2025-11-10T09:30:00",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 44.97,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "60feaf58",
+      "timestamp": "2026-01-12T15:03:59",
+      "type": "EXIT",
+      "quantity": -10.0,
+      "price": 38.63,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-10T09:30:00",
+  "notes": "legacy | BROOKFIELD RENEWABLE CORP | ISIN:CA11285B1085",
+  "currency": "USD",
+  "exchange": ""
+}

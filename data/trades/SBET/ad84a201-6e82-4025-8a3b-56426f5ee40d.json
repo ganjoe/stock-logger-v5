@@ -1,0 +1,36 @@
+{
+  "id": "ad84a201-6e82-4025-8a3b-56426f5ee40d",
+  "ticker": "SBET",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "7e40e503",
+      "timestamp": "2025-08-27T12:26:11",
+      "type": "ENTRY",
+      "quantity": 12.0,
+      "price": 19.89,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "cfca29ae",
+      "timestamp": "2025-09-19T13:25:28",
+      "type": "EXIT",
+      "quantity": -12.0,
+      "price": 17.55,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-08-27T12:26:11",
+  "notes": "legacy | SHARPLINK GAMING INC | ISIN:US8200144058",
+  "currency": "USD",
+  "exchange": ""
+}

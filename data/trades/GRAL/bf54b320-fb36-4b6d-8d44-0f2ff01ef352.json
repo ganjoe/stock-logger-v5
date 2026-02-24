@@ -1,0 +1,36 @@
+{
+  "id": "bf54b320-fb36-4b6d-8d44-0f2ff01ef352",
+  "ticker": "GRAL",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1f31cdd9",
+      "timestamp": "2025-02-25T15:34:59",
+      "type": "ENTRY",
+      "quantity": 8.0,
+      "price": 42.42,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "4dae3c13",
+      "timestamp": "2025-02-28T10:00:15",
+      "type": "EXIT",
+      "quantity": -8.0,
+      "price": 38.56,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-02-25T15:34:59",
+  "notes": "legacy | GRAIL INC | ISIN:US3847471014",
+  "currency": "USD",
+  "exchange": ""
+}

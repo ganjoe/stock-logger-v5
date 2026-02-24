@@ -1,0 +1,36 @@
+{
+  "id": "252565cd-e458-4cf2-b6f9-af88b779634e",
+  "ticker": "UNH",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "04e95228",
+      "timestamp": "2025-10-28T14:30:38",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 372.43,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "f3ded316",
+      "timestamp": "2025-10-29T11:42:22",
+      "type": "EXIT",
+      "quantity": -3.0,
+      "price": 358.41,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-10-28T14:30:38",
+  "notes": "legacy | UNITEDHEALTH GROUP INC | ISIN:US91324P1021",
+  "currency": "USD",
+  "exchange": ""
+}

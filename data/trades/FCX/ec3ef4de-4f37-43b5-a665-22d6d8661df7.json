@@ -1,0 +1,26 @@
+{
+  "id": "ec3ef4de-4f37-43b5-a665-22d6d8661df7",
+  "ticker": "FCX",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "084882f2",
+      "timestamp": "2026-01-20T15:54:51",
+      "type": "ENTRY",
+      "quantity": 10.0,
+      "price": 59.85,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-20T15:54:51",
+  "notes": "legacy | FREEPORT-MCMORAN INC | ISIN:US35671D8570",
+  "currency": "USD",
+  "exchange": ""
+}

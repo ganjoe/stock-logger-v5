@@ -1,0 +1,26 @@
+{
+  "id": "b097a18a-3281-4bbb-92df-5867a13fd658",
+  "ticker": "TDW",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "1aed9628",
+      "timestamp": "2025-10-23T15:37:18",
+      "type": "ENTRY",
+      "quantity": 5.0,
+      "price": 51.51,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2025-10-23T15:37:18",
+  "notes": "legacy | TIDEWATER INC | ISIN:US88642R1095",
+  "currency": "USD",
+  "exchange": ""
+}

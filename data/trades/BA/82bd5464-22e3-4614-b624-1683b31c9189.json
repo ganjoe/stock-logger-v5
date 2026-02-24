@@ -1,0 +1,26 @@
+{
+  "id": "82bd5464-22e3-4614-b624-1683b31c9189",
+  "ticker": "BA",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "975464c4",
+      "timestamp": "2026-01-20T15:46:17",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 248.76,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-20T15:46:17",
+  "notes": "legacy | BOEING CO/THE | ISIN:US0970231058",
+  "currency": "USD",
+  "exchange": ""
+}

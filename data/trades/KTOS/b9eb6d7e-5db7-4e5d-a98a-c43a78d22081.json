@@ -1,0 +1,36 @@
+{
+  "id": "b9eb6d7e-5db7-4e5d-a98a-c43a78d22081",
+  "ticker": "KTOS",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "6b0130d4",
+      "timestamp": "2025-09-26T15:58:54",
+      "type": "ENTRY",
+      "quantity": 3.0,
+      "price": 86.25,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "3990930c",
+      "timestamp": "2025-10-10T09:32:48",
+      "type": "EXIT",
+      "quantity": -3.0,
+      "price": 96.72,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-09-26T15:58:54",
+  "notes": "legacy | KRATOS DEFENSE & SECURITY | ISIN:US50077B2079",
+  "currency": "USD",
+  "exchange": ""
+}

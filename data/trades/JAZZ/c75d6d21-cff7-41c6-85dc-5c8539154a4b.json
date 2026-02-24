@@ -1,0 +1,36 @@
+{
+  "id": "c75d6d21-cff7-41c6-85dc-5c8539154a4b",
+  "ticker": "JAZZ",
+  "status": "CLOSED",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "449a62e6",
+      "timestamp": "2025-11-17T15:45:03",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 170.76,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    },
+    {
+      "id": "45fb94df",
+      "timestamp": "2026-02-05T15:13:44",
+      "type": "EXIT",
+      "quantity": -1.0,
+      "price": 162.64,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": null,
+  "entry_date": "2025-11-17T15:45:03",
+  "notes": "legacy | JAZZ PHARMACEUTICALS PLC | ISIN:IE00B4Q5ZN47",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -1,0 +1,26 @@
+{
+  "id": "1cf48e11-362f-4127-a793-426f74213b31",
+  "ticker": "AVAV",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "091e80a0",
+      "timestamp": "2026-01-20T15:43:41",
+      "type": "ENTRY",
+      "quantity": 1.0,
+      "price": 331.42,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-20T15:43:41",
+  "notes": "legacy | AEROVIRONMENT INC | ISIN:US0080731088",
+  "currency": "USD",
+  "exchange": ""
+}

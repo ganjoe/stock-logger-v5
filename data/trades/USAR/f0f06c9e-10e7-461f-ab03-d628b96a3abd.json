@@ -1,0 +1,26 @@
+{
+  "id": "f0f06c9e-10e7-461f-ab03-d628b96a3abd",
+  "ticker": "USAR",
+  "status": "OPEN",
+  "trade_type": "STOCK",
+  "transactions": [
+    {
+      "id": "7c392c8f",
+      "timestamp": "2026-01-27T15:34:16",
+      "type": "ENTRY",
+      "quantity": 2.0,
+      "price": 26.62,
+      "commission": 2.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": 0,
+  "current_stop_price": 0,
+  "entry_date": "2026-01-27T15:34:16",
+  "notes": "legacy | USA RARE EARTH INC | ISIN:US91733P1075",
+  "currency": "USD",
+  "exchange": ""
+}
