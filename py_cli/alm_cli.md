@@ -15,7 +15,8 @@
 | F-DAT-030 | Data | Portfolio History | Befehl `history` zur Anzeige historischer Portfolio-Snapshots. | DONE | `handlers_history.py` |
 | F-UX-010 | Visualization | ID-First Display Strategy | Trade-ID zwingend in der ersten Spalte. | DONE | `handlers_monitor.py` |
 | F-CLI-030 | Efficiency | Server-Side Filtering | Status-Abfrage erlaubt JSON-Filter zur Token-Ersparnis. | DONE | `handlers_monitor.py` |
-| F-CLI-040 | Interface | Analytics Integration | Befehl `analyze` zur Risikoprüfung via CLI verfügbar. | DONE | `handlers_analytics.py` |
+| F-CLI-040 | Interface | Analytics Integration | Befehl `analyze` mit Sub-Commands `live` (Risiko-Snapshot) und `history` (historische PnL). | DONE | `handlers_analytics.py` |
+| F-ANA-010 | Analytics | Historical PnL Query | `analyze history {"days": N}` liefert Performance-Metriken (Winrate, Profit Factor, Expectancy, SQN) und Trade-Liste aller geschlossenen Trades im Zeitraum. Optional `to_dashboard` für Equity-Kurve. Filter per `ticker` möglich. | DONE | `handlers_analytics.py` |
 | F-CON-010 | Connection | Broker Connection Management | Befehle `connect` / `disconnect` zur Broker-Anbindung. | DONE | `handlers_connection.py` |
 | F-MON-010 | Monitoring | Live Quote | Befehl `quote SYMBOL` liefert aktuellen Marktpreis. | DONE | `handlers_monitor.py` |
 | F-MON-020 | Monitoring | Market Clock | Befehl `market_clock` liefert Börsenstatus und Zeitinfo. | DONE | `handlers_analytics.py` |

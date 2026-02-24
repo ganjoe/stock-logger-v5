@@ -62,31 +62,74 @@ class AnalyzeCommand(ICommand):
         ticker = p.get("ticker")
         to_dashboard = p.get("to_dashboard", False)
         
-        # 1. Setup Factory
+        from datetime import datetime, timedelta
+        from py_riskmanager.analytics import PerformanceAnalyzer
+        
+        end = datetime.now()
+        start = end - timedelta(days=days)
+        
+        # 1. Load all trades
         factory = HistoryFactory(trades_dir="./data/trades")
         factory.load_all_trades()
         
-        # ... (Implementation of history fetch simulation) ...
-        # Assumption: SeriesAnalyzer returns a report with a 'curve' [{t: ..., v: ...}]
+        # 2. Get closed trades in window
+        closed = factory.get_closed_trades(start, end)
         
-        # Placeholder result for now
-        dummy_curve = [{"t": "2024-01-01", "v": 100.0}, {"t": "2024-01-02", "v": 105.0}]
+        # Filter by ticker if requested
+        if ticker:
+            closed = [t for t in closed if t.ticker.upper() == ticker.upper()]
         
+        if not closed:
+            return CommandResponse(True, message=f"No closed trades in the last {days} days.", payload={
+                "period_days": days,
+                "total_trades": 0
+            })
+        
+        # 3. Analyze performance
+        analyzer = PerformanceAnalyzer()
+        metrics = analyzer.analyze_trades(closed)
+        
+        # 4. Build trade list (sorted by PnL descending)
+        sorted_trades = sorted(closed, key=lambda t: t.pnl_absolute, reverse=True)
+        trade_list = []
+        for t in sorted_trades:
+            trade_list.append({
+                "ticker": t.ticker,
+                "direction": t.direction,
+                "entry": t.entry_date.strftime("%Y-%m-%d"),
+                "exit": t.exit_date.strftime("%Y-%m-%d"),
+                "pnl": round(t.pnl_absolute, 2),
+                "duration_days": t.duration_days
+            })
+        
+        # 5. Summary
+        total_pnl = sum(t.pnl_absolute for t in closed)
+        payload = {
+            "period_days": days,
+            "total_pnl": round(total_pnl, 2),
+            "metrics": metrics,
+            "trades": trade_list
+        }
+        
+        # 6. Optional: Pipe equity curve to dashboard
         if to_dashboard:
-            import requests
-            url = "http://localhost:8000/broadcast"
-            push_payload = {
-                "msg_type": "CHART_UPDATE",
-                "payload_type": "PNL",
-                "data": dummy_curve
-            }
             try:
+                snapshots = factory.get_daily_snapshots(start, end)
+                curve = [{"t": s.timestamp.isoformat(), "v": s.equity} for s in snapshots]
+                
+                import requests
+                url = "http://localhost:8000/broadcast"
+                push_payload = {
+                    "msg_type": "CHART_UPDATE",
+                    "payload_type": "PNL",
+                    "data": curve
+                }
                 requests.post(url, json=push_payload, timeout=2)
-                return CommandResponse(True, message="PnL Curve direct-piped to Dashboard.", payload={"status": "PIPED"})
+                return CommandResponse(True, message=f"PnL Curve ({days}d) piped to Dashboard. Total PnL: {total_pnl:+.2f}", payload={"status": "PIPED", "total_pnl": round(total_pnl, 2)})
             except Exception as e:
-                return CommandResponse(False, message=f"Piping failed: {e}", error_code="PIPE_ERROR")
+                return CommandResponse(False, message=f"Dashboard piping failed: {e}. Use without to_dashboard.", error_code="PIPE_ERROR")
 
-        return CommandResponse(False, "History Analytics not yet fully linked to storage.", error_code="NOT_IMPLEMENTED")
+        return CommandResponse(True, payload=payload, message=f"History Report ({days}d): {len(closed)} trades, PnL: {total_pnl:+.2f}")
 
 
 # py_cli/handlers_analytics.py

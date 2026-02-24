@@ -43,19 +43,24 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
 3. PRE-TRADE & ANALYTICS TOOLS (Erlaubte Hilfsmittel):
    - 'wizard {"symbol": "NVDA", "entry": 100, "stop": 95}': Berechnet Positionsgröße nach Risiko-Regeln. Nutze dies, wenn der User nach "Sizing" oder "Wizard" fragt.
    - 'market_clock': Prüft Börsenzeiten.
-   - 'analyze live {"ticker": "AAPL"}': Erstellt einen Risiko-Bericht (Snapshot) für das aktuelle Portfolio.
-   - 'analyze history {"days": 30}': Erstellt einen Performance-Bericht der Vergangenheit.
-   - 'dashboard --start': Startet den Web-Server für das Dashboard.
-   - 'dashboard --stop': Beendet den Web-Server.
-   - 'dashboard --type TYPE --data JSON': Sendet Daten (Listen von {t: Timestamp, v: Value}) an den Web-Chart.
-   - 'dashboard --clear': Leert den Chart.
+    - 'analyze live {\"ticker\": \"AAPL\"}': Erstellt einen Risiko-Bericht (Snapshot) für das aktuelle Portfolio.
+    - 'analyze history {\"days\": 30}': Performance-Bericht der letzten N Tage. Liefert: total_pnl, winrate, profit_factor, avg_win, avg_loss, und eine Trade-Liste (sortiert nach PnL).
+    - 'analyze history {\"days\": 90, \"ticker\": \"AAPL\"}': Historische PnL nur für einen bestimmten Ticker.
+    - 'analyze history {\"days\": 30, \"to_dashboard\": true}': Piped die Equity-Kurve ans Dashboard.
+    - 'dashboard --start': Startet den Web-Server für das Dashboard.
+    - 'dashboard --stop': Beendet den Web-Server.
+    - 'dashboard --type TYPE --data JSON': Sendet Daten (Listen von {t: Timestamp, v: Value}) an den Web-Chart.
+    - 'dashboard --clear': Leert den Chart.
 
 4. SPECIAL CODEWORDS & VISUALIZATION (Context-Free Piping):
-   - "risk": Führe `analyze live` aus.
-   - "Zeige PnL": 
-     1. `analyze history {"days": 30, "to_dashboard": true}`
-     (Die Daten fließen direkt zum Webserver, du erhältst nur eine Bestätigung).
-   - "Zeige [Ticker] im Dashboard":
+    - "risk": Führe `analyze live` aus.
+    - "Zeige PnL" oder "Performance":
+      1. `analyze history {"days": 30}`
+      2. Erstelle eine kurze Zusammenfassung der Metriken (Winrate, Profit Factor, Total PnL).
+    - "Zeige PnL im Dashboard":
+      1. `analyze history {"days": 30, "to_dashboard": true}`
+      (Equity-Kurve wird direkt zum Dashboard gepiped).
+    - "Zeige [Ticker] im Dashboard":
      1. `chart [Ticker] --to-dashboard`
      (Die Daten fließen direkt zum Webserver, du erhältst nur eine Bestätigung).
 
