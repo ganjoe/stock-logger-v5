@@ -22,3 +22,4 @@ F-TO-140,Integration,Order Reference Linking,"Alle ausgehenden Orders erhalten e
 F-BR-010,Broker,Tick Size Validation,"Der BrokerAdapter (nicht das TradeObject!) validiert/rundet Preise auf die zulässige Tick Size des Instruments.",-
 F-TO-150,Logic,Metric Robustness,"Berechnungslogik behandelt Zeitzonen-Konflikte (Timezone-Aware vs Naive) und Edge-Cases wie Position Flips (Long->Short) mathematisch korrekt.",-
 F-TO-160,Data,Order History Log,"Führt ein vollständiges Tagebuch (Audit Trail) aller Entry-, Exit- und Stop-Orders inklusive Limit/Stop-Preisen und Zeitstempeln.",-
+F-TO-170,Architecture,Cash Trade Type,"Neuer TradeType CASH für Einzahlungen/Auszahlungen. Wird unter _CASH/ gespeichert, benötigt keinen Broker, sofort CLOSED. Darf nirgends im System mit einem Stock-Trade verwechselt werden (is_cash Guards in allen Broker-Methoden).",-

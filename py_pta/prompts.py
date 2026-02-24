@@ -27,6 +27,15 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'trade {"action": "EXIT", "ticker": "SYMBOL", "trade_id": "ID"}': Position schließen.
    - 'trade {"action": "CANCEL", "ticker": "SYMBOL", "trade_id": "ID", "broker_order_id": "OID"}': Order löschen.
    - 'trade {"action": "REFRESH", "ticker": "SYMBOL", "trade_id": "ID"}': Trade-Daten aktualisieren.
+
+   **CASH MANAGEMENT (Kein Broker nötig!):**
+   - 'trade {"action": "CASH", "quantity": 5000}': Einzahlung von 5000 EUR.
+   - 'trade {"action": "CASH", "quantity": -2000, "note": "Auszahlung für Steuer"}': Auszahlung von 2000 EUR.
+   - Positive quantity = Einzahlung (Deposit), Negative quantity = Auszahlung (Withdrawal).
+   - Cash-Trades benötigen KEINE Broker-Verbindung und werden sofort als CLOSED gespeichert.
+   - Wenn der User sagt "zahle X ein" oder "Einzahlung X" → nutze action CASH mit positiver quantity.
+   - Wenn der User sagt "hebe X ab" oder "Auszahlung X" → nutze action CASH mit negativer quantity.
+
    - 'chart SYMBOL {"timeframe": "1D", "lookback": "1Y"}': Liefert historische Chart-Daten für ein Symbol. Nutze dies für Dashboard-Anfragen zu EINZELNEN Tickers.
    - 'chart SYMBOL --to-dashboard': Piped Chart-Daten direkt ans Dashboard (Line/Area Chart). Verhindert Context-Bloat.
    - 'chart SYMBOL --candle --to-dashboard': Piped OHLC-Candlestick-Daten ans Dashboard. Nutze --candle wenn der User explizit nach Candlestick fragt.

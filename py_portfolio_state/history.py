@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from typing import List, Optional
 from .objects import PortfolioSnapshot, TradeResult, PortfolioPosition, PortfolioOrder
-from py_tradeobject.models import TradeState, TradeStatus, TransactionType
+from py_tradeobject.models import TradeState, TradeStatus, TransactionType, TradeType
 from py_tradeobject.core import TradeObject
 from py_tradeobject.interface import IBrokerAdapter
 
@@ -52,6 +52,15 @@ class HistoryFactory:
             # We are now iterating TradeObjects. Need to access _state for data.
             state = trade._state # Accessing protected member for analysis
             if not state: continue
+
+            # [F-TO-170] Cash trades: Only contribute to cash balance, never positions
+            if state.is_cash:
+                for tx in state.transactions:
+                    tx_ts = tx.timestamp.replace(tzinfo=None) if tx.timestamp.tzinfo else tx.timestamp
+                    target_dt = date.replace(tzinfo=None) if date.tzinfo else date
+                    if tx_ts <= target_dt:
+                        total_cash += tx.quantity  # quantity IS the cash amount for cash trades
+                continue
 
             # Calculate Net Quantity and Cash Flow for this trade up to `date`
             qty = 0.0
@@ -186,6 +195,10 @@ class HistoryFactory:
         for trade in self._cache:
             state = trade._state
             if not state: continue
+
+            # [F-TO-170] Skip Cash trades in performance statistics
+            if state.is_cash:
+                continue
 
             if state.status in [TradeStatus.CLOSED, TradeStatus.ARCHIVED]:
                 # Check exit date (Timestamp of last transaction)

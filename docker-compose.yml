@@ -31,3 +31,18 @@ services:
     ports:
       - "4002:4002" # API Port für Paper Trading
       - "5900:5900" # VNC Port (um mal reinzuschauen)
+
+  # Matrix Chat Bot (PTA via Matrix)
+  matrix-bot:
+    build: .
+    container_name: matrix_bot_app
+    command: python main_matrix.py
+    volumes:
+      - ./data:/app/data
+      - ./secrets:/app/secrets
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: always
+    depends_on:
+      - ib-gateway

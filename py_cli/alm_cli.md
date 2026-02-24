@@ -26,4 +26,5 @@
 | F-TRD-010 | Trading | Position Sizing Wizard | Befehl `wizard` berechnet Positionsgröße nach Minervini-Regeln. | DONE | `handlers_analytics.py` |
 | F-TRD-020 | Trading | Market Order Support | ENTER ohne `limit_price` erzeugt eine Market Order (statt Limit Order). | DONE | `handlers_trade.py` |
 | F-TRD-030 | Trading | Order Cancellation | CANCEL-Action löscht eine spezifische, aktive Broker-Order. | DONE | `handlers_trade.py` |
+| F-INT-030 | Integration | Matrix Chat Interface | PTA erreichbar über Matrix Chat Room via `py_matrix` und `main_matrix.py`. | DONE | `py_matrix/bot.py` |
 | F-API-010 | API | Capability Discovery | Befehl `capabilities` zur Feature Negotiation. | PENDING | – |

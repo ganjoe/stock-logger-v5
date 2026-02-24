@@ -7,6 +7,10 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
+class TradeType(Enum):
+    STOCK = "STOCK"       # Normal equity/stock trade
+    CASH = "CASH"         # Deposit or Withdrawal (no broker interaction)
+
 class TradeStatus(Enum):
     PLANNED = "PLANNED"   # No position, setup phase
     OPENING = "OPENING"   # Entry order sent, no fill yet
@@ -134,6 +138,7 @@ class TradeState:
     id: str             # [F-TO-140] order_ref
     ticker: str
     status: TradeStatus # [F-TO-120]
+    trade_type: TradeType = TradeType.STOCK  # [F-TO-170] STOCK or CASH
     transactions: List[TradeTransaction] = field(default_factory=list)
     active_orders: Dict[str, str] = field(default_factory=dict) # {broker_oid: 'ENTRY'|'STOP'|'EXIT'} [F-TO-120]
     
@@ -146,11 +151,17 @@ class TradeState:
     entry_date: Optional[datetime] = None
     notes: str = ""
 
+    @property
+    def is_cash(self) -> bool:
+        """Convenience check: Is this a cash deposit/withdrawal?"""
+        return self.trade_type == TradeType.CASH
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "id": self.id,
             "ticker": self.ticker,
             "status": self.status.value,
+            "trade_type": self.trade_type.value,
             "transactions": [t.to_dict() for t in self.transactions],
             "order_history": [o.to_dict() for o in self.order_history],
             "active_orders": self.active_orders,
@@ -166,6 +177,7 @@ class TradeState:
             id=data["id"],
             ticker=data["ticker"],
             status=TradeStatus(data["status"]),
+            trade_type=TradeType(data.get("trade_type", "STOCK")),  # Backward compat
         )
         
         if "transactions" in data:

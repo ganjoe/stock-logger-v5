@@ -35,14 +35,18 @@ class TradeCommand(ICommand):
         if not action:
             return CommandResponse(False, message="Missing 'action' field in payload.", error_code="INVALID_PAYLOAD")
 
-        # 3. Check Broker Connection
-        if not services.has_broker():
-             return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
-        
-        broker = services.get_broker()
-
         try:
             # --- DISPATCHER ---
+            # CASH action does NOT require broker
+            if action == "CASH":
+                return self._handle_cash(payload)
+
+            # All other actions require broker connection
+            if not services.has_broker():
+                return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
+            
+            broker = services.get_broker()
+
             if action == "ENTER":
                 return self._handle_enter(payload, broker)
             elif action == "UPDATE":
@@ -197,5 +201,37 @@ class TradeCommand(ICommand):
                 message=f"Order {order_id} not active in Trade {trade_id}.",
                 error_code="ORDER_NOT_FOUND"
             )
+
+    def _handle_cash(self, p: Dict[str, Any]) -> CommandResponse:
+        """
+        [F-TO-170] Handles Cash Deposits / Withdrawals.
+        No broker connection required.
+        Payload: {"action": "CASH", "quantity": 5000, "note": "Monthly Deposit"}
+        quantity > 0 = Deposit, quantity < 0 = Withdrawal
+        """
+        amount = p.get("quantity")
+        if amount is None:
+            return CommandResponse(False, message="CASH requires 'quantity' (positive=deposit, negative=withdrawal).", error_code="INVALID_PAYLOAD")
+        
+        amount = float(amount)
+        if amount == 0:
+            return CommandResponse(False, message="CASH quantity must not be zero.", error_code="INVALID_PAYLOAD")
+        
+        note = p.get("note", "")
+        
+        trade = TradeObject.create_cash(amount=amount, note=note)
+        action_label = "Deposit" if amount > 0 else "Withdrawal"
+        
+        return CommandResponse(
+            True,
+            message=f"💰 {action_label}: {abs(amount):.2f} EUR",
+            payload={
+                "trade_id": trade.id,
+                "trade_type": "CASH",
+                "amount": amount,
+                "action": action_label,
+                "status": trade.status.value
+            }
+        )
 
 registry.register(TradeCommand())

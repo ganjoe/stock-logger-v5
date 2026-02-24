@@ -10,10 +10,10 @@ import shutil
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction
+from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, TradeType, TransactionType
 from .logic import TradeCalculator
 from .interface import IBrokerAdapter, BrokerUpdate, BarData
-from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, TradeOrderLog
+from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, TradeOrderLog, TradeType, TransactionType
 from py_market_data import ChartManager
 
 class TradeObject:
@@ -71,6 +71,34 @@ class TradeObject:
         return obj
 
     @classmethod
+    def create_cash(cls, amount: float, note: str = "", storage_dir: str = "./data/trades") -> 'TradeObject':
+        """
+        [F-TO-170] Factory: Creates a Cash Deposit/Withdrawal TradeObject.
+        - amount > 0: Deposit
+        - amount < 0: Withdrawal
+        - No broker interaction, immediately CLOSED.
+        - Stored under _CASH/ directory.
+        """
+        obj = cls(ticker="_CASH", storage_dir=storage_dir)
+        obj._state.trade_type = TradeType.CASH
+        obj._state.status = TradeStatus.CLOSED
+        obj._state.entry_date = datetime.now()
+        obj._state.notes = note or ("Deposit" if amount > 0 else "Withdrawal")
+        
+        # Create a single transaction representing the cash movement
+        tx = TradeTransaction(
+            id=str(uuid.uuid4())[:8],
+            timestamp=datetime.now(),
+            type=TransactionType.ENTRY,  # ENTRY is the closest semantic match
+            quantity=amount,  # Signed: + deposit, - withdrawal
+            price=1.0,        # Cash has no "price" per se, 1.0 keeps math neutral
+            commission=0.0
+        )
+        obj._state.transactions.append(tx)
+        obj.save()
+        return obj
+
+    @classmethod
     def from_dict(cls, data: Dict[str, Any], storage_dir: str = "./data/trades") -> 'TradeObject':
         """
         F-TO-021: Reconstructs a TradeObject from a dictionary (TradeState).
@@ -103,14 +131,24 @@ class TradeObject:
              # Ensure ticker directory exists
              os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
 
-        # 2. Setup Charting (Internal)
-        self.chart_manager = ChartManager(storage_root="./data/market_cache")
+        # 2. Setup Charting (Internal) – Skip for Cash trades
+        if self._state and self._state.trade_type == TradeType.CASH:
+            self.chart_manager = None
+        else:
+            self.chart_manager = ChartManager(storage_root="./data/market_cache")
         self.broker: Optional[IBrokerAdapter] = None # Broker must be injected via set_broker()
     
 
     
+    @property
+    def is_cash(self) -> bool:
+        """Convenience: Is this a cash deposit/withdrawal?"""
+        return self._state is not None and self._state.trade_type == TradeType.CASH
+
     def set_broker(self, broker: IBrokerAdapter):
-        """Injects the broker adapter dependency."""
+        """Injects the broker adapter dependency. Skipped for Cash trades."""
+        if self.is_cash:
+            return  # Cash trades have no broker interaction
         self.broker = broker
         # [NEW] Automatically ensure chart data is present/stale-checked
         try:
@@ -245,6 +283,8 @@ class TradeObject:
         F-TO-030: Places entry order via broker.
         Sets status to OPENING (Async).
         """
+        if self.is_cash:
+            raise ValueError("Cannot place entry orders on a CASH trade.")
         if not self.broker:
             raise RuntimeError("Broker not injected. Call set_broker() first.")
 
@@ -300,6 +340,7 @@ class TradeObject:
         Cancels old stop, places new one.
         Logs the change for R-Factor analysis.
         """
+        if self.is_cash: raise ValueError("Cannot set stop-loss on a CASH trade.")
         if not self.broker: raise RuntimeError("Broker missing")
         
         # 1. Find and Cancel old STOP orders
@@ -361,6 +402,7 @@ class TradeObject:
         F-TO-033: Closes remaining position at market.
         Cancels open orders.
         """
+        if self.is_cash: raise ValueError("Cannot close a CASH trade via broker.")
         if not self.broker: raise RuntimeError("Broker missing")
 
         metrics = self.metrics
@@ -392,6 +434,8 @@ class TradeObject:
         [NEW] Fetches current price via Broker using established connection.
         Wraps broker.get_current_price().
         """
+        if self.is_cash:
+            raise ValueError("Cannot fetch quote for a CASH trade.")
         if not self.broker:
             raise RuntimeError("Broker missing")
         return self.broker.get_current_price(self.ticker)
@@ -401,6 +445,7 @@ class TradeObject:
         F-TO-050: Syncs with broker and updates metrics.
         CRITICAL: Requires current_price to calculate accurate PnL.
         """
+        if self.is_cash: raise ValueError("Cannot refresh a CASH trade.")
         if not self.broker: raise RuntimeError("Broker missing")
 
         # 1. Get Updates from Broker (Fills & Status)
@@ -508,10 +553,12 @@ class TradeObject:
         """
         events = []
         for t in self._state.transactions:
-            # Cash Flow: Negative for Buy, Positive for Sell
-            # Logic: (Qty * Price * -1) - Comm
-            # Buy 10 @ 100 = -1000. Sell 10 @ 110 = +1100. Net +100.
-            cash_flow = (t.quantity * t.price * -1) - t.commission
+            if self.is_cash:
+                # Cash trades: quantity IS the cash flow directly
+                cash_flow = t.quantity
+            else:
+                # Stock trades: Cash Flow = -(Qty * Price) - Commission
+                cash_flow = (t.quantity * t.price * -1) - t.commission
             
             events.append({
                 "timestamp": t.timestamp.isoformat(),
