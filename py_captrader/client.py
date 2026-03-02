@@ -22,7 +22,7 @@ class IBKRClient:
         FREE = "FREE"   # No Live Data (Snapshots return 0.0 or Last)
         LIVE = "LIVE"   # Try Live -> Fallback to Delayed
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 7497, client_id: int = 1):
+    def __init__(self, host: str = "172.17.0.3", port: int = 7497, client_id: int = 1):
         self.host = host
         self.port = port
         self.client_id = client_id
