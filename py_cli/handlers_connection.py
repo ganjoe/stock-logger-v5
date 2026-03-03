@@ -3,26 +3,46 @@ from typing import List
 from .models import CLIContext, CommandResponse, CLIMode
 from .commands import ICommand, registry
 from py_captrader import session, services
+from py_captrader.config import (
+    DEFAULT_HOST, DEFAULT_PORT, DEFAULT_CLIENT_ID,
+    PAPER_HOST, PAPER_PORT, LIVE_HOST, LIVE_PORT
+)
 from py_captrader.adapter import CapTraderAdapter
 
 class ConnectCommand(ICommand):
     name = "connect"
     description = "Connects to IBKR Gateway."
-    syntax = "connect [ip] [port] [client_id]"
+    syntax = "connect [live|paper|ip] [port] [client_id]"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        # Defaults (Docker ready)
-        host = "ib-gateway"
-        port = 4002
-        client_id = 0
+        # Defaults
+        host = DEFAULT_HOST
+        port = DEFAULT_PORT
+        client_id = DEFAULT_CLIENT_ID
         
-        if len(args) >= 1: host = args[0]
+        if len(args) >= 1:
+            val = args[0].lower()
+            if val == "live":
+                host = LIVE_HOST
+                port = LIVE_PORT
+            elif val == "paper":
+                host = PAPER_HOST
+                port = PAPER_PORT
+            else:
+                host = args[0]
+        
         if len(args) >= 2: port = int(args[1])
         if len(args) >= 3: client_id = int(args[2])
         
         try:
             if session.is_connected():
-                return CommandResponse(False, message="Already connected. Disconnect first.")
+                # Check if we are already connected to the SAME target
+                client = session._ACTIVE_CLIENT
+                if client and client.host == host and client.port == port:
+                     return CommandResponse(True, message=f"Already connected to {host}:{port}.")
+                
+                # Different target -> Auto-disconnect
+                session.disconnect()
                 
             session.connect(host=host, port=port, client_id=client_id)
             

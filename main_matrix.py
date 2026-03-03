@@ -21,7 +21,8 @@ import py_cli.handlers_history
 import py_cli.handlers_analytics
 import py_cli.handlers_pta
 import py_cli.handlers_connection
-import py_cli.handlers_dashboard
+import py_cli.handlers_connection
+# import py_cli.handlers_dashboard (REMOVED)
 
 from py_pta.bridge import PTABridge
 from py_matrix.config import load_config

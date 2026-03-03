@@ -36,7 +36,7 @@ class AnalyzeCommand(ICommand):
         if sub_cmd == "live":
             return self._handle_live(payload)
         elif sub_cmd == "history":
-            return self._handle_history(payload)
+            return self._handle_history(ctx, payload)
         else:
             return CommandResponse(False, f"Unknown sub-command: {sub_cmd}", error_code="UNKNOWN_SUBCOMMAND")
 
@@ -57,10 +57,9 @@ class AnalyzeCommand(ICommand):
         
         return CommandResponse(True, payload=report.to_dict(), message=f"Live Analytics Report (Ticker: {ticker or 'ALL'})")
 
-    def _handle_history(self, p: Dict[str, Any]) -> CommandResponse:
+    def _handle_history(self, ctx: CLIContext, p: Dict[str, Any]) -> CommandResponse:
         days = p.get("days", 30)
         ticker = p.get("ticker")
-        to_dashboard = p.get("to_dashboard", False)
         
         from datetime import datetime, timedelta
         from py_riskmanager.analytics import PerformanceAnalyzer
@@ -68,8 +67,9 @@ class AnalyzeCommand(ICommand):
         end = datetime.now()
         start = end - timedelta(days=days)
         
-        # 1. Load all trades
-        factory = HistoryFactory(trades_dir="./data/trades")
+        # 2. Setup Factory
+        provider = services.get_broker() if services.has_broker() else None
+        factory = HistoryFactory(trades_dir=ctx.trades_dir, provider=provider)
         factory.load_all_trades()
         
         # 2. Get closed trades in window
@@ -111,24 +111,6 @@ class AnalyzeCommand(ICommand):
             "trades": trade_list
         }
         
-        # 6. Optional: Pipe equity curve to dashboard
-        if to_dashboard:
-            try:
-                snapshots = factory.get_daily_snapshots(start, end)
-                curve = [{"t": s.timestamp.isoformat(), "v": s.equity} for s in snapshots]
-                
-                import requests
-                url = "http://localhost:8000/broadcast"
-                push_payload = {
-                    "msg_type": "CHART_UPDATE",
-                    "payload_type": "PNL",
-                    "data": curve
-                }
-                requests.post(url, json=push_payload, timeout=2)
-                return CommandResponse(True, message=f"PnL Curve ({days}d) piped to Dashboard. Total PnL: {total_pnl:+.2f}", payload={"status": "PIPED", "total_pnl": round(total_pnl, 2)})
-            except Exception as e:
-                return CommandResponse(False, message=f"Dashboard piping failed: {e}. Use without to_dashboard.", error_code="PIPE_ERROR")
-
         return CommandResponse(True, payload=payload, message=f"History Report ({days}d): {len(closed)} trades, PnL: {total_pnl:+.2f}")
 
 
@@ -149,9 +131,10 @@ class BulkFetchCommand(ICommand):
             except ValueError:
                 pass
                 
+        from py_captrader.config import DEFAULT_PORT
         # Launch script in background
         # We use Popen to not block the PTA
-        cmd = [sys.executable, "py_market_data/bulk_fetch.py", "--client-id", str(client_id)]
+        cmd = [sys.executable, "py_market_data/bulk_fetch.py", "--client-id", str(client_id), "--port", str(DEFAULT_PORT)]
         
         try:
             # nohup-like behavior not strictly needed if we don't wait?

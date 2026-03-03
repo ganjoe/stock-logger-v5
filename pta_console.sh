@@ -9,7 +9,12 @@ echo "Tippe 'help' fuer eine Befehlsuebersicht."
 # Wechsel in das Verzeichnis des Skripts (Projekt-Root)
 cd "$(dirname "$0")"
 
+# Automatisches Erkennen der virtuellen Umgebung
+if [ -d ".venv" ]; then
+    PYTHON_EXEC="./.venv/bin/python"
+else
+    PYTHON_EXEC="python3"
+fi
 
-# Startet die Session mit dem neuen Unified Entry Point (ID 0 enforced by script, but we pass args if needed)
-# Actually run_logger.py enforces ID 0 internally.
-python3 run_logger.py --mode=human
+# Startet die Session mit dem neuen Unified Entry Point
+$PYTHON_EXEC run_logger.py --mode=human

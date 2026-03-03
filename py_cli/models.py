@@ -16,6 +16,7 @@ class CLIContext:
     user_id: str = "cli_user"
     session_id: str = "default_session"
     confirm_all: bool = False # For --force/--confirm logic in Bot mode
+    trades_dir: str = "./data/trades" # Root for trade storage
 
 @dataclass
 class CommandResponse:

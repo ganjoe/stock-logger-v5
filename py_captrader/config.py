@@ -1,0 +1,16 @@
+# IBKR Gateway / TWS Connection Profiles
+
+# PAPER TRADING (Standard)
+PAPER_HOST = "172.17.0.3"
+PAPER_PORT = 4001
+
+# LIVE TRADING (Dedicated)
+LIVE_HOST = "172.17.0.4"
+LIVE_PORT = 4002
+
+# CLIENT ID (Standard)
+DEFAULT_CLIENT_ID = 1
+
+# Current Defaults (Usually Paper)
+DEFAULT_HOST = PAPER_HOST
+DEFAULT_PORT = PAPER_PORT

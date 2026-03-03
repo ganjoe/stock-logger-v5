@@ -20,9 +20,9 @@
 | F-CON-010 | Connection | Broker Connection Management | Befehle `connect` / `disconnect` zur Broker-Anbindung. | DONE | `handlers_connection.py` |
 | F-MON-010 | Monitoring | Live Quote | Befehl `quote SYMBOL` liefert aktuellen Marktpreis. | DONE | `handlers_monitor.py` |
 | F-MON-020 | Monitoring | Market Clock | Befehl `market_clock` liefert Börsenstatus und Zeitinfo. | DONE | `handlers_analytics.py` |
-| F-VIS-010 | Visualization | Dashboard Management | Befehle `dashboard --start/--stop/--clear` zur Server-Steuerung und Datenpush. | DONE | `handlers_dashboard.py` |
-| F-VIS-020 | Visualization | Chart Data Piping | Flag `--to-dashboard` piped Chart-Daten direkt ans Dashboard (kein Context-Bloat). | DONE | `handlers_monitor.py` |
-| F-VIS-030 | Visualization | Candlestick Charts | Flag `--candle` sendet OHLC-Daten für Candlestick-Darstellung im Dashboard. | DONE | `handlers_monitor.py`, `index.html` |
+| F-VIS-010 | Visualization | Dashboard Management | Befehle `dashboard --start/--stop/--clear` zur Server-Steuerung und Datenpush. | REMOVED | – |
+| F-VIS-020 | Visualization | Chart Data Piping | Flag `--to-dashboard` piped Chart-Daten direkt ans Dashboard (kein Context-Bloat). | REMOVED | – |
+| F-VIS-030 | Visualization | Candlestick Charts | Flag `--candle` sendet OHLC-Daten für Candlestick-Darstellung im Dashboard. | REMOVED | – |
 | F-PTA-010 | Integration | PTA Bot Integration | Befehle `pta` und `chat` zur Interaktion mit dem Gemini Personal Trading Assistant. | DONE | `handlers_pta.py` |
 | F-TRD-010 | Trading | Position Sizing Wizard | Befehl `wizard` berechnet Positionsgröße nach Minervini-Regeln. | DONE | `handlers_analytics.py` |
 | F-TRD-020 | Trading | Market Order Support | ENTER ohne `limit_price` erzeugt eine Market Order (statt Limit Order). | DONE | `handlers_trade.py` |

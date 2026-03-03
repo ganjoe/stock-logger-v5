@@ -116,19 +116,14 @@ class ChartCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         if not args:
-            return CommandResponse(False, message="Usage: chart SYMBOL [--to-dashboard] [JSON_PAYLOAD]", error_code="INVALID_ARGS")
+            return CommandResponse(False, message="Usage: chart SYMBOL [JSON_PAYLOAD]", error_code="INVALID_ARGS")
             
         ticker = args[0].upper()
         
-        # Check for piping flag and candle mode
-        to_dashboard = "--to-dashboard" in args
-        candle_mode = "--candle" in args
-        clean_args = [a for a in args[1:] if a not in ("--to-dashboard", "--candle")]
-        
         payload = {}
-        if clean_args:
+        if len(args) > 1:
             try:
-                payload = json.loads(" ".join(clean_args))
+                payload = json.loads(" ".join(args[1:]))
             except json.JSONDecodeError:
                 pass 
 
@@ -146,33 +141,8 @@ class ChartCommand(ICommand):
             
             bars = trade.get_chart(timeframe=timeframe, lookback=lookback)
 
-            # Build data: OHLC for candle mode, close-only for area mode
-            if candle_mode:
-                data = [{"t": normalize_timestamp(b.timestamp, timeframe),
-                         "o": float(b.open), "h": float(b.high),
-                         "l": float(b.low), "c": float(b.close)} for b in bars]
-            else:
-                data = [{"t": normalize_timestamp(b.timestamp, timeframe), "v": float(b.close)} for b in bars]
-            
-            if to_dashboard:
-                # PIPE DATA DIRECTLY (Prevents LLM Context Bloat)
-                import requests
-                url = "http://localhost:8000/broadcast"
-                push_payload = {
-                    "msg_type": "CHART_UPDATE",
-                    "payload_type": "CANDLE" if candle_mode else "PRICE",
-                    "data": data
-                }
-                try:
-                    requests.post(url, json=push_payload, timeout=2)
-                    chart_type = "Candlestick" if candle_mode else "Chart"
-                    return CommandResponse(
-                        True, 
-                        message=f"{chart_type} for {ticker} direct-piped to Dashboard ({len(data)} bars).",
-                        payload={"status": "PIPED", "count": len(data)} # Small payload
-                    )
-                except Exception as e:
-                    return CommandResponse(False, message=f"Piping failed: {e}", error_code="PIPE_ERROR")
+            # Build data
+            data = [{"t": normalize_timestamp(b.timestamp, timeframe), "v": float(b.close)} for b in bars]
 
             # Normal behavior: Return all data
             return CommandResponse(

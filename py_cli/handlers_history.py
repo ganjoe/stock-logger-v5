@@ -26,7 +26,7 @@ class HistoryCommand(ICommand):
             provider = services.get_broker()
             
         # ChartManager is now handled internally by TradeObject (via set_broker)
-        factory = HistoryFactory(trades_dir="./data/trades", provider=provider)
+        factory = HistoryFactory(trades_dir=ctx.trades_dir, provider=provider)
         
         # 2. Load Trades
         factory.load_all_trades()

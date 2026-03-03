@@ -16,6 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from py_market_data.domain import HistoryRequest
 from py_market_data.downloader import BulkDownloader
+from py_captrader.config import DEFAULT_HOST, DEFAULT_PORT
 
 # Pseudo-tickers that must never be fetched from IBKR
 SKIP_TICKERS = {"_CASH", "HIST_ORDER_TEST"}
@@ -264,7 +265,7 @@ async def main_async(ticker_args: List[str], client_id: int, port: int):
     ib = IB()
     try:
         print(f"🔌 Connecting to IBKR (Async)...")
-        await ib.connectAsync(host="127.0.0.1", port=port, clientId=client_id)
+        await ib.connectAsync(host=DEFAULT_HOST, port=port, clientId=client_id)
         print("✅ Connected.")
     except Exception as e:
         print(f"❌ Connection failed: {e}")
@@ -430,7 +431,7 @@ async def main_async(ticker_args: List[str], client_id: int, port: int):
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument("--client-id", type=int, default=999, help="Reader Client ID")
-    parser.add_argument("--port", type=int, default=4002, help="Gateway Port")
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="Gateway Port")
     parser.add_argument("tickers", nargs="*", help="List of tickers.")
     args = parser.parse_args()
         

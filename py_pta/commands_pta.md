@@ -136,13 +136,13 @@ Analysiert den aktuellen Stand (Risk, Heat, Alerts).
 
 ## System Control
 
-### `connect [ip] [port] [client_id]` 
-Verbindet den Bot mit dem Gateway.
-Paper Trading: port=4002
-Live Trading: port=4001
-Localhost: ip=127.0.0.1
-- **Default**: `ip=127.0.0.1`, `port=4002`, `client_id=0`.
-- **Rückgabe**: `{"success": true, "message": "Connected to Paper (4002)"}` oder Fehler.
+### `connect [live|paper|ip] [port] [client_id]` 
+Verbindet den Bot mit dem IBKR Gateway.
+- **live**: Nutze das Live-Profil (Standard: 172.17.0.4:4002).
+- **paper**: Nutze das Paper-Profil (Standard: 172.17.0.3:4001).
+- **Automatisches Trennen**: Bestehende Verbindungen werden automatisch getrennt, falls eine Verbindung zu einem anderen Target (IP/Port) angefordert wird. Ein manuelles `disconnect` ist zum Switchen nicht nötig.
+- **Default**: Paper Trading (Port 4001, ID 1).
+- **Rückgabe**: `{"success": true, "message": "Connected to 172.17.0.3:4001 (ID: 1)"}`
 
 ### `disconnect`
 Trennt die Verbindung.

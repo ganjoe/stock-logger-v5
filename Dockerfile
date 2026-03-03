@@ -16,8 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Step 2: Copy the rest of the code
 COPY . .
 
-# Expose Dashboard Port
-EXPOSE 8000
-
-# Start script (Note: main_cli.py for CLI or run_dashboard_foreground.py for Web)
+# Start script
 CMD ["python", "main_cli.py"]

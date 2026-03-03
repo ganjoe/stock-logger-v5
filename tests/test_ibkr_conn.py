@@ -2,18 +2,16 @@ import logging
 from ib_insync import IB
 import sys
 
+from py_captrader.config import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_CLIENT_ID
+
 # Configure logging to see the handshake process
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
-    #paper
-    host = "172.17.0.4"
-    port = 4001
-    client_id = 99
-    #live
-    #host = "172.17.0.3"
-    #port = 4002
-    #client_id = 99
+    # Central Config
+    host = DEFAULT_HOST
+    port = DEFAULT_PORT
+    client_id = 99 # Keep unique client ID for tests
     
     ib = IB()
     print(f"Attempting to connect to {host}:{port} (ClientID: {client_id})...")

@@ -8,6 +8,7 @@ import time
 from typing import Optional, List, Dict, Any, Union
 from ib_insync import IB, Contract, Order, Trade, ExecutionFilter
 import ib_insync.util as ib_util
+from .config import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_CLIENT_ID
 
 class IBKRClient:
     """
@@ -22,7 +23,7 @@ class IBKRClient:
         FREE = "FREE"   # No Live Data (Snapshots return 0.0 or Last)
         LIVE = "LIVE"   # Try Live -> Fallback to Delayed
 
-    def __init__(self, host: str = "172.17.0.3", port: int = 7497, client_id: int = 1):
+    def __init__(self, host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, client_id: int = DEFAULT_CLIENT_ID):
         self.host = host
         self.port = port
         self.client_id = client_id

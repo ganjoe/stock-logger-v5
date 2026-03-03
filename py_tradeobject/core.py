@@ -151,6 +151,9 @@ class TradeObject:
             return  # Cash trades have no broker interaction
         self.broker = broker
         # [NEW] Automatically ensure chart data is present/stale-checked
+        if self.ticker.startswith("HIST_"):
+            return # Skip sync for test/dummy tickers
+
         try:
             self._ensure_chart()
         except Exception as e:

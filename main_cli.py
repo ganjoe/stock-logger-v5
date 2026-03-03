@@ -18,12 +18,14 @@ import py_cli.handlers_history
 import py_cli.handlers_analytics
 import py_cli.handlers_pta
 import py_cli.handlers_connection
-import py_cli.handlers_dashboard
+import py_cli.handlers_connection
+# import py_cli.handlers_dashboard (REMOVED)
 
 def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")
     parser.add_argument("--mode", choices=["human", "bot"], default="human", help="Operating Mode")
     parser.add_argument("--confirm-all", action="store_true", help="Auto-confirm critical actions (Bot only)")
+    parser.add_argument("--trades-dir", default="./data/trades", help="Directory for trade storage")
     parser.add_argument("command", nargs=argparse.REMAINDER, help="Command to execute")
 
     args = parser.parse_args()
@@ -33,6 +35,7 @@ def main():
     mode = CLIMode.BOT if args.mode == "bot" else CLIMode.HUMAN
     controller = CLIController(mode=mode)
     controller.context.confirm_all = args.confirm_all
+    controller.context.trades_dir = args.trades_dir
     services.register_cli(controller)
 
     # 2. Execution
@@ -55,7 +58,7 @@ def main():
         # This blocks until the user types 'exit' inside the chat session
         response = controller.process_input("chat")
         
-        print(response.message)
+        print(response)
     else:
         # 4. Continuous Bot Loop (Reads from stdin)
         # This allows external scripts (like integration tests) to pipe commands

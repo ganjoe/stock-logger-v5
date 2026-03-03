@@ -118,11 +118,21 @@ def run_test():
     # Setup Data
     ts_start, ts_mid, ts_end = create_historical_scenarios()
     
+    # NEW: Create a isolated trades directory for the test to avoid loading production data
+    test_trades_dir = "data/test_trades"
+    os.makedirs(test_trades_dir, exist_ok=True)
+    # Move the test trade into the test_trades_dir
+    import shutil
+    ticker_dir = "data/trades/HIST_ORDER_TEST"
+    dest_dir = os.path.join(test_trades_dir, "HIST_ORDER_TEST")
+    if os.path.exists(dest_dir): shutil.rmtree(dest_dir)
+    shutil.move(ticker_dir, test_trades_dir)
+
     RUN_PAPER_SCRIPT = "main_cli.py"
     
     # Start Process
     process = subprocess.Popen(
-        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--mode", "bot"],
+        [sys.executable, "-u", RUN_PAPER_SCRIPT, "--mode", "bot", "--trades-dir", test_trades_dir],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
