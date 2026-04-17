@@ -1,10 +1,19 @@
 version: '3.8'
 
+networks:
+  telchat-net:
+    external: true
+    name: telchat_default
+
 services:
   # PTA Telnet Agent
   pta-agent:
     build: .
     container_name: pta_agent_app
+    networks:
+      - telchat-net
+      - default
+    command: ["python", "run_pta.py", "--host", "telchat-router"]
     volumes:
       - ./data:/app/data
       - ./secrets:/app/secrets
@@ -14,4 +23,3 @@ services:
     stdin_open: true
     tty: true
     restart: always
-
