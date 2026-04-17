@@ -16,6 +16,23 @@ class PTABridge:
         if self.pta.is_configured():
             pass
 
+    def handle_hub_message(self, msg: dict) -> tuple[str, str]:
+        """
+        Entry point for Hub messages. 
+        Returns (recipient, response_text).
+        """
+        sender = msg.get("from", "unknown")
+        data = msg.get("data", {})
+        
+        # Extract text from hub data format {"text": "..."}
+        if isinstance(data, dict):
+            user_input = data.get("text", str(data))
+        else:
+            user_input = str(data)
+
+        response_text = self.chat(user_input)
+        return sender, response_text
+
     def chat(self, user_input: str) -> str:
         if not self.pta.is_configured():
             return "❌ Gemini API Key fehlt. Bitte erstelle 'secrets/gemini_config.json' mit deinem API-Key."

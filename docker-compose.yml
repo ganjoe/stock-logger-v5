@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  # Dein Python Programm
-  stock-logger:
+  # PTA Telnet Agent
+  pta-agent:
     build: .
-    container_name: stock_logger_app
+    container_name: pta_agent_app
     ports:
       - "8000:8000"
     volumes:

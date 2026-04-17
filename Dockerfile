@@ -16,5 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Step 2: Copy the rest of the code
 COPY . .
 
-# Start script
-CMD ["python", "main_cli.py"]
+# Start script (PTA Telnet Agent)
+CMD ["python", "run_pta.py"]
