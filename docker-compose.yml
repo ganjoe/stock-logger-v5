@@ -16,21 +16,6 @@ services:
     stdin_open: true
     tty: true
     restart: always
-    depends_on:
-      - ib-gateway
-
-  # Das IB Gateway (Hinzugefügt!)
-  ib-gateway:
-    image: gnzsnz/ib-gateway:latest
-    container_name: ib_gateway_app
-    restart: always
-    environment:
-      - TWS_USERID=DEIN_USER
-      - TWS_PASSWORD=DEIN_PASSWORT
-      - TRADING_MODE=paper # oder live
-    ports:
-      - "4002:4002" # API Port für Paper Trading
-      - "5900:5900" # VNC Port (um mal reinzuschauen)
 
   # Matrix Chat Bot (PTA via Matrix)
   matrix-bot:
@@ -44,5 +29,3 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     restart: always
-    depends_on:
-      - ib-gateway

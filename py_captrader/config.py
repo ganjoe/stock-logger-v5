@@ -9,7 +9,7 @@ LIVE_HOST = "172.17.0.4"
 LIVE_PORT = 4002
 
 # CLIENT ID (Standard)
-DEFAULT_CLIENT_ID = 1
+DEFAULT_CLIENT_ID = 22
 
 # Current Defaults (Usually Paper)
 DEFAULT_HOST = PAPER_HOST
