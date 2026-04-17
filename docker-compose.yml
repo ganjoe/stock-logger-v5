@@ -5,8 +5,6 @@ services:
   pta-agent:
     build: .
     container_name: pta_agent_app
-    ports:
-      - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./secrets:/app/secrets
