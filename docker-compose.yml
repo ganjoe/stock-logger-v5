@@ -15,15 +15,3 @@ services:
     tty: true
     restart: always
 
-  # Matrix Chat Bot (PTA via Matrix)
-  matrix-bot:
-    build: .
-    container_name: matrix_bot_app
-    command: python main_matrix.py
-    volumes:
-      - ./data:/app/data
-      - ./secrets:/app/secrets
-      - ./logs:/app/logs
-    environment:
-      - PYTHONUNBUFFERED=1
-    restart: always
