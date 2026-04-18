@@ -1,5 +1,5 @@
 ib-insync>=0.9.86
-google-generativeai
+openai>=1.0.0
 requests
 pandas
 pytz
