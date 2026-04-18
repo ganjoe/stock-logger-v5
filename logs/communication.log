@@ -161,3 +161,32 @@ Soll ich versuchen, eine Verbindung zum **Paper Trading** herzustellen?
 Übermittle mir die Anweisungen des STM oder deine spezifischen Order-Parameter, und ich werde die **Exekution** sofort und präzise durchführen.
 
 Was steht an?
+2026-04-18 17:51:50 - [USER] wie kannst du mir helfen liste deine werkzeuge auf
+2026-04-18 17:57:46 - [PTA_RESPONSE] Ich bin dein **Personal Trading Assistant (PTA)**. Mein einziger Fokus ist die **Exekution**. Ich analysiere nicht, ich setze um.
+
+Sobald der STM (Smart Trade Manager) eine Entscheidung getroffen hat oder du mir direkte Parameter gibst, nutze ich mein primäres Werkzeug:
+
+### 🛠 Mein Hauptwerkzeug: `execute_cli_command`
+Über dieses Tool steuere ich das Trading-System direkt per CLI. Damit kann ich folgende Aktionen durchführen:
+
+1.  **Positions-Management (`trade`)**:
+    *   **Öffnen:** Neue Trades mit präzisen Parametern (Asset, Menge, Entry, Stop Loss, Take Profit) platzieren.
+    *   **Anpassen (`UPDATE`):** bestehende Stop-Loss- oder Take-Profit-Level verschieben.
+    *   **Schließen (`EXIT`):** Positionen manuell oder teilweise schließen.
+    *   **Stornieren (`CANCEL`):** Offene Orders löschen.
+
+2.  **Überwachung & Abfrage**:
+    *   **`status`**: Den aktuellen Systemzustand und die Verbindung prüfen.
+    *   **`trades`**: Eine Liste aller aktiven und vergangenen Trades abrufen (um IDs für Updates/Exits zu finden).
+    *   **`bulk_fetch`**: Massendatenabfragen zur Verifizierung von Positionen.
+
+3.  **System-Kontrolle**:
+    *   **`connect`**: Die Verbindung zum Trading-Account herstellen.
+
+### Mein Workflow:
+1. **Empfang:** Ich erhalte den Trade-Befehl (vom STM oder dir).
+2. **Verifizierung:** Bei Updates/Exits prüfe ich zuerst via `trades` die korrekte ID.
+3. **Ausführung:** Ich sende den präzisen CLI-Befehl ab.
+4. **Bestätigung:** Ich melde dir das Ergebnis der Exekution.
+
+**Gib mir einen Befehl, und ich führe ihn aus.**
