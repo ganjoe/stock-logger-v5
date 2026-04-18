@@ -106,7 +106,7 @@ class TelChatClient:
             time.sleep(10)
             if time.time() - self.last_send_time > 45:
                 # Send a simple heartbeat ACK or data message
-                self.send(to="router", msg_type="ack", data={"heartbeat": True})
+                self.send(to=self.alias, msg_type="ack", data={"heartbeat": True})
 
     def stop(self):
         self.running = False

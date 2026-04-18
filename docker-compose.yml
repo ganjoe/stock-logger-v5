@@ -18,6 +18,7 @@ services:
       - ./data:/app/data
       - ./secrets:/app/secrets
       - ./logs:/app/logs
+      - ./py_pta/llm_config.json:/app/py_pta/llm_config.json
     environment:
       - PYTHONUNBUFFERED=1
     stdin_open: true
