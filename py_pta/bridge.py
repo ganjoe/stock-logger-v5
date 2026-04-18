@@ -10,8 +10,13 @@ class PTABridge:
     Orchestrates the conversation between the user, the LLM, and the CLI.
     Uses the standalone LLMService for communication and memory.
     """
-    def __init__(self, cli_controller: CLIController, config_path: str = "secrets/llm_config.json"):
+    def __init__(self, cli_controller: CLIController, config_path: str = None):
         self.cli = cli_controller
+        
+        # Default to llm_config.json in the same directory as this file
+        if config_path is None:
+            config_path = os.path.join(os.path.dirname(__file__), "llm_config.json")
+        
         self.config_path = config_path
         
         # Load configuration
