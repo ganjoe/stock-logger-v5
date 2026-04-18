@@ -151,3 +151,7 @@ Soll ich versuchen, eine Verbindung zum **Paper Trading** herzustellen?
 2026-03-02 18:59:59 - [SYSTEM_EXEC] disconnect
 2026-03-02 18:59:59 - [SYSTEM_RESULT] {"success": true, "payload": null, "message": "Disconnected.", "error_code": "OK"}
 2026-03-02 19:00:19 - [PTA_RESPONSE] Verbindung getrennt.
+2026-04-18 17:38:00 - [USER] hallo
+2026-04-18 17:38:00 - [PTA_RESPONSE] konnte das konfigurierte KI-Modell google/gemma-2-9b-it in LM Studio nicht laden
+2026-04-18 17:38:25 - [USER] hallo
+2026-04-18 17:38:25 - [PTA_RESPONSE] konnte das konfigurierte KI-Modell google/gemma-2-9b-it in LM Studio nicht laden
