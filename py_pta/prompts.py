@@ -69,25 +69,24 @@ WICHTIG:
 
 def get_tool_definitions() -> List[Dict[str, Any]]:
     """
-    Defines the tools available to Gemini.
+    Defines the tools available to the LLM (OpenAI/LM Studio Format).
     """
     return [
         {
-            "function_declarations": [
-                {
-                    "name": "execute_cli_command",
-                    "description": "Führt einen Befehl im Trading CLI aus und gibt die Antwort (meist JSON) zurück.",
-                    "parameters": {
-                        "type": "OBJECT",
-                        "properties": {
-                            "command": {
-                                "type": "STRING",
-                                "description": "Der vollständige CLI-Befehl, z.B. 'status', 'connect', 'bulk_fetch', 'trade {...}'"
-                            }
-                        },
-                        "required": ["command"]
-                    }
+            "type": "function",
+            "function": {
+                "name": "execute_cli_command",
+                "description": "Führt einen Befehl im Trading CLI aus und gibt die Antwort (meist JSON) zurück.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "command": {
+                            "type": "string",
+                            "description": "Der vollständige CLI-Befehl, z.B. 'status', 'connect', 'bulk_fetch', 'trade {...}'"
+                        }
+                    },
+                    "required": ["command"]
                 }
-            ]
+            }
         }
     ]

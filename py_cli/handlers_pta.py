@@ -8,7 +8,7 @@ _bridge = None
 
 class PTACommand(ICommand):
     name = "pta"
-    description = "Interagiert mit dem Gemini Personal Trading Assistant."
+    description = "Interagiert mit dem Personal Trading Assistant (LLM)."
     syntax = "pta <anweisung/frage>"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
@@ -21,7 +21,7 @@ class PTACommand(ICommand):
             _bridge = PTABridge(services.get_cli())
 
         user_msg = " ".join(args)
-        print(f"  [CLI] Sende Nachricht an Gemini...")
+        print(f"  [CLI] Sende Nachricht an PTA...")
         
         response = _bridge.chat(user_msg)
         
@@ -33,7 +33,7 @@ registry.register(PTACommand())
 
 class ChatCommand(ICommand):
     name = "chat"
-    description = "Startet einen interaktiven Chat mit Gemini (beenden mit 'exit')."
+    description = "Startet einen interaktiven Chat mit dem PTA (beenden mit 'exit')."
     syntax = "chat"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
@@ -46,7 +46,7 @@ class ChatCommand(ICommand):
         
         while True:
             try:
-                user_input = input("(Gemini) >> ").strip()
+                user_input = input("(PTA) >> ").strip()
                 if not user_input:
                     continue
                 

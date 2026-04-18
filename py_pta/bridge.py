@@ -1,20 +1,76 @@
-import google.generativeai as genai
+import os
+import json
 from py_cli.controller import CLIController, CLIMode
-from .client import GeminiPTA
-from .prompts import SYSTEM_INSTRUCTION, get_tool_definitions
+from .llm_service import LLMService
+from .prompts import get_tool_definitions
 from .logger import log_event
 
 class PTABridge:
     """
-    Orchestrates the conversation between the user, Gemini, and the CLI.
+    Orchestrates the conversation between the user, the LLM, and the CLI.
+    Uses the standalone LLMService for communication and memory.
     """
-    def __init__(self, cli_controller: CLIController):
+    def __init__(self, cli_controller: CLIController, config_path: str = "secrets/llm_config.json"):
         self.cli = cli_controller
-        self.pta = GeminiPTA()
-        self.chat_history = []
+        self.config_path = config_path
         
-        if self.pta.is_configured():
-            pass
+        # Load configuration
+        config = self._load_config()
+        if not config:
+            self.pta = None
+            print(f"[!] Critical Error: LLM config not found at {config_path}")
+            return
+
+        # Initialize the new Standalone LLMService
+        self.pta = LLMService(
+            base_url=config.get("llm_base_url"),
+            model_name=config.get("llm_model_name"),
+            system_prompt=config.get("system_prompt", ""),
+            gpu_offload=config.get("llm_gpu_offload", "max"),
+            tools_schema=get_tool_definitions(),
+            tool_executor=self._llm_tool_dispatcher
+        )
+
+    def _load_config(self) -> dict:
+        if not os.path.exists(self.config_path):
+            return {}
+        try:
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading LLM config: {e}")
+            return {}
+
+    def _llm_tool_dispatcher(self, tool_name: str, args: dict) -> str:
+        """
+        Adapter that connects the LLM's tool-calls to the CLI execution.
+        """
+        log_event("PTA_THOUGHT", f"Calling Tool: {tool_name} with args: {args}")
+        
+        if tool_name == "execute_cli_command":
+            cmd = args.get("command")
+            if not cmd:
+                return "Error: No command provided."
+
+            # LOG: System Execution
+            log_event("SYSTEM_EXEC", cmd)
+            print(f"  [PTA] Executing CLI: {cmd}")
+            
+            # Force BOT mode to get clean JSON/Text output
+            original_mode = self.cli.context.mode
+            self.cli.context.mode = CLIMode.BOT
+            try:
+                cli_resp = self.cli.process_input(cmd)
+            except Exception as e:
+                cli_resp = f"Error during execution: {e}"
+            finally:
+                self.cli.context.mode = original_mode
+            
+            # LOG: System Result
+            log_event("SYSTEM_RESULT", str(cli_resp))
+            return str(cli_resp)
+        
+        return f"Error: Tool '{tool_name}' is not recognized."
 
     def handle_hub_message(self, msg: dict) -> tuple[str, str]:
         """
@@ -34,85 +90,17 @@ class PTABridge:
         return sender, response_text
 
     def chat(self, user_input: str) -> str:
-        if not self.pta.is_configured():
-            return "❌ Gemini API Key fehlt. Bitte erstelle 'secrets/gemini_config.json' mit deinem API-Key."
+        if not self.pta:
+            return "❌ LLM Konfiguration fehlt oder Fehler beim Laden von 'secrets/llm_config.json'."
 
         try:
             # LOG: Initial User Input
             log_event("USER", user_input)
 
-            tools = get_tool_definitions()
-            # 1. Start or resume chat
-            if not self.chat_history:
-                # Setup with system instructions as user/model prelude
-                self.chat_history.append({"role": "user", "parts": [SYSTEM_INSTRUCTION]})
-                self.chat_history.append({"role": "model", "parts": ["Verstanden. Ich bin bereit."] })
-
-            chat = self.pta.model.start_chat(history=self.chat_history)
+            # Generate response (LLMService handles the history and tool-loops internally)
+            final_text = self.pta.generate_response(user_input)
             
-            # Token counting for prompt
-            prompt_tokens = self.pta.count_tokens(user_input)
-            # print(f"  [PTA] Prompt Tokens: {prompt_tokens}") # Debugging removed from stdout
-            
-            response = chat.send_message(user_input, tools=tools)
-            
-            # 2. Main Loop for Function Calling
-            while True:
-                # IMPORTANT: We check if ANY part of the current response is a function call
-                parts = response.candidates[0].content.parts
-                # Find the first function call if any
-                fc = next((p.function_call for p in parts if p.function_call), None)
-                
-                if not fc:
-                    # Break when no more tools are requested
-                    break
-                    
-                # LOG: PTA Decision
-                log_event("PTA_THOUGHT", f"Calling Function: {fc.name} with args: {fc.args}")
-                
-                if fc.name == "execute_cli_command":
-                    cmd = fc.args["command"]
-                    
-                    # LOG: System Execution
-                    log_event("SYSTEM_EXEC", cmd)
-                    print(f"  [PTA] Executing CLI: {cmd}")
-                    
-                    # Force BOT mode to get JSON output
-                    original_mode = self.cli.context.mode
-                    self.cli.context.mode = CLIMode.BOT
-                    cli_resp = self.cli.process_input(cmd)
-                    self.cli.context.mode = original_mode
-                    
-                    # LOG: System Result
-                    log_event("SYSTEM_RESULT", str(cli_resp))
-                    
-                    # Send function response back to the chat
-                    response = chat.send_message(
-                        genai.protos.Content(
-                            parts=[genai.protos.Part(
-                                function_response=genai.protos.FunctionResponse(
-                                    name="execute_cli_command",
-                                    response={"result": cli_resp}
-                                )
-                            )]
-                        ),
-                        tools=tools
-                    )
-                else:
-                    # Generic exit for unknown tools
-                    break
-
-            # 3. Synchronize history
-            self.chat_history = chat.history
-            
-            # Token counting for response
-            resp_tokens = self.pta.count_tokens(response.candidates[0].content)
-            # print(f"  [PTA] Response Tokens: {resp_tokens}") # Debugging removed from stdout
-            
-            # 4. Final Text Response
-            final_text = response.text
             log_event("PTA_RESPONSE", final_text)
-            
             return final_text
 
         except Exception as e:
