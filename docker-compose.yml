@@ -4,16 +4,17 @@ networks:
   telchat-net:
     external: true
     name: telchat_default
+  ib-gateway-net:
+    external: true
+    name: ib-gateway_live_default
 
 services:
   # PTA Telnet Agent
   pta-agent:
     build: .
     container_name: pta_agent_app
-    networks:
-      - telchat-net
-      - default
-    command: ["python", "run_pta.py", "--host", "telchat-router"]
+    network_mode: "host"
+    command: ["python", "run_pta.py", "--host", "127.0.0.1"]
     volumes:
       - ./data:/app/data
       - ./secrets:/app/secrets
@@ -21,6 +22,8 @@ services:
       - ./py_pta/llm_config.json:/app/py_pta/llm_config.json
     environment:
       - PYTHONUNBUFFERED=1
+      - IB_GATEWAY_HOST=127.0.0.1
+      - IB_GATEWAY_PORT=4002
     stdin_open: true
     tty: true
     restart: always

@@ -53,6 +53,14 @@ class IBKRClient:
     def connect(self):
         """Connects to TWS (Blocking)."""
         if not self.ib.isConnected():
+            # [FIX] Ensure we have an active event loop in this thread
+            # ib_insync requires a loop even for synchronous .connect()
+            try:
+                asyncio.get_event_loop()
+            except RuntimeError:
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
+                
             print(f"Connecting to IBKR TWS ({self.host}:{self.port} ID:{self.client_id})...")
             self.ib.connect(self.host, self.port, clientId=self.client_id)
             self._connected = True

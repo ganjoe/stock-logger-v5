@@ -4,15 +4,14 @@ from .models import CLIContext, CommandResponse, CLIMode
 from .commands import ICommand, registry
 from py_captrader import session, services
 from py_captrader.config import (
-    DEFAULT_HOST, DEFAULT_PORT, DEFAULT_CLIENT_ID,
-    PAPER_HOST, PAPER_PORT, LIVE_HOST, LIVE_PORT
+    DEFAULT_HOST, DEFAULT_PORT, DEFAULT_CLIENT_ID
 )
 from py_captrader.adapter import CapTraderAdapter
 
 class ConnectCommand(ICommand):
     name = "connect"
     description = "Connects to IBKR Gateway."
-    syntax = "connect [live|paper|ip] [port] [client_id]"
+    syntax = "connect [host|default] [port] [client_id]"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         # Defaults
@@ -22,13 +21,7 @@ class ConnectCommand(ICommand):
         
         if len(args) >= 1:
             val = args[0].lower()
-            if val == "live":
-                host = LIVE_HOST
-                port = LIVE_PORT
-            elif val == "paper":
-                host = PAPER_HOST
-                port = PAPER_PORT
-            else:
+            if val != "default":
                 host = args[0]
         
         if len(args) >= 2: port = int(args[1])

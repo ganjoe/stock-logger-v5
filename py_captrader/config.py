@@ -1,16 +1,13 @@
-# IBKR Gateway / TWS Connection Profiles
+import os
 
-# PAPER TRADING (Standard)
-PAPER_HOST = "172.17.0.3"
-PAPER_PORT = 4001
-
-# LIVE TRADING (Dedicated)
-LIVE_HOST = "172.17.0.4"
-LIVE_PORT = 4002
+# IBKR Gateway Docker Connection
+# Default verweist auf den Docker DNS-Namen (transparent für Live/Paper durch die Docker Umgebung)
+GATEWAY_HOST = os.getenv("IB_GATEWAY_HOST", "ib-gateway_live-ib-gateway-1")
+GATEWAY_PORT = int(os.getenv("IB_GATEWAY_PORT", "4001"))
 
 # CLIENT ID (Standard)
 DEFAULT_CLIENT_ID = 22
 
-# Current Defaults (Usually Paper)
-DEFAULT_HOST = PAPER_HOST
-DEFAULT_PORT = PAPER_PORT
+# Current Defaults
+DEFAULT_HOST = GATEWAY_HOST
+DEFAULT_PORT = GATEWAY_PORT
