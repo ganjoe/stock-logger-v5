@@ -11,7 +11,8 @@ WORKDIR /app
 
 # Step 1: Copy requirements FIRST for better layer caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --default-timeout=100 -r requirements.txt
 
 # Step 2: Copy the rest of the code
 COPY . .

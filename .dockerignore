@@ -4,6 +4,7 @@ logs/
 data/market_cache/
 data/trades/
 venv/
+.venv/
 .env
 .git/
 .DS_Store

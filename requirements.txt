@@ -1,6 +1,6 @@
-ib-insync>=0.9.86
-openai>=1.0.0
-requests
-pandas
-pytz
-pyarrow
+ib-insync==0.9.86
+openai==1.61.0
+requests==2.32.3
+pandas==2.2.3
+pytz==2025.1
+pyarrow==19.0.0
