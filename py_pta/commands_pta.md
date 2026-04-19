@@ -76,6 +76,7 @@ Der zentrale Endpoint für alle Handelsaktionen. Parsed das JSON und delegiert a
 ```json
 {
   "action": "UPDATE",
+  "ticker": "AAPL",
   "trade_id": "TRD-XXXX",
   "stop_loss": 145.5
 }
@@ -85,6 +86,7 @@ Der zentrale Endpoint für alle Handelsaktionen. Parsed das JSON und delegiert a
 ```json
 {
   "action": "EXIT",
+  "ticker": "AAPL",
   "trade_id": "TRD-XXXX"
 }
 ```
@@ -109,6 +111,20 @@ Löscht eine spezifische, aktive Order (z.B. einen nicht ausgeführten Entry).
 }
 ```
 **Effekt**: Zwingt das TradeObject, Updates vom Broker zu laden (Fills, Status).
+
+#### 6. CASH (Ein/Auszahlungen)
+Regel: Positive quantity = Einzahlung, Negative quantity = Auszahlung.
+```json
+{
+  "action": "CASH",
+  "quantity": 5000,
+  "note": "Initial Funding"
+}
+```
+
+### `quote SYMBOL`
+Liefert den aktuellen Marktpreis eines Symbols.
+- **Rückgabe**: `{"success": true, "payload": {"ticker": "SYMBOL", "price": 123.45}}`
 
 ### `history [days_back]`
 Liefert einen historischen Portfolio-Snapshot.
@@ -136,22 +152,17 @@ Analysiert den aktuellen Stand (Risk, Heat, Alerts).
 
 ## System Control
 
-### `connect [live|paper|ip] [port] [client_id]` 
+### `connect [host|default] [port] [client_id]` 
 Verbindet den Bot mit dem IBKR Gateway.
-- **live**: Nutze das Live-Profil (Standard: 172.17.0.4:4002).
-- **paper**: Nutze das Paper-Profil (Standard: 172.17.0.3:4001).
-- **Automatisches Trennen**: Bestehende Verbindungen werden automatisch getrennt, falls eine Verbindung zu einem anderen Target (IP/Port) angefordert wird. Ein manuelles `disconnect` ist zum Switchen nicht nötig.
-- **Default**: Paper Trading (Port 4001, ID 1).
-- **Rückgabe**: `{"success": true, "message": "Connected to 172.17.0.3:4001 (ID: 1)"}`
+- **host**: IP Adresse des Gateways (Standard: 127.0.0.1).
+- **port**: Port (Standard: 4001).
+- **client_id**: Eindeutige ID (Standard: 1).
+- **Automatisches Trennen**: Bestehende Verbindungen werden automatisch getrennt, falls eine Verbindung zu einem anderen Target (IP/Port) angefordert wird.
+- **Rückgabe**: `{"success": true, "message": "Connected to 127.0.0.1:4001 (ID: 1)"}`
 
 ### `disconnect`
 Trennt die Verbindung.
 - **Rückgabe**: `{"success": true}`
-
-### `bulk_fetch [client_id]`
-Startet den Massen-Download historischer Daten im Hintergrund.
-- **Argumente**: `client_id` (Default 999).
-- **Rückgabe**: `{"success": true, "message": "Bulk fetch started (Client 999)"}`
 
 ## Special Codewords
 
