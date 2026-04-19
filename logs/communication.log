@@ -431,3 +431,88 @@ Soll ich eine Aktion für einen dieser Trades ausführen?
 Bevor ich Befehle wie `update`, `exit` oder `cancel` ausführe, werde ich immer zuerst den Befehl `trades` nutzen, um sicherzustellen, dass ich die **korrekte ID** verwende.
 
 Welchen Befehl soll ich jetzt für dich ausführen?
+2026-04-19 19:35:52 - [USER] mit welchen befehlen kannst du mir helfen
+2026-04-19 19:36:14 - [PTA_RESPONSE] Als dein **Personal Trading Assistant (PTA)** bin ich auf die **EXEKUTION** spezialisiert. Ich führe Befehle präzise aus, um deine Handelsstrategien in die Realität umzusetzen.
+
+Hier sind die Befehlsbereiche, bei denen ich dir helfe:
+
+### 1. Überprüfung & Identifikation (Der erste Schritt)
+Bevor ich Änderungen vornehme, muss ich wissen, welche Trades existieren. Ich nutze:
+*   `status`: Um den aktuellen Verbindungsstatus und Systemzustand zu prüfen.
+*   `trades`: Um eine Liste aller offenen oder abgeschlossenen Trades abzurufen (essentiell, um die korrekten **IDs** für weitere Aktionen zu finden).
+
+### 2. Order-Ausführung (Execution)
+Wenn du mir sagst, was gekauft oder verkauft werden soll:
+*   `trade {details}`: Eröffnung neuer Positionen (z. B. `trade buy symbol=BTCUSDT amount=0.1`).
+
+### 3. Positions-Management (Modification)
+Um bestehende Trades anzupassen:
+*   `update {trade_id} {parameter}`: Ändern von Stop-Loss (SL), Take-Profit (TP) oder anderen Parametern eines laufenden Trades.
+*   `cancel {trade_id}`: Stornieren von Limit-Orders oder Schließen von Positionen.
+
+### 4. Datenabruf (Data Retrieval)
+*   `bulk_fetch`: Wenn große Mengen an Handelsdaten oder Historien für die Ausführung benötigt werden.
+
+---
+
+**Mein Workflow ist immer so aufgebaut:**
+1.  **Prüfen:** Ich nutze `trades`, um sicherzustellen, dass die `ID` existiert.
+2.  **Handeln:** Ich führe den `trade`, `update` oder `cancel` Befehl aus.
+3.  **Bestätigen:** Ich melde dir das Ergebnis der Ausführung.
+
+**Was soll ich als Erstes für dich tun? (z.B. "Zeig mir die aktuellen Trades")**
+2026-04-19 19:36:55 - [USER] nenne mir alle commandos
+2026-04-19 19:37:22 - [PTA_RESPONSE] Hier ist die vollständige Liste der Befehle, die ich über das `execute_cli_command` Tool direkt ausführen kann. Als dein **Execution Bot** unterteile ich diese in vier funktionale Kategorrem:
+
+### 1. System & Verbindung (System Status)
+Diese Befehle dienen dazu, sicherzustellen, dass die "Maschine" läuft und die Verbindung steht.
+*   `status`: Prüft den aktuellen Verbindungsstatus zum Exchange/API und den Zustand des Trading-Systems.
+*   `connect`: Initialisiert oder stellt die Verbindung zur Handels-Schnittstelle her.
+
+### 2. Identifikation & Abruf (Discovery)
+**Wichtig:** Diese Befehle nutze ich immer zuerst, um die korrekten IDs für Änderungen zu finden.
+*   `trades`: Listet alle offenen und abgeschlossenen Trades auf. (Essentiell, um `trade_id`s zu identifizieren).
+*   `bulk_fetch`: Lädt größere Mengen an historischen Handelsdaten oder Order-Historien herunter.
+
+### 3. Ausführung (Execution - Neue Orders)
+Hier setze ich neue Strategien direkt in die Tat um.
+*   `trade <details>`: Eröffnet eine neue Position.
+    *   *Mögliche Parameter:* `symbol=BTCUSDT`, `side=buy|sell`, `amount=0.1`, `type=market|limit`, `price=65000`.
+    *   *Beispiel:* `trade buy symbol=ETHUSDT amount=1`
+
+### 4. Management (Modification - Bestehende Orders)
+Hier verwalte ich laufende Positionen nach deinen Anweisungen.
+*   `update <trade_id> <parameter>`: Ändert Parameter eines bereits existierenden Trades.
+    *   *Mögliche Parameter:* `sl=...` (Stop Loss), `tp=...` (Take Profit).
+    *   *Beispiel:* `update 12345 sl=60000`
+*   `cancel <trade_id>`: Storniert eine offene Limit-Order oder schließt eine Position manuell.
+
+---
+
+**Zusammenfassung der Logik für dich:**
+| Aktion | Befehl | Zweck |
+| :--- | :--- | :--- |
+| **Check** | `status` | "Ist alles online?" |
+| **Find** | `trades` | "Welche IDs haben wir gerade?" |
+| **Action** | `trade` | "Kauf/Verkauf jetzt!" |
+| **Adjust** | `update` | "Pass den Stop-Loss an!" |
+| **Stop** | `cancel` | "Beende diesen Trade!" |
+
+**Was soll ich als Nächstes ausführen?**
+2026-04-19 19:38:18 - [USER] minervini
+2026-04-19 19:38:41 - [PTA_RESPONSE] Wenn du **"Minervini"** sagst, beziehst du dich höchstwahrscheinlich auf die Strategie von **Mark Minervini** (VCP – *Volatility Contraction Pattern*, Trend Template, Fokus auf Momentum).
+
+Da ich der **Personal Trading Assistant (PTA)** bin, ist meine Rolle in diesem Zusammenhang klar definiert:
+
+1.  **Ich analysiere keine Charts:** Ich suche nicht nach dem VCP-Pattern oder dem "Cheat"-Setup. Das ist die Aufgabe des **STM (Smart Trade Manager)**.
+2.  **Ich führe aus:** Sobald der STM ein Setup identifiziert hat, das den Minervini-Kriterien entspricht, bin ich derjenag, der den Befehl `trade buy ...` mit dem korrekten Stop-Loss und Take-Profit setzt.
+
+### Wie wir zusammenarbeiten (Minervini-Workflow):
+
+*   **Schritt 1 (STM - Analyse):** Der STM scannt den Markt nach Aktien/Assets, die das *Trend Template* erfüllen und eine Volumenkontraktion (VCP) zeigen.
+*   **Schritt 2 (User/STM - Entscheidung):** Die Entscheidung wird getroffen: "Kauf Asset X bei Preis Y mit Stop-Loss Z".
+*   **Schritt 3 (PTA - Meine Aufgabe):** Ich erhalte den Befehl und nutze `trade` oder `update`, um die Order präzise am Markt zu platzieren.
+
+**Möchtest du, dass ich aktuell nach offenen Trades suche, die wir im Sinne einer Minervini-Strategie anpassen müssen (z.B. Stop-Loss nachziehen)?**
+
+*Gib mir einfach einen Befehl wie: `trades` oder `update [ID] sl=[Preis]`.*
