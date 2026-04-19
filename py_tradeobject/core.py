@@ -14,11 +14,11 @@ from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, Tra
 from .logic import TradeCalculator
 from .interface import IBrokerAdapter, BrokerUpdate, BarData
 from .models import TradeState, TradeMetrics, TradeStatus, TradeTransaction, TradeOrderLog, TradeType, TransactionType
-from py_market_data import ChartManager
+from py_market_data.node_provider import DataNodeProvider
 
 class TradeObject:
     @classmethod
-    def get_or_create(cls, ticker: str, broker: IBrokerAdapter, storage_dir: str = "./data/trades") -> 'TradeObject':
+    def get_or_create(cls, ticker: str, broker: IBrokerAdapter, storage_dir: str = "/home/daniel/stock-data-node/data/parquet") -> 'TradeObject':
         """
         [NEW] Factory: Finds latest active trade for ticker OR creates new one.
         Used for 'quote' command to leverage existing state or start a watchlist item.
@@ -59,7 +59,7 @@ class TradeObject:
         return obj
 
     @classmethod
-    def create_new(cls, ticker: str, broker: Optional[IBrokerAdapter] = None, storage_dir: str = "./data/trades") -> 'TradeObject':
+    def create_new(cls, ticker: str, broker: Optional[IBrokerAdapter] = None, storage_dir: str = "/home/daniel/stock-data-node/data/parquet") -> 'TradeObject':
         """
         [NEW] Factory: Explicitly creates a NEW TradeObject (with fresh UUID).
         Does NOT check for existing active trades.
@@ -71,7 +71,7 @@ class TradeObject:
         return obj
 
     @classmethod
-    def create_cash(cls, amount: float, note: str = "", storage_dir: str = "./data/trades") -> 'TradeObject':
+    def create_cash(cls, amount: float, note: str = "", storage_dir: str = "/home/daniel/stock-data-node/data/parquet") -> 'TradeObject':
         """
         [F-TO-170] Factory: Creates a Cash Deposit/Withdrawal TradeObject.
         - amount > 0: Deposit
@@ -99,7 +99,7 @@ class TradeObject:
         return obj
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any], storage_dir: str = "./data/trades") -> 'TradeObject':
+    def from_dict(cls, data: Dict[str, Any], storage_dir: str = "/home/daniel/stock-data-node/data/parquet") -> 'TradeObject':
         """
         F-TO-021: Reconstructs a TradeObject from a dictionary (TradeState).
         """
@@ -112,7 +112,7 @@ class TradeObject:
             obj.filepath = os.path.join(obj.storage_dir, f"{obj.ticker}/{obj._state.id}.json")
         return obj
 
-    def __init__(self, ticker: str, id: Optional[str] = None, storage_dir: str = "./data/trades"):
+    def __init__(self, ticker: str, id: Optional[str] = None, storage_dir: str = "/home/daniel/stock-data-node/data/parquet"):
         self.ticker = ticker
         self.storage_dir = os.path.abspath(storage_dir)
         self.id_override = id
@@ -133,9 +133,9 @@ class TradeObject:
 
         # 2. Setup Charting (Internal) – Skip for Cash trades
         if self._state and self._state.trade_type == TradeType.CASH:
-            self.chart_manager = None
+            self.node_provider = None
         else:
-            self.chart_manager = ChartManager(storage_root="./data/market_cache")
+            self.node_provider = DataNodeProvider()
         self.broker: Optional[IBrokerAdapter] = None # Broker must be injected via set_broker()
     
 
@@ -150,16 +150,8 @@ class TradeObject:
         if self.is_cash:
             return  # Cash trades have no broker interaction
         self.broker = broker
-        # [NEW] Automatically ensure chart data is present/stale-checked
-        if self.ticker.startswith("HIST_"):
-            return # Skip sync for test/dummy tickers
-
-        try:
-            self._ensure_chart()
-        except Exception as e:
-            # Handle unknown symbols or connection errors gracefully
-            # This allows historical reconstruction for dummy/delisted tickers.
-            print(f"  [TradeObject] Warning: Could not sync chart for {self.ticker}: {e}")
+        # Data Node handles charts, no local sync required.
+        pass
 
     @property
     def id(self) -> str:
@@ -189,26 +181,13 @@ class TradeObject:
 
         return TradeCalculator.calculate_metrics(self._state.transactions, current_price, initial_risk)
 
-    def _ensure_chart(self, timeframe: str = "1D", lookback: str = "1Y"):
-        """
-        Internal helper to sync chart data if broker is available.
-        """
-        if self.broker:
-            # ChartManager needs an IMarketDataProvider. self.broker implements this.
-            self.chart_manager.provider = self.broker
-            self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
-
     def get_chart(self, timeframe: str = "1D", lookback: str = "1Y") -> List[BarData]:
         """
-        F-TO-060: Returns historical chart data.
-        Syncs with broker if available.
+        F-TO-060: Returns historical chart data from Data Node.
         """
-        try:
-            self._ensure_chart(timeframe, lookback)
-        except Exception as e:
-            # Informative log instead of silence
-            print(f"  [TradeObject] Warning: Sync failed during get_chart for {self.ticker}: {e}")
-        return self.chart_manager.ensure_data(self.ticker, timeframe, lookback)
+        if not self.node_provider:
+            return []
+        return self.node_provider.get_historical_data(self.ticker, timeframe, lookback)
 
     def _load(self):
         """Loads state from JSON."""

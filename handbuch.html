@@ -1,0 +1,572 @@
+<html>
+<head>
+<title>stock-logger-v5 Handbuch</title>
+</head>
+<body>
+
+<h1>stock-logger-v5 Handbuch</h1>
+<p>Dieses Handbuch beschreibt die Funktionen, Befehle und Datenstrukturen der Aktienhandels- und Überwachungsanwendung stock-logger-v5.</p>
+<hr>
+
+<h2>Inhaltsverzeichnis</h2>
+<ol>
+<a href="#einfuehrung">1. Einführung</a><br>
+<a href="#architektur">2. Architektur-Übersicht</a><br>
+<a href="#installation">3. Installation und Einrichtung</a><br>
+<a href="#hauptfunktionen">4. Hauptfunktionen</a>
+<ul>
+<li><a href="#handelsverwaltung">4.1 Handelsverwaltung</a></li>
+<li><a href="#portfolio-ueberwachung">4.2 Portfolio-Überwachung</a></li>
+<li><a href="#analytik">4.3 Analytik und Risikomanagement</a></li>
+<li><a href="#historische-daten">4.4 Historische Daten</a></li>
+<li><a href="#pta">4.5 Personal Trading Assistant (PTA)</a></li>
+</ul>
+<a href="#befehlsreferenz">5. Befehlsreferenz</a>
+<ul>
+<li><a href="#connect-disconnect">5.1 Verbindung (connect, disconnect)</a></li>
+<li><a href="#trade-befehle">5.2 Handel (trade)</a></li>
+<li><a href="#status-befehle">5.3 Status (status, trades, quote, chart)</a></li>
+<li><a href="#analy-befehle">5.4 Analytik (analyze, wizard, market_clock)</a></li>
+<li><a href="#history-befehl">5.5 Historie (history)</a></li>
+<li><a href="#pta-befehl">5.6 PTA (pta, chat)</a></li>
+</ul>
+<a href="#datenstruktur">6. Datenstruktur</a>
+<ul>
+<li><a href="#trade-json">6.1 Trade-JSON-Dateien</a></li>
+<li><a href="#portfolio-snapshot">6.2 Portfolio-Snapshots</a></li>
+<li><a href="#logs">6.3 Log-Dateien</a></li>
+</ul>
+<a href="#konfiguration">7. Konfiguration</a>
+<ul>
+<li><a href="#docker">7.1 Docker-Umgebung</a></li>
+<li><a href="#llm">7.2 LLM/Konfiguration</a></li>
+</ul>
+<a href="#faq">8. FAQ und Tipps</a>
+</ol>
+<hr>
+
+<h2 id="einfuehrung">1. Einführung</h2>
+<p>stock-logger-v5 ist eine umfassende Aktienhandels- und Überwachungsanwendung, die folgende Hauptkomponenten vereint:</p>
+<ul>
+<li><strong>Broker-Integration</strong>: Direkte Anbindung an Interactive Brokers (IBKR) über das IBKR Gateway.</li>
+<li><strong>Handelsverwaltung</strong>: Erstellung, Überwachung und Schließung von Positionen mit verschiedenen Order-Typen (Market, Limit, Stop, Stop-Limit).</li>
+<li><strong>Risikomanagement</strong>: Berechnung von Positionsgrößen nach Minervini-Prinzipien, Heat-Index, R-Multiple und mehr.</li>
+<li><strong>Portfolio-Analytik</strong>: Live- und historische Portfolio-Snapshots mit detaillierten Metriken.</li>
+<li><strong>Personal Trading Assistant (PTA)</strong>: Ein KI-gestützter Assistent (LLM), der über natürliche Sprache mit dem System interagiert.</li>
+</ul>
+<p>Die Anwendung unterstützt sowohl einen menschlichen Modus (HUMAN) mit formatierter Ausgabe als auch einen Bot-Modus (BOT) mit reinem JSON-Output für die Automatisierung.</p>
+
+<hr>
+
+<h2 id="architektur">2. Architektur-Übersicht</h2>
+<p>Das System ist in mehrere Module unterteilt, die jeweils spezifische Verantwortlichkeiten haben:</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>Modul</th>
+<th>Verantwortlichkeit</th>
+</tr>
+<tr>
+<td><strong>py_captrader</strong></td>
+<td>Broker-Adapter für IBKR. Enthält die Verbindung zum Gateway, Order-Execution und Daten-Mapping.</td>
+</tr>
+<tr>
+<td><strong>py_cli</strong></td>
+<td>Kommandozeileninterface. Registriert alle Befehle und verarbeitet die Eingabe.</td>
+</tr>
+<tr>
+<td><strong>py_tradeobject</strong></td>
+<td>Kern-Handelsobjekt. Verwaltet den Lebenszyklus einer Position (PLANNED bis CLOSED/ARCHIVED).</td>
+</tr>
+<tr>
+<td><strong>py_portfolio_state</strong></td>
+<td>Portfolio-Status-Verwaltung. Erstellt Live- und historische Snapshots.</td>
+</tr>
+<tr>
+<td><strong>py_riskmanager</strong></td>
+<td>Risikometriken. Analysetools für Portfolios und Positionsgrößen-Berechnung.</td>
+</tr>
+<tr>
+<td><strong>py_financial_math</strong></td>
+<td>Finanzmathematische Grundfunktionen. PnL, R-Multiple, Drawdown, Sharpe Ratio etc.</td>
+</tr>
+<tr>
+<td><strong>py_market_data</strong></td>
+<td>Marktdaten-Verarbeitung. Market Clock, Daten-Provider, Normalisierung.</td>
+</tr>
+<tr>
+<td><strong>py_pta</strong></td>
+<td>Personal Trading Assistant. LLM-Integration, Tool-Dispatcher, Telnet-Hub-Kommunikation.</td>
+</tr>
+</table>
+
+<hr>
+
+<h2 id="installation">3. Installation und Einrichtung</h2>
+
+<h3>Voraussetzungen</h3>
+<ul>
+<li>Python 3.9+</li>
+<li>Interactive Brokers Gateway oder TWS installiert</li>
+<li>Docker und Docker Compose (für IB-Gateway Container)</li>
+<li>LM Studio (für den PTA/KI-Assistenten)</li>
+</ul>
+
+<h3>Installationsschritte</h3>
+<ol>
+<li>Abhängigkeiten installieren: <code>pip install -r requirements.txt</code></li>
+<li>IB Gateway Container starten: <code>docker-compose up -d</code></li>
+<li>LLM-Konfiguration erstellen: <code>secrets/llm_config.json</code> mit Ihrer LM Studio-URL und Modellname</li>
+<li>Hauptskript ausführen: <code>python run_logger.py</code> oder <code>python main_cli.py</code></li>
+</ol>
+
+<h3>Docker-Konfiguration</h3>
+<p>Die docker-compose.yml definiert zwei IB-Gateway-Container:</p>
+<ul>
+<li><strong>ib-gateway_live</strong>: Für das Live-Trading (Port 4001)</li>
+<li><strong>ib-gateway_paper</strong>: Für das Paper-Trading/Testing (Port 4002)</li>
+</ul>
+
+<hr>
+
+<h2 id="hauptfunktionen">4. Hauptfunktionen</h2>
+
+<h3 id="handelsverwaltung">4.1 Handelsverwaltung</h3>
+<p>Das System verwaltet den vollständigen Lebenszyklus einer Handelstransaktion:</p>
+<ol>
+<li><strong>PLANNED</strong>: Watchlist/Beobachtete Position, noch keine Order gesendet</li>
+<li><strong>OPENING</strong>: Entry-Order gesendet, noch keine Ausführung</li>
+<li><strong>OPEN</strong>: Position aktiv (teilweise oder vollständig gefüllt)</li>
+<li><strong>CLOSING</strong>: Exit-Order gesendet</li>
+<li><strong>CLOSED</strong>: Position geschlossen, Handel abgeschlossen</li>
+<li><strong>ARCHIVED</strong>: Historischer Eintrag</li>
+</ol>
+<p>Unterstützte Order-Typen:</p>
+<ul>
+<li><strong>Market Order</strong>: Sofortige Ausführung zum aktuellen Marktpreis</li>
+<li><strong>Limit Order</strong>: Ausführung nur zum angegebenen Preis oder besser</li>
+<li><strong>Stop Order</strong>: Wird aktiv, wenn der Stop-Preis erreicht ist</li>
+<li><strong>Stop-Limit Order</strong>: Kombination aus Stop und Limit</li>
+</ul>
+
+<h3 id="portfolio-ueberwachung">4.2 Portfolio-Überwachung</h3>
+<p>Der Live-Portfolio-Manager (<code>LivePortfolioManager</code>) erfasst folgende Daten:</p>
+<ul>
+<li>Gesamter Kontostand (Net Liquidation, Total Cash)</li>
+<li>Aktive Positionen mit Durchschnittspreis und aktuellen Marktpreis</li>
+<li>Offene Orders mit Details (Order-ID, Typ, Preis)</li>
+</ul>
+<p>Der Snapshot wird automatisch in <code>data/portfolio_latest.json</code> gespeichert.</p>
+
+<h3 id="analytik">4.3 Analytik und Risikomanagement</h3>
+<p>Das Risikomanagement-Modul bietet:</p>
+<ul>
+<li><strong>Heat-Index</strong>: Gesamtes Risiko aller Positionen als Prozentsatz des Kontowerts</li>
+<li><strong>R-Multiple</strong>: Verhältnis von Gewinn/Verlust zum initialen Risiko</li>
+<li><strong>Minervini Sizing</strong>: Positionsgrößen-Berechnung nach den Regeln von Mark Minervini</li>
+<li><strong>Winrate, Profit Factor, Expectancy, SQN</strong>: Statistische Metriken für Trade-Performance</li>
+</ul>
+
+<h3 id="historische-daten">4.4 Historische Daten</h3>
+<p>Marktdaten werden über den <code>DataNodeProvider</code> aus dem externen stock-data-node Parquet-Datenbank geladen. Unterstützte Timeframes:</p>
+<ul>
+<li><strong>1D</strong>: Tägliche Daten (OHLCV)</li>
+<li><strong>1H</strong>: Stündliche Daten</li>
+<li><strong>5m</strong>: 5-Minuten-Daten</li>
+</ul>
+
+<h3 id="pta">4.5 Personal Trading Assistant (PTA)</h3>
+<p>Der PTA ist ein KI-gestützter Assistent, der:</p>
+<ul>
+<li>Natürliche Sprache versteht und CLI-Befehle daraus generiert</li>
+<li>Selständig Handelsoperationen ausführt</li>
+<li>Kontextuelles Gedächtnis über die Konversation hinweg behält</li>
+<li>Sich über einen Telnet-Hub mit anderen Diensten kommunizieren kann</li>
+</ul>
+<p>Der PTA verwendet LM Studio für die lokale LLM-Ausführung und unterstützt Tool-Aufrufe für CLI-Befehle.</p>
+
+<hr>
+
+<h2 id="befehlsreferenz">5. Befehlsreferenz</h2>
+
+<h3 id="connect-disconnect">5.1 Verbindung</h3>
+
+<h4>connect</h4>
+<p>Stellt eine Verbindung zum IBKR Gateway her.</p>
+<p><strong>Syntax:</strong> <code>connect [host|default] [port] [client_id]</code></p>
+<p><strong>Beispiele:</strong></p>
+<ul>
+<li><code>connect default</code> - Verwendet die Standard-Konfiguration (Docker-Gateway)</li>
+<li><code>connect 192.168.1.100 4001 22</code> - Verbindet mit spezifischem Host</li>
+</ul>
+
+<h4>disconnect</h4>
+<p>Trennt die aktive Verbindung zum IBKR Gateway.</p>
+<p><strong>Syntax:</strong> <code>disconnect</code></p>
+
+<h3 id="trade-befehle">5.2 Handel (trade)</h3>
+<p>Der <code>trade</code>-Befehl ist der zentrale Befehl für alle Handelsoperationen. Er erwartet ein JSON-Payload.</p>
+
+<h4>Aktionen</h4>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>Aktion</th>
+<th>Zweck</th>
+<th>Erforderliche Felder</th>
+</tr>
+<tr>
+<td><strong>ENTER</strong></td>
+<td>Position eröffnen</td>
+<td>ticker, quantity, optional: limit_price, stop_loss, trade_id</td>
+</tr>
+<tr>
+<td><strong>UPDATE</strong></td>
+<td>Bestehende Position aktualisieren</td>
+<td>ticker, trade_id, optional: stop_loss</td>
+</tr>
+<tr>
+<td><strong>EXIT</strong></td>
+<td>Position schließen</td>
+<td>ticker, trade_id</td>
+</tr>
+<tr>
+<td><strong>CANCEL</strong></td>
+<td>Offene Order stornieren</td>
+<td>ticker, trade_id, broker_order_id</td>
+</tr>
+<tr>
+<td><strong>REFRESH</strong></td>
+<td>Trade-Daten aktualisieren</td>
+<td>ticker, trade_id</td>
+</tr>
+<tr>
+<td><strong>CASH</strong></td>
+<td>Ein-/Auszahlung (kein Broker)</td>
+<td>quantity (positiv=negativeinzahlung, negativ=Auszahlung)</td>
+</tr>
+</table>
+
+<h4>Beispiele</h4>
+<p>Market Order (Kauf):</p>
+<pre>
+trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10}
+</pre>
+<p>Limit Order (Kauf):</p>
+<pre>
+trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10, "limit_price": 850.00, "stop_loss": 830.00}
+</pre>
+<p>Position schließen:</p>
+<pre>
+trade {"action": "EXIT", "ticker": "NVDA", "trade_id": "fc3f41e5-..."}
+</pre>
+<p>Stop-Loss aktualisieren:</p>
+<pre>
+trade {"action": "UPDATE", "ticker": "NVDA", "trade_id": "fc3f41e5-...", "stop_loss": 825.00}
+</pre>
+<p>Einzahlung:</p>
+<pre>
+trade {"action": "CASH", "quantity": 5000, "note": "Monatliche Einzahlung"}
+</pre>
+
+<h3 id="status-befehle">5.3 Status-Befehle</h3>
+
+<h4>status</h4>
+<p>Zeigt einen Live-Snapshot des Portfolios.</p>
+<p><strong>Syntax:</strong> <code>status [ticker_filter]</code></p>
+<p><strong>Beispiele:</strong></p>
+<ul>
+<li><code>status</code> - Gesamtes Portfolio</li>
+<li><code>status {"ticker": "NVDA"}</code> - Nur NVDA-Position</li>
+<li><code>status NVDA</code> - Kurzform für einen Ticker</li>
+</ul>
+
+<h4>trades</h4>
+<p>Listet alle offenen Positionen auf.</p>
+<p><strong>Syntax:</strong> <code>trades</code></p>
+
+<h4>quote</h4>
+<p>Holt den aktuellen Marktpreis für ein Symbol.</p>
+<p><strong>Syntax:</strong> <code>quote SYMBOL</code></p>
+<p><strong>Beispiel:</strong> <code>quote NVDA</code></p>
+
+<h4>chart</h4>
+<p>Holt historische Chart-Daten für ein Symbol.</p>
+<p><strong>Syntax:</strong> <code>chart SYMBOL [JSON_PAYLOAD]</code></p>
+<p><strong>Beispiel:</strong> <code>chart NVDA {"timeframe": "1D", "lookback": "1Y"}</code></p>
+
+<h3 id="analy-befehle">5.4 Analytik-Befehle</h3>
+
+<h4>analyze</h4>
+<p>Führt Analytik auf Live- oder historischen Daten durch.</p>
+<p><strong>Syntax:</strong> <code>analyze [live|history] [JSON_PAYLOAD]</code></p>
+<p><strong>Beispiele:</strong></p>
+<ul>
+<li><code>analyze live {"ticker": "AAPL"}</code> - Risiko-Bericht für aktuelles Portfolio</li>
+<li><code>analyze history {"days": 30}</code> - Performance der letzten 30 Tage</li>
+<li><code>analyze history {"days": 90, "ticker": "NVDA"}</code> - Ticker-spezifische Historie</li>
+</ul>
+
+<h4>wizard</h4>
+<p>Berechnet die Positionsgröße nach Minervini-Prinzipien.</p>
+<p><strong>Syntax:</strong> <code>wizard JSON_PAYLOAD</code></p>
+<p><strong>Beispiel:</strong></p>
+<pre>
+wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_pct": 25.0, "equity_override": 100000}
+</pre>
+<p>Wenn <code>entry</code> fehlt oder 0 ist, wird der Live-Preis automatisch geholt.</p>
+
+<h4>market_clock</h4>
+<p>Zeigt den aktuellen Börsenstatus und Zeit bis zum nächsten Ereignis.</p>
+<p><strong>Syntax:</strong> <code>market_clock</code></p>
+<p><strong>Mögliche Status:</strong> OPEN, PRE-MARKET, POST-MARKET/CLOSED, CLOSED (HOLIDAY), CLOSED (WEEKEND)</p>
+
+<h4>bulk_fetch</h4>
+<p>Startet einen Massen-Download von Marktdaten im Hintergrund.</p>
+<p><strong>Syntax:</strong> <code>bulk_fetch [client_id]</code></p>
+
+<h3 id="history-befehl">5.5 Historie (history)</h3>
+<p>Holt einen historischen Portfolio-Snapshot zu einem bestimmten Datum.</p>
+<p><strong>Syntax:</strong> <code>history [Tage_zurueck] (Standard: 0 = heute)</code></p>
+<p><strong>Beispiel:</strong> <code>history 30</code> - Portfolio-Status vor 30 Tagen</p>
+
+<h3 id="pta-befehl">5.6 PTA-Befehle</h3>
+
+<h4>pta</h4>
+<p>Kommunikation mit dem Personal Trading Assistant.</p>
+<p><strong>Syntax:</strong> <code>pta <Anweisung oder Frage></code></p>
+<p><strong>Beispiele:</strong></p>
+<ul>
+<li><code>pta Wie sieht mein Portfolio aus?</code></li>
+<li><code>pta Schließe Position NVDA mit ID fc3f41e5</code></li>
+<li><code>pta Risiko meines Portfolios anzeigen</code></li>
+</ul>
+
+<h4>chat</h4>
+<p>Startet einen interaktiven Chat-Modus mit dem PTA.</p>
+<p><strong>Syntax:</strong> <code>chat</code></p>
+<p>Beenden mit <code>exit</code> oder <code>quit</code>.</p>
+
+<hr>
+
+<h2 id="datenstruktur">6. Datenstruktur</h2>
+
+<h3 id="trade-json">6.1 Trade-JSON-Dateien</h3>
+<p>Jede Position wird als JSON-Datei gespeichert unter <code>data/trades/<TICKER>/<UUID>.json</code>.</p>
+
+<h4>Struktur einer Trade-JSON-Datei</h4>
+<pre>
+{
+  "id": "fc3f41e5-...",          // UUID der Position
+  "ticker": "NVDA",              // Aktiensymbol
+  "status": "OPEN",              // PLANNED, OPENING, OPEN, CLOSING, CLOSED, ARCHIVED
+  "trade_type": "STOCK",         // STOCK oder CASH
+  "transactions": [              // Alle Ausführungen
+    {
+      "id": "exec_id",
+      "timestamp": "2024-01-15T10:30:00",
+      "type": "ENTRY",           // ENTRY, EXIT, ADJUSTMENT
+      "quantity": 10.0,          // Positiv = Kauf/Long-Buy, Negativ = Verkauf/Long-Sell
+      "price": 850.00,
+      "commission": 0.50,
+      "slippage": 0.0,
+      "order_id": "12345"
+    }
+  ],
+  "order_history": [             // Alle Order-Einreichungen
+    {
+      "timestamp": "2024-01-15T10:29:00",
+      "order_id": "12345",
+      "action": "BUY",
+      "status": "FILLED",
+      "message": "Order ausgeführt",
+      "quantity": 10.0,
+      "type": "LMT",             // LMT, MKT, STP, STP LMT
+      "limit_price": 850.00,
+      "stop_price": null,
+      "trigger_price": null,
+      "note": "Initial Entry"
+    }
+  ],
+  "active_orders": {},           // {broker_order_id: "ENTRY"|"STOP"|"EXIT"}
+  "initial_stop_price": 830.00,  // Initiales Stop-Loss
+  "current_stop_price": 835.00,  // Aktuelles Stop-Loss (trailing)
+  "entry_date": "2024-01-15T10:30:00",
+  "notes": "Gewinnwachstum im AI-Sektor",
+  "currency": "USD",
+  "exchange": "SMART"
+}
+</pre>
+
+<h3 id="portfolio-snapshot">6.2 Portfolio-Snapshot</h3>
+<p>Der Live-Snapshot wird in <code>data/portfolio_latest.json</code> gespeichert.</p>
+
+<h4>Struktur</h4>
+<pre>
+{
+  "timestamp": "2024-01-15T15:00:00",
+  "cash": 50000.00,              // Total Cash Value
+  "equity": 125000.00,           // Net Liquidation
+  "positions": [                 // Aktive Positionen
+    {
+      "ticker": "NVDA",
+      "quantity": 10.0,
+      "avg_price": 850.00,
+      "current_price": 870.00,
+      "market_value": 8700.00,
+      "unrealized_pnl": 200.00,
+      "trade_id": "fc3f41e5-..."
+    }
+  ],
+  "active_orders": [             // Offene Orders
+    {
+      "ticker": "AAPL",
+      "order_id": "67890",
+      "action": "BUY",
+      "type": "LMT",
+      "qty": 5.0,
+      "price": 185.00,
+      "trade_id": ""
+    }
+  ],
+  "source": "LIVE"               // LIVE oder HISTORY
+}
+</pre>
+
+<h3 id="logs">6.3 Log-Dateien</h3>
+<p>PTA-Kommunikation wird in <code>logs/communication.log</code> protokolliert.</p>
+
+<h4>Log-Format</h4>
+<pre>
+2024-01-15 10:30:00 - [USER] Wie sieht mein Portfolio aus?
+2024-01-15 10:30:01 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {"command": "status"}
+2024-01-15 10:30:01 - [SYSTEM_EXEC] status
+2024-01-15 10:30:02 - [SYSTEM_RESULT] {"success": true, "payload": {...}}
+2024-01-15 10:30:02 - [PTA_RESPONSE] Ihr Portfolio hat einen Gesamtwert von $125,000...
+</pre>
+
+<h4>Log-Aktoren</h4>
+<ul>
+<li><strong>[USER]</strong> - Benutzer-Eingabe an den PTA</li>
+<li><strong>[PTA_THOUGHT]</strong> - PTA plant Tool-Aufruf</li>
+<li><strong>[SYSTEM_EXEC]</strong> - Ausgeführter CLI-Befehl</li>
+<li><strong>[SYSTEM_RESULT]</strong> - Ergebnis des CLI-Befehls</li>
+<li><strong>[PTA_RESPONSE]</strong> - Finale Antwort an den Benutzer</li>
+<li><strong>[ERROR]</strong> - Fehlerereignisse</li>
+</ul>
+
+<hr>
+
+<h2 id="konfiguration">7. Konfiguration</h2>
+
+<h3 id="docker">7.1 Docker-Umgebung</h3>
+<p>Die <code>docker-compose.yml</code> definiert die IB-Gateway-Container:</p>
+<pre>
+services:
+  ib-gateway_live:
+    image: ...
+    environment:
+      - IB_GATEWAY_HOST=ib-gateway_live-ib-gateway-1
+      - IB_GATEWAY_PORT=4001
+
+  ib-gateway_paper:
+    image: ...
+    environment:
+      - IB_GATEWAY_PORT=4002
+</pre>
+<p>Die Umgebungsvariablen <code>IB_GATEWAY_HOST</code> und <code>IB_GATEWAY_PORT</code> können über <code>.env</code> oder System-Environment überschrieben werden.</p>
+
+<h3 id="llm">7.2 LLM-Konfiguration</h3>
+<p>Der PTA benötigt eine Konfigurationsdatei unter <code>py_pta/llm_config.json</code> (oder <code>secrets/llm_config.json</code>):</p>
+<pre>
+{
+  "llm_base_url": "http://localhost:1234/v1",
+  "llm_model_name": "your-model-name",
+  "llm_gpu_offload": "max",
+  "system_prompt": "...",
+  "tools_schema": [...]
+}
+</pre>
+<p>Felder:</p>
+<ul>
+<li><strong>llm_base_url</strong>: Die OpenAI-kompatible API-URL (LM Studio standardmäßig)</li>
+<li><strong>llm_model_name</strong>: Der Name des geladenen Modells in LM Studio</li>
+<li><strong>llm_gpu_offload</strong>: GPU-Offloading-Setting ("max" oder "min")</li>
+<li><strong>system_prompt</strong>: Die System-Anweisung für den PTA</li>
+</ul>
+
+<hr>
+
+<h2 id="faq">8. FAQ und Tipps</h2>
+
+<h3>Wie verbinde ich mich mit dem IBKR Gateway?</h3>
+<p>Verwenden Sie den <code>connect</code>-Befehl. Für die Standard-Docker-Konfiguration reicht <code>connect default</code>. Für manuelle Verbindungen geben Sie Host, Port und Client-ID an.</p>
+
+<h3>Wie erstelle ich eine Market Order?</h3>
+<p>Geben Sie keine <code>limit_price</code> an:</p>
+<pre>
+trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10}
+</pre>
+
+<h3>Wie erstelle ich eine Limit Order?</h3>
+<p>Geben Sie <code>limit_price</code> an:</p>
+<pre>
+trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10, "limit_price": 850.00}
+</pre>
+
+<h3>Wie finde ich die trade_id einer Position?</h3>
+<p>Verwenden Sie <code>trades</code> um alle offenen Positionen mit ihren IDs aufzulisten, oder <code>status</code> für einen vollständigen Portfolio-Snapshot.</p>
+
+<h3>Was bedeutet der Heat-Index?</h3>
+<p>Der Heat-Index ist das Gesamtrisiko aller Positionen als Prozentsatz des Kontowerts. Ein Heat-Index über 2.5% pro Position lönt eine Warnung aus. Das Gesamtrisiko sollte typischerweise nicht 10% des Kontowerts überschreiten.</p>
+
+<h3>Wie funktioniert die Minervini-Positionsgrößen-Berechnung?</h3>
+<p>Der <code>wizard</code>-Befehl berechnet die optimale Positionsgröße basierend auf:</p>
+<ol>
+<li>Risiko pro Trade (typisch 1% des Kontos)</li>
+<li>Maximale Positionsgröße (typisch 25% des Kontos)</li>
+<li>Verfügbarem Cash</li>
+</ol>
+<p>Die kleinste der drei Berechnungen wird als empfohlene Anzahl ausgewählt.</p>
+
+<h3>Wie rufe ich historische Performance ab?</h3>
+<p>Verwenden Sie <code>analyze history {"days": 30}</code> für die letzten 30 Tage. Für ticker-spezifische Analysen: <code>analyze history {"days": 90, "ticker": "NVDA"}</code>.</p>
+
+<h3>Welche Metriken werden in der Trade-Analytik berechnet?</h3>
+<ul>
+<li><strong>Winrate</strong>: Prozentsatz der gewinnbringenden Trades</li>
+<li><strong>Avg Win / Avg Loss</strong>: Durchschnittlicher Gewinn/Verlust</li>
+<li><strong>Payoff Ratio</strong>: Verhältnis von avg_win zu avg_loss</li>
+<li><strong>Profit Factor</strong>: Gross Profit / Gross Loss</li>
+<li><strong>Expectancy</strong>: Erwarteter Wert pro Trade</li>
+<li><strong>SQN (System Quality Number)</strong>: Qualitätsmetrik für das Handelssystem</li>
+</ul>
+
+<h3>Wie funktioniert der PTA?</h3>
+<p>Der PTA verwendet einen LLM (Local Language Model) über LM Studio. Er versteht natürliche Sprache und führt automatisch CLI-Befehle aus. Der PTA:</p>
+<ol>
+<li>Versteht die Benutzeranfrage</li>
+<li>Generiert den entsprechenden CLI-Befehl als Tool-Aufruf</li>
+<li>Führt den Befehl über den CLI-Controller aus</li>
+<li>Verarbeitet das Ergebnis und formuliert eine Antwort</li>
+</ol>
+
+<h3>Tipps für den PTA</h3>
+<ul>
+<li>Verwenden Sie klare, spezifische Anweisungen</li>
+<li>Der PTA prüft immer zuerst IDs mit <code>status</code> oder <code>trades</code> vor Exits/Updates</li>
+<li>Shortcut-Befehle: "risk" führt <code>analyze live</code> aus, "Performance" zeigt die letzten 30 Tage</li>
+</ul>
+
+<h3>Wo werden Daten gespeichert?</h3>
+<ul>
+<li><code>data/trades/<TICKER>/</code>: Trade-JSON-Dateien</li>
+<li><code>data/portfolio_latest.json</code>: Letzter Live-Snapshot</li>
+<li><code>logs/communication.log</code>: PTA-Kommunikationsprotokoll</li>
+</ul>
+
+<hr>
+<p><em>Letzte Aktualisierung: 2026-04-19</em></p>
+
+</body>
+</html>

@@ -114,35 +114,6 @@ class AnalyzeCommand(ICommand):
         return CommandResponse(success=True, payload=payload, message=f"History Report ({days}d): {len(closed)} trades, PnL: {total_pnl:+.2f}")
 
 
-# py_cli/handlers_analytics.py
-
-class BulkFetchCommand(ICommand):
-    name = "bulk_fetch"
-    description = "Triggers background bulk data fetch."
-    syntax = "bulk_fetch [client_id]"
-
-    def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        import subprocess
-        
-        client_id = 999
-        if args:
-            try:
-                client_id = int(args[0])
-            except ValueError:
-                pass
-                
-        from py_captrader.config import DEFAULT_PORT
-        # Launch script in background
-        # We use Popen to not block the PTA
-        cmd = [sys.executable, "py_market_data/bulk_fetch.py", "--client-id", str(client_id), "--port", str(DEFAULT_PORT)]
-        
-        try:
-            # nohup-like behavior not strictly needed if we don't wait?
-            # actually Popen returns immediately.
-            subprocess.Popen(cmd, start_new_session=True)
-            return CommandResponse(success=True, message=f"Bulk fetch started (Client {client_id}) in background.")
-        except Exception as e:
-            return CommandResponse(success=False, message=f"Failed to start bulk fetch: {e}")
 
 class MarketClockCommand(ICommand):
     name = "market_clock"
@@ -227,6 +198,5 @@ class WizardCommand(ICommand):
 
 # Register
 registry.register(AnalyzeCommand())
-registry.register(BulkFetchCommand())
 registry.register(MarketClockCommand())
 registry.register(WizardCommand())

@@ -111,7 +111,7 @@ class QuoteCommand(ICommand):
 
 class ChartCommand(ICommand):
     name = "chart"
-    description = "Fetches historical chart data for a symbol."
+    description = "Fetches historical price data from Data Node"
     syntax = "chart SYMBOL [JSON_PAYLOAD]"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
@@ -136,7 +136,7 @@ class ChartCommand(ICommand):
         try:
             broker = services.get_broker()
             from py_tradeobject.core import TradeObject
-            from py_market_data.storage import normalize_timestamp
+            from py_market_data import normalize_timestamp
             trade = TradeObject.get_or_create(ticker, broker)
             
             bars = trade.get_chart(timeframe=timeframe, lookback=lookback)

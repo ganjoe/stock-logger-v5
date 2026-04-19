@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from .models import CLIContext, CommandResponse
 from .commands import ICommand, registry
 from py_portfolio_state.history import HistoryFactory
-from py_market_data.manager import ChartManager
+
 from py_captrader import services
 
 class HistoryCommand(ICommand):

@@ -1,8 +1,8 @@
-"""
-py_market_data/utils.py
-Helper functions for date calculations and staleness logic.
-"""
 from datetime import datetime, timedelta, time
+
+def normalize_timestamp(dt: datetime, timeframe: str = "any") -> int:
+    """Standardizes timestamp to Unix seconds (integer)."""
+    return int(dt.timestamp())
 
 def is_stale(last_timestamp: datetime, timeframe: str) -> bool:
     """

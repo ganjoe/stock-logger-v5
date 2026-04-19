@@ -280,7 +280,7 @@ class HistoryFactory:
         return results
 
     def _get_price_at(self, ticker: str, date: datetime) -> float:
-        """Helper to get price from TradeObject's ChartManager or fallback."""
+        """Helper to get price from TradeObject (DataNode) or fallback."""
         # Find ANY trade object for this ticker 
         # (Charts are per ticker, so any instance logic is fine, or create temp one)
         
