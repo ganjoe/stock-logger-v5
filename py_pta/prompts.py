@@ -19,6 +19,7 @@ Nutze `execute_cli_command` EXAKT mit diesen Befehlen.
    - 'status': Liefert Snapshot (Account, Positionen, offene Orders).
    - 'trades': Listet offene Trades mit IDs (erforderlich für Aktionen).
    - 'quote SYMBOL': Liefert den aktuellen Marktpreis (z.B. 'quote NVO').
+   - 'history [N]': Zeigt das Portfolio so an, wie es vor N Tagen aussah (Snapshot). Nutze dies für Fragen wie "Wie sah mein Depot vor 3 Tagen aus?".
 
 2. TRADING EXEKUTION (Nur via JSON-Payload):
    - 'trade {"action": "ENTER", "ticker": "SYMBOL", "quantity": X, "limit_price": Y, "stop_loss": Z}': Position eröffnen (Limit Order).
