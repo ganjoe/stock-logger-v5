@@ -39,7 +39,7 @@ from py_tradeobject.models import (
 
 # --- Config ---
 XML_PATH = os.path.join(os.path.dirname(__file__), "trades.xml")
-TRADES_DIR = os.path.join(os.path.dirname(__file__), "data", "trades")
+TRADES_DIR = "/home/daniel/stock-data-node/data/parquet"
 DRY_RUN = "--dry-run" in sys.argv
 
 

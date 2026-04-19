@@ -12,36 +12,59 @@
 <ol>
 <a href="#einfuehrung">1. Einführung</a><br>
 <a href="#architektur">2. Architektur-Übersicht</a><br>
-<a href="#installation">3. Installation und Einrichtung</a><br>
-<a href="#hauptfunktionen">4. Hauptfunktionen</a>
+<a href="#alm-prinzipien">3. ALM-Prinzipien</a><br>
+<a href="#installation">4. Installation und Einrichtung</a><br>
+<a href="#start-optionen">5. Start-Optionen</a><br>
+<a href="#hauptfunktionen">6. Hauptfunktionen</a>
 <ul>
-<li><a href="#handelsverwaltung">4.1 Handelsverwaltung</a></li>
-<li><a href="#portfolio-ueberwachung">4.2 Portfolio-Überwachung</a></li>
-<li><a href="#analytik">4.3 Analytik und Risikomanagement</a></li>
-<li><a href="#historische-daten">4.4 Historische Daten</a></li>
-<li><a href="#pta">4.5 Personal Trading Assistant (PTA)</a></li>
+<li><a href="#handelsverwaltung">6.1 Handelsverwaltung</a></li>
+<li><a href="#portfolio-ueberwachung">6.2 Portfolio-Überwachung</a></li>
+<li><a href="#analytik">6.3 Analytik und Risikomanagement</a></li>
+<li><a href="#historische-daten">6.4 Historische Daten</a></li>
+<li><a href="#pta">6.5 Personal Trading Assistant (PTA)</a></li>
 </ul>
-<a href="#befehlsreferenz">5. Befehlsreferenz</a>
+<a href="#befehlsreferenz">7. Befehlsreferenz</a>
 <ul>
-<li><a href="#connect-disconnect">5.1 Verbindung (connect, disconnect)</a></li>
-<li><a href="#trade-befehle">5.2 Handel (trade)</a></li>
-<li><a href="#status-befehle">5.3 Status (status, trades, quote, chart)</a></li>
-<li><a href="#analy-befehle">5.4 Analytik (analyze, wizard, market_clock)</a></li>
-<li><a href="#history-befehl">5.5 Historie (history)</a></li>
-<li><a href="#pta-befehl">5.6 PTA (pta, chat)</a></li>
+<li><a href="#connect-disconnect">7.1 Verbindung (connect, disconnect)</a></li>
+<li><a href="#trade-befehle">7.2 Handel (trade)</a></li>
+<li><a href="#status-befehle">7.3 Status (status, trades, quote, chart)</a></li>
+<li><a href="#analy-befehle">7.4 Analytik (analyze, wizard, market_clock)</a></li>
+<li><a href="#history-befehl">7.5 Historie (history)</a></li>
+<li><a href="#pta-befehl">7.6 PTA (pta, chat)</a></li>
 </ul>
-<a href="#datenstruktur">6. Datenstruktur</a>
+<a href="#datenstruktur">8. Datenstruktur</a>
 <ul>
-<li><a href="#trade-json">6.1 Trade-JSON-Dateien</a></li>
-<li><a href="#portfolio-snapshot">6.2 Portfolio-Snapshots</a></li>
-<li><a href="#logs">6.3 Log-Dateien</a></li>
+<li><a href="#trade-json">8.1 Trade-JSON-Dateien</a></li>
+<li><a href="#portfolio-snapshot">8.2 Portfolio-Snapshots</a></li>
+<li><a href="#logs">8.3 Log-Dateien</a></li>
 </ul>
-<a href="#konfiguration">7. Konfiguration</a>
+<a href="#module">9. Modul-Dokumentation</a>
 <ul>
-<li><a href="#docker">7.1 Docker-Umgebung</a></li>
-<li><a href="#llm">7.2 LLM/Konfiguration</a></li>
+<li><a href="#py-captrader">9.1 py_captrader</a></li>
+<li><a href="#py-cli">9.2 py_cli</a></li>
+<li><a href="#py-financial-math">9.3 py_financial_math</a></li>
+<li><a href="#py-market-data">9.4 py_market_data</a></li>
+<li><a href="#py-portfolio-state">9.5 py_portfolio_state</a></li>
+<li><a href="#py-pta">9.6 py_pta</a></li>
+<li><a href="#py-riskmanager">9.7 py_riskmanager</a></li>
+<li><a href="#py-tradeobject">9.8 py_tradeobject</a></li>
 </ul>
-<a href="#faq">8. FAQ und Tipps</a>
+<a href="#tools">10. Tools</a>
+<ul>
+<li><a href="#ib-csv-converter">10.1 ib_csv_converter.py</a></li>
+<li><a href="#migrate-trades">10.2 migrate_trades.py</a></li>
+<li><a href="#patch-currency">10.3 patch_currency.py</a></li>
+<li><a href="#trades-import">10.4 trades_import.py</a></li>
+</ul>
+<a href="#test-suite">11. Test-Suite</a>
+<a href="#konfiguration">12. Konfiguration</a>
+<ul>
+<li><a href="#docker">12.1 Docker-Umgebung</a></li>
+<li><a href="#dockerfile">12.2 Dockerfile</a></li>
+<li><a href="#llm">12.3 LLM-Konfiguration</a></li>
+<li><a href="#telnet-config">12.4 Telnet-Konfiguration</a></li>
+</ul>
+<a href="#faq">13. FAQ und Tipps</a>
 </ol>
 <hr>
 
@@ -54,7 +77,18 @@
 <li><strong>Portfolio-Analytik</strong>: Live- und historische Portfolio-Snapshots mit detaillierten Metriken.</li>
 <li><strong>Personal Trading Assistant (PTA)</strong>: Ein KI-gestützter Assistent (LLM), der über natürliche Sprache mit dem System interagiert.</li>
 </ul>
-<p>Die Anwendung unterstützt sowohl einen menschlichen Modus (HUMAN) mit formatierter Ausgabe als auch einen Bot-Modus (BOT) mit reinem JSON-Output für die Automatisierung.</p>
+<p>Die Anwendung unterstützt sowohl einen Bot-Modus (BOT) mit reinem JSON-Output für den Headless-Betrieb als auch einen Human-Modus (HUMAN) mit formatierter Ausgabe.</p>
+
+<h3>Bot-First Principle und Headless-Betrieb</h3>
+<p>Das System ist für den Betrieb auf <strong>Headless Linux Servern</strong> (ohne GUI) konzipiert. Das Bot-First Principle bedeutet:</p>
+<ul>
+<li><strong>PTA als einziges Frontend</strong>: Alle Interaktionen erfolgen natürlichsprachlich über den Personal Trading Assistant.</li>
+<li><strong>Kein String-Parsing</strong>: Bots parsen niemals Text. Das Frontend (PTA) konsumiert ausschließlich JSON.</li>
+<li><strong>SSH-Interaktion</strong>: Die primäre Schnittstelle ist eine SSH-Terminal-Session.</li>
+<li><strong>Terminal 1 (Control)</strong>: Interaktiver Chat mit dem PTA (<code>chat</code>).</li>
+<li><strong>Terminal 2 (Debug)</strong>: Live-Monitoring der Kommunikation (<code>tail -f logs/communication.log</code>).</li>
+</ul>
+<p>Die Kommunikation zwischen PTA und Backend (Prompt → JSON-Command → JSON-Response) wird transparent geloggt und ist in Echtzeit nachvollziehbar.</p>
 
 <hr>
 
@@ -76,7 +110,7 @@
 </tr>
 <tr>
 <td><strong>py_tradeobject</strong></td>
-<td>Kern-Handelsobjekt. Verwaltet den Lebenszyklus einer Position (PLANNED bis CLOSED/ARCHIVED).</td>
+<td>Kern-Handelsobjekt. Verwaltet den Lebenszyklus einer Position (PLANNED bis CLOSED/ARCHIVED). Trennt Interface von Logic.</td>
 </tr>
 <tr>
 <td><strong>py_portfolio_state</strong></td>
@@ -84,11 +118,11 @@
 </tr>
 <tr>
 <td><strong>py_riskmanager</strong></td>
-<td>Risikometriken. Analysetools für Portfolios und Positionsgrößen-Berechnung.</td>
+<td>Risikometriken. analytics.py für Portfolio-Analyse, minervini.py für Positionsgrößen-Berechnung.</td>
 </tr>
 <tr>
 <td><strong>py_financial_math</strong></td>
-<td>Finanzmathematische Grundfunktionen. PnL, R-Multiple, Drawdown, Sharpe Ratio etc.</td>
+<td>Finanzmathematische Grundfunktionen. core.py, models.py, performance.py, risk.py, series.py.</td>
 </tr>
 <tr>
 <td><strong>py_market_data</strong></td>
@@ -102,7 +136,51 @@
 
 <hr>
 
-<h2 id="installation">3. Installation und Einrichtung</h2>
+<h2 id="alm-prinzipien">3. ALM-Prinzipien</h2>
+<p>Das System folgt den Architektur- und Design-Prinzipien, die in <a href="alm_prinzipien.md"><code>alm_prinzipien.md</code></a> dokumentiert sind.</p>
+
+<h3>3.1 Verbindungsmanagement (Connection 3.0 - PTA Driven)</h3>
+<p>Die technische Verbindung wird <strong>nicht</strong> mehr durch das Start-Skript erzwungen. Stattdessen startet das System "Offline" und der <strong>PTA</strong> übernimmt die Verantwortung für den Verbindungsaufbau:</p>
+<ol>
+<li>Systemstart (<code>run_logger.py</code> oder <code>run_pta.py</code>)</li>
+<li>PTA führt Auto-Discovery durch:
+<ul>
+<li>Versuch 1: Connect <code>localhost:4002</code> (Paper Default)</li>
+<li>Versuch 2: Connect <code>localhost:4001</code> (Live Fallback)</li>
+<li>Versuch 3: Nachfrage beim User (Custom IP/Port)</li>
+</ul>
+</li>
+<li>Erfolg/Misserfolg wird im Chat gemeldet</li>
+</ol>
+
+<h4>Single Writer (ID 0)</h4>
+<p>Schreibzugriffe (Orders) nutzen strikt Client ID <code>0</code>.</p>
+
+<h4>Multi-Reader (Bulk Fetch)</h4>
+<p>Für Massendatenabrufe (<code>bulk_fetch</code>) werden temporäre Sessions mit separaten IDs genutzt, um Pacing-Limits zu umgehen.</p>
+
+<h3>3.2 Bot-First Principle (Headless & ChatOps)</h3>
+<p>Siehe Abschnitt <a href="#einfuehrung">1. Einführung</a> für detaillierte Erklärung des Bot-First Principle und Headless-Betriebs.</p>
+
+<h3>3.3 Historische Integrität (Point-in-Time Analysis)</h3>
+<ul>
+<li><strong>Log-basierte Rekonstruktion</strong>: Der Zustand des Portfolios zu einem beliebigen Zeitpunkt T wird durch Replay aller Transaktionen ermittelt.</li>
+<li><strong>Immutability</strong>: Einmal geschriebene Order-Logs werden niemals gelöscht oder verändert. Korrekturen erfolgen durch neue, kompensierende Einträge.</li>
+<li><strong>Zeitstempel-Filterung</strong>: Jede Analyse-Funktion muss einen <code>date</code>-Parameter akzeptieren.</li>
+<li><strong>LIFO-Konsistenz</strong>: Die Methode der Bestandsbewertung (LIFO) ist systemweit konsistent.</li>
+</ul>
+
+<h3>3.4 Resilienz & Daten-Sicherheit</h3>
+<ul>
+<li><strong>Unabhängigkeit von Live-Daten</strong>: Historische Analysen funktionieren auch ohne Broker-Verbindung.</li>
+<li><strong>Graceful Adapter Failure</strong>: Broker-Adapter bringen das System nicht zum Absturz bei fehlenden Daten.</li>
+<li><strong>Atomares Speichern</strong>: Trade-Daten werden atomar via Temp-Dateien und <code>os.rename</code> gespeichert.</li>
+<li><strong>UUID-Garantie</strong>: Jedes Datenobjekt erhält bei der Erstellung eine unveränderliche UUID.</li>
+</ul>
+
+<hr>
+
+<h2 id="installation">4. Installation und Einrichtung</h2>
 
 <h3>Voraussetzungen</h3>
 <ul>
@@ -116,8 +194,8 @@
 <ol>
 <li>Abhängigkeiten installieren: <code>pip install -r requirements.txt</code></li>
 <li>IB Gateway Container starten: <code>docker-compose up -d</code></li>
-<li>LLM-Konfiguration erstellen: <code>secrets/llm_config.json</code> mit Ihrer LM Studio-URL und Modellname</li>
-<li>Hauptskript ausführen: <code>python run_logger.py</code> oder <code>python main_cli.py</code></li>
+<li>LLM-Konfiguration erstellen: <code>py_pta/llm_config.json</code> oder <code>secrets/llm_config.json</code></li>
+<li>Hauptskript ausführen: <code>python run_logger.py</code>, <code>python main_cli.py</code> oder <code>python run_pta.py</code></li>
 </ol>
 
 <h3>Docker-Konfiguration</h3>
@@ -129,9 +207,34 @@
 
 <hr>
 
-<h2 id="hauptfunktionen">4. Hauptfunktionen</h2>
+<h2 id="start-optionen">5. Start-Optionen</h2>
 
-<h3 id="handelsverwaltung">4.1 Handelsverwaltung</h3>
+<h3>run_logger.py</h3>
+<p>Das klassische Startskript für den Stock-Logger. Unterstützt <code>--mode=human</code> und <code>--mode=bot</code>.</p>
+<p><strong>Beispiel:</strong> <code>python run_logger.py --mode=human</code></p>
+
+<h3>run_pta.py</h3>
+<p>Das eigenständige PTA-Startskript für den Telnet-basierten Betrieb. Verbindet das Trading-System mit einem TelChat Hub.</p>
+<p><strong>Syntax:</strong> <code>python run_pta.py [--host HOST] [--port PORT] [--alias ALIAS]</code></p>
+<p><strong>Parameter:</strong></p>
+<ul>
+<li><code>--host</code>: TelChat Hub Host (Standard: 127.0.0.1)</li>
+<li><code>--port</code>: TelChat Hub Port (Standard: 9999)</li>
+<li><code>--alias</code>: Alias beim Hub registrieren (Standard: pta)</li>
+</ul>
+<p><strong>Beispiel:</strong> <code>python run_pta.py --host 192.168.1.100 --port 9999 --alias mypta</code></p>
+<p>Die Standard-Konfiguration wird aus <code>py_pta/telnet_config.json</code> geladen.</p>
+
+<h3>pta_console.sh</h3>
+<p>Shell-Skript für die PTA-Konsole, ideal für SSH-Sessions. Startet den Stock-Logger mit Client ID 99, um Konflikte zu vermeiden.</p>
+<p><strong>Verwendung:</strong> <code>./pta_console.sh</code></p>
+<p>Erkennt automatisch die virtuelle Umgebung (.venv) und startet mit <code>run_logger.py --mode=human</code>.</p>
+
+<hr>
+
+<h2 id="hauptfunktionen">6. Hauptfunktionen</h2>
+
+<h3 id="handelsverwaltung">6.1 Handelsverwaltung</h3>
 <p>Das System verwaltet den vollständigen Lebenszyklus einer Handelstransaktion:</p>
 <ol>
 <li><strong>PLANNED</strong>: Watchlist/Beobachtete Position, noch keine Order gesendet</li>
@@ -149,7 +252,7 @@
 <li><strong>Stop-Limit Order</strong>: Kombination aus Stop und Limit</li>
 </ul>
 
-<h3 id="portfolio-ueberwachung">4.2 Portfolio-Überwachung</h3>
+<h3 id="portfolio-ueberwachung">6.2 Portfolio-Überwachung</h3>
 <p>Der Live-Portfolio-Manager (<code>LivePortfolioManager</code>) erfasst folgende Daten:</p>
 <ul>
 <li>Gesamter Kontostand (Net Liquidation, Total Cash)</li>
@@ -158,7 +261,7 @@
 </ul>
 <p>Der Snapshot wird automatisch in <code>data/portfolio_latest.json</code> gespeichert.</p>
 
-<h3 id="analytik">4.3 Analytik und Risikomanagement</h3>
+<h3 id="analytik">6.3 Analytik und Risikomanagement</h3>
 <p>Das Risikomanagement-Modul bietet:</p>
 <ul>
 <li><strong>Heat-Index</strong>: Gesamtes Risiko aller Positionen als Prozentsatz des Kontowerts</li>
@@ -167,7 +270,7 @@
 <li><strong>Winrate, Profit Factor, Expectancy, SQN</strong>: Statistische Metriken für Trade-Performance</li>
 </ul>
 
-<h3 id="historische-daten">4.4 Historische Daten</h3>
+<h3 id="historische-daten">6.4 Historische Daten</h3>
 <p>Marktdaten werden über den <code>DataNodeProvider</code> aus dem externen stock-data-node Parquet-Datenbank geladen. Unterstützte Timeframes:</p>
 <ul>
 <li><strong>1D</strong>: Tägliche Daten (OHLCV)</li>
@@ -175,11 +278,11 @@
 <li><strong>5m</strong>: 5-Minuten-Daten</li>
 </ul>
 
-<h3 id="pta">4.5 Personal Trading Assistant (PTA)</h3>
+<h3 id="pta">6.5 Personal Trading Assistant (PTA)</h3>
 <p>Der PTA ist ein KI-gestützter Assistent, der:</p>
 <ul>
 <li>Natürliche Sprache versteht und CLI-Befehle daraus generiert</li>
-<li>Selständig Handelsoperationen ausführt</li>
+<li>Selbstständig Handelsoperationen ausführt</li>
 <li>Kontextuelles Gedächtnis über die Konversation hinweg behält</li>
 <li>Sich über einen Telnet-Hub mit anderen Diensten kommunizieren kann</li>
 </ul>
@@ -187,9 +290,9 @@
 
 <hr>
 
-<h2 id="befehlsreferenz">5. Befehlsreferenz</h2>
+<h2 id="befehlsreferenz">7. Befehlsreferenz</h2>
 
-<h3 id="connect-disconnect">5.1 Verbindung</h3>
+<h3 id="connect-disconnect">7.1 Verbindung</h3>
 
 <h4>connect</h4>
 <p>Stellt eine Verbindung zum IBKR Gateway her.</p>
@@ -204,7 +307,7 @@
 <p>Trennt die aktive Verbindung zum IBKR Gateway.</p>
 <p><strong>Syntax:</strong> <code>disconnect</code></p>
 
-<h3 id="trade-befehle">5.2 Handel (trade)</h3>
+<h3 id="trade-befehle">7.2 Handel (trade)</h3>
 <p>Der <code>trade</code>-Befehl ist der zentrale Befehl für alle Handelsoperationen. Er erwartet ein JSON-Payload.</p>
 
 <h4>Aktionen</h4>
@@ -243,7 +346,7 @@
 <tr>
 <td><strong>CASH</strong></td>
 <td>Ein-/Auszahlung (kein Broker)</td>
-<td>quantity (positiv=negativeinzahlung, negativ=Auszahlung)</td>
+<td>quantity (positiv=Einzahlung, negativ=Auszahlung)</td>
 </tr>
 </table>
 
@@ -269,7 +372,7 @@ trade {"action": "UPDATE", "ticker": "NVDA", "trade_id": "fc3f41e5-...", "stop_l
 trade {"action": "CASH", "quantity": 5000, "note": "Monatliche Einzahlung"}
 </pre>
 
-<h3 id="status-befehle">5.3 Status-Befehle</h3>
+<h3 id="status-befehle">7.3 Status-Befehle</h3>
 
 <h4>status</h4>
 <p>Zeigt einen Live-Snapshot des Portfolios.</p>
@@ -295,7 +398,7 @@ trade {"action": "CASH", "quantity": 5000, "note": "Monatliche Einzahlung"}
 <p><strong>Syntax:</strong> <code>chart SYMBOL [JSON_PAYLOAD]</code></p>
 <p><strong>Beispiel:</strong> <code>chart NVDA {"timeframe": "1D", "lookback": "1Y"}</code></p>
 
-<h3 id="analy-befehle">5.4 Analytik-Befehle</h3>
+<h3 id="analy-befehle">7.4 Analytik-Befehle</h3>
 
 <h4>analyze</h4>
 <p>Führt Analytik auf Live- oder historischen Daten durch.</p>
@@ -325,12 +428,12 @@ wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_p
 <p>Startet einen Massen-Download von Marktdaten im Hintergrund.</p>
 <p><strong>Syntax:</strong> <code>bulk_fetch [client_id]</code></p>
 
-<h3 id="history-befehl">5.5 Historie (history)</h3>
+<h3 id="history-befehl">7.5 Historie (history)</h3>
 <p>Holt einen historischen Portfolio-Snapshot zu einem bestimmten Datum.</p>
 <p><strong>Syntax:</strong> <code>history [Tage_zurueck] (Standard: 0 = heute)</code></p>
 <p><strong>Beispiel:</strong> <code>history 30</code> - Portfolio-Status vor 30 Tagen</p>
 
-<h3 id="pta-befehl">5.6 PTA-Befehle</h3>
+<h3 id="pta-befehl">7.6 PTA-Befehle</h3>
 
 <h4>pta</h4>
 <p>Kommunikation mit dem Personal Trading Assistant.</p>
@@ -349,9 +452,9 @@ wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_p
 
 <hr>
 
-<h2 id="datenstruktur">6. Datenstruktur</h2>
+<h2 id="datenstruktur">8. Datenstruktur</h2>
 
-<h3 id="trade-json">6.1 Trade-JSON-Dateien</h3>
+<h3 id="trade-json">8.1 Trade-JSON-Dateien</h3>
 <p>Jede Position wird als JSON-Datei gespeichert unter <code>data/trades/<TICKER>/<UUID>.json</code>.</p>
 
 <h4>Struktur einer Trade-JSON-Datei</h4>
@@ -398,7 +501,7 @@ wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_p
 }
 </pre>
 
-<h3 id="portfolio-snapshot">6.2 Portfolio-Snapshot</h3>
+<h3 id="portfolio-snapshot">8.2 Portfolio-Snapshot</h3>
 <p>Der Live-Snapshot wird in <code>data/portfolio_latest.json</code> gespeichert.</p>
 
 <h4>Struktur</h4>
@@ -433,7 +536,7 @@ wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_p
 }
 </pre>
 
-<h3 id="logs">6.3 Log-Dateien</h3>
+<h3 id="logs">8.3 Log-Dateien</h3>
 <p>PTA-Kommunikation wird in <code>logs/communication.log</code> protokolliert.</p>
 
 <h4>Log-Format</h4>
@@ -457,9 +560,167 @@ wizard {"symbol": "NVDA", "entry": 850, "stop": 830, "risk_pct": 1.0, "max_pos_p
 
 <hr>
 
-<h2 id="konfiguration">7. Konfiguration</h2>
+<h2 id="module">9. Modul-Dokumentation</h2>
 
-<h3 id="docker">7.1 Docker-Umgebung</h3>
+<h3 id="py-captrader">9.1 py_captrader</h3>
+<p>Broker-Adapter für Interactive Brokers.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>adapter.py</code></td><td>Haupt-Adapter für IBKR-Kommunikation</td></tr>
+<tr><td><code>client.py</code></td><td>IBKR-Client-Verwaltung</td></tr>
+<tr><td><code>config.py</code></td><td>Konfigurations-Handling</td></tr>
+<tr><td><code>mapper.py</code></td><td>Daten-Mapping zwischen IBKR und internen Strukturen</td></tr>
+<tr><td><code>services.py</code></td><td>Service-Funktionen (u.a. register_cli)</td></tr>
+<tr><td><code>session.py</code></td><td>Session-Management</td></tr>
+</table>
+
+<h3 id="py-cli">9.2 py_cli</h3>
+<p>Kommandozeileninterface mit separaten Handlern für verschiedene Befehlskategorien.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>commands.py</code></td><td>Befehlsdefinitionen</td></tr>
+<tr><td><code>controller.py</code></td><td>CLI-Controller (CLIMode.BOT/HUMAN)</td></tr>
+<tr><td><code>handlers_analytics.py</code></td><td>Handler für Analytik-Befehle</td></tr>
+<tr><td><code>handlers_connection.py</code></td><td>Handler für connect/disconnect</td></tr>
+<tr><td><code>handlers_execution.py</code></td><td>Handler für Order-Execution</td></tr>
+<tr><td><code>handlers_history.py</code></td><td>Handler für Historie-Befehle</td></tr>
+<tr><td><code>handlers_monitor.py</code></td><td>Handler für Monitoring-Befehle</td></tr>
+<tr><td><code>handlers_pta.py</code></td><td>Handler für PTA-Befehle</td></tr>
+<tr><td><code>handlers_trade.py</code></td><td>Handler für Trade-Befehle</td></tr>
+<tr><td><code>models.py</code></td><td>CLI-interne Datenmodelle</td></tr>
+</table>
+
+<h3 id="py-financial-math">9.3 py_financial_math</h3>
+<p>Finanzmathematische Grundfunktionen für Trade-Analytik und Risikoberechnung.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>core.py</code></td><td>Kern-Funktionen: PnL, R-Multiple, Drawdown, Sharpe Ratio</td></tr>
+<tr><td><code>models.py</code></td><td>Datenmodelle: TradeMetrics, SeriesMetrics</td></tr>
+<tr><td><code>performance.py</code></td><td><strong>performance.calculate_trade_metrics()</strong>: Winrate, Avg Win/Loss, Payoff Ratio, Expectancy, SQN, Profit Factor</td></tr>
+<tr><td><code>risk.py</code></td><td><strong>risk.calculate_position_size()</strong>: Positionsgröße nach Risiko<br><strong>risk.calculate_risk_exposure()</strong>: Risiko bei Stop-Treffer<br><strong>risk.calculate_heat()</strong>: Portfolio Heat-Index</td></tr>
+<tr><td><code>series.py</code></td><td><strong>series.calculate_drawdown_series()</strong>: Drawdown-Reihe aus Equity-Curve<br><strong>series.calculate_series_metrics()</strong>: Total Return, CAGR, MaxDD, Volatility, Sharpe Ratio</td></tr>
+</table>
+
+<h3 id="py-market-data">9.4 py_market_data</h3>
+<p>Marktdaten-Verarbeitung und Provider.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>market_clock.py</code></td><td>Börsenstatus (OPEN, PRE-MARKET, POST-MARKET, CLOSED)</td></tr>
+<tr><td><code>node_provider.py</code></td><td>DataNodeProvider für Parquet-Datenbank</td></tr>
+<tr><td><code>utils.py</code></td><td>Hilfsfunktionen zur Daten-Normalisierung</td></tr>
+</table>
+
+<h3 id="py-portfolio-state">9.5 py_portfolio_state</h3>
+<p>Portfolio-Status-Verwaltung für Live- und historische Snapshots.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>history.py</code></td><td>HistoryFactory für historische Snapshots</td></tr>
+<tr><td><code>live.py</code></td><td>LivePortfolioManager für Live-Snapshots</td></tr>
+<tr><td><code>objects.py</code></td><td>Datenmodelle: PortfolioSnapshot, PortfolioPosition</td></tr>
+</table>
+
+<h3 id="py-pta">9.6 py_pta</h3>
+<p>Personal Trading Assistant - LLM-Integration und Telnet-Kommunikation.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>llm_config.json</code></td><td>LLM-Konfiguration (base_url, model_name, system_prompt)</td></tr>
+<tr><td><code>telnet_config.json</code></td><td>Telnet-Hub-Konfiguration (host, port, alias)</td></tr>
+<tr><td><code>bridge.py</code></td><td><strong>PTABridge</strong>: Orchestriert LLM-CLI-Konversation. Lädt Config, initialisiert LLMService, dispatchet Tool-Aufrufe.</td></tr>
+<tr><td><code>llm_service.py</code></td><td><strong>LLMService</strong>: Standalone LLM-Kommunikation. conversation history, ensure_model_loaded für LM Studio, Tool-Ausführung.</td></tr>
+<tr><td><code>prompts.py</code></td><td>System-Prompts und Tool-Definitionen (get_tool_definitions)</td></tr>
+<tr><td><code>logger.py</code></td><td>Ereignis-Logging für PTA-Kommunikation (log_event)</td></tr>
+<tr><td><code>telnet_client.py</code></td><td><strong>TelChatClient</strong>: Telnet-Client für Hub-Kommunikation</td></tr>
+<tr><td><code>commands_pta.md</code></td><td>Dokumentation der PTA-Befehle</td></tr>
+</table>
+
+<h3 id="py-riskmanager">9.7 py_riskmanager</h3>
+<p>Risikomanagement und Analytik. Besteht aus zwei Hauptmodulen:</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>analytics.py</code></td><td><strong>SnapshotAnalyzer</strong>: Analysiert Portfolio-Snapshots. Berechnet Heat-Index, Position-Risiko, Performance-Metriken. Move von py_analytics.capture.</td></tr>
+<tr><td><code>minervini.py</code></td><td><strong>MinerviniSizer</strong>: Positionsgrößen-Berechnung nach Minervini-Prinzipien. Berechnet bottleneck (RISK/SIZE_CAP/CASH), Szenarien, Warnungen.</td></tr>
+<tr><td><code>models.py</code></td><td>Datenmodelle: AnalyticsReport, PositionRow, SummaryRow, SeriesPoint</td></tr>
+</table>
+
+<h3 id="py-tradeobject">9.8 py_tradeobject</h3>
+<p>Kern-Handelsobjekt mit strikter Trennung von Interface und Logic.</p>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>__init__.py</code></td><td>Modul-Initialisierung</td></tr>
+<tr><td><code>interface.py</code></td><td><strong>Interface-Trennung:</strong><br>- <code>IExecutionProvider</code>: Verantwortlich für Handel (Orders, Fills)<br>- <code>IMarketDataProvider</code>: Verantwortlich für Daten (History, Quotes)<br>- <code>BrokerUpdate</code>: DTO für Broker-Fills und Order-Status<br>- <code>BarData</code>: DTO für OHLCV-Chart-Daten</td></tr>
+<tr><td><code>logic.py</code></td><td><strong>TradeCalculator</strong>: Pure Business Logic. calculate_metrics() mit Weighted Average Price Logic. Ableitung aller Metriken aus Transactions.</td></tr>
+<tr><td><code>models.py</code></td><td>Datenmodelle: TradeTransaction, TradeMetrics</td></tr>
+<tr><td><code>core.py</code></td><td>Haupt-TradeObject-Klasse: Lebenszyklus-Management, atomares Speichern (Temp-Datei + os.rename), UUID-Generierung</td></tr>
+</table>
+
+<hr>
+
+<h2 id="tools">10. Tools</h2>
+<p>Das <code>tools/</code>-Verzeichnis enthält verschiedene Hilfsprogramme für Datenkonvertierung und Trade-Management.</p>
+
+<h3 id="ib-csv-converter">10.1 ib_csv_converter.py</h3>
+<p>Konvertiert Interactive Brokers CSV-Exporte in das interne JSON-Format für Trades.</p>
+
+<h3 id="migrate-trades">10.2 migrate_trades.py</h3>
+<p>Migriert bestehende Trade-Daten in die aktuelle Struktur.</p>
+
+<h3 id="patch-currency">10.3 patch_currency.py</h3>
+<p>Patchet Währungs-Felder in bestehenden Trade-Daten.</p>
+
+<h3 id="trades-import">10.4 trades_import.py</h3>
+<p>Trade-Import-Tool zum Masseneinlesen von Trades. Ermöglicht das Importieren von Trades aus externen Quellen in das stock-logger-v5-System.</p>
+
+<hr>
+
+<h2 id="test-suite">11. Test-Suite</h2>
+<p>Das <code>tests/</code>-Verzeichnis enthält 18+ Test-Dateien für verschiedene Komponenten.</p>
+
+<h3>Test-Dateien</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+<tr><th>Test-Datei</th><th>Beschreibung</th></tr>
+<tr><td><code>test_cli_analyze.py</code></td><td>Tests für Analytik-Befehle</td></tr>
+<tr><td><code>test_cli_bulk_fetch.py</code></td><td>Tests für bulk_fetch-Befehl</td></tr>
+<tr><td><code>test_cli_chart.py</code></td><td>Tests für chart-Befehl</td></tr>
+<tr><td><code>test_cli_chat.py</code></td><td>Tests für PTA-Chat</td></tr>
+<tr><td><code>test_cli_close.py</code></td><td>Tests für Position-Schließung</td></tr>
+<tr><td><code>test_cli_connect.py</code></td><td>Tests für Verbindungsaufbau</td></tr>
+<tr><td><code>test_cli_disconnect.py</code></td><td>Tests für Verbindungstrennung</td></tr>
+</table>
+
+<h3>Archivierte Tests</h3>
+<p>Im <code>tests/archive/</code>-Verzeichnis befinden sich ältere Tests:</p>
+<ul>
+<li><code>integration_full_cycle.py</code> - Integrationstests (voller Handelszyklus)</li>
+<li><code>test_analytics.py</code> - Analytik-Tests</li>
+<li><code>test_cli_api.py</code> - CLI-API-Tests</li>
+<li><code>test_financial_math.py</code> - Finanzmathematik-Tests</li>
+<li><code>test_ibkr_conn.py</code> - IBKR-Verbindungs-Tests</li>
+<li><code>test_live_filter.py</code> - Live-Filter-Tests</li>
+<li><code>test_portfolio_state.py</code> - Portfolio-State-Tests</li>
+<li><code>test_pta_mock.py</code> - PTA-Mock-Tests</li>
+</ul>
+
+<h3>Test-Ausführung</h3>
+<p>Tests mit pytest ausführen:</p>
+<pre>
+pytest tests/
+pytest tests/ -v                    # Detaillierte Ausgabe
+pytest tests/test_cli_analyze.py    # Einzelner Test
+pytest tests/ -k "analyze"          # Tests mit Muster filtern
+</pre>
+
+<hr>
+
+<h2 id="konfiguration">12. Konfiguration</h2>
+
+<h3 id="docker">12.1 Docker-Umgebung</h3>
 <p>Die <code>docker-compose.yml</code> definiert die IB-Gateway-Container:</p>
 <pre>
 services:
@@ -476,8 +737,21 @@ services:
 </pre>
 <p>Die Umgebungsvariablen <code>IB_GATEWAY_HOST</code> und <code>IB_GATEWAY_PORT</code> können über <code>.env</code> oder System-Environment überschrieben werden.</p>
 
-<h3 id="llm">7.2 LLM-Konfiguration</h3>
-<p>Der PTA benötigt eine Konfigurationsdatei unter <code>py_pta/llm_config.json</code> (oder <code>secrets/llm_config.json</code>):</p>
+<h3 id="dockerfile">12.2 Dockerfile</h3>
+<p>Das <code>Dockerfile</code> (neben <code>docker-compose.yml</code>) definiert die Container-Build-Pipeline:</p>
+<ul>
+<li>Base Image: <code>python:3.11-slim</code></li>
+<li>System-Abhängigkeiten: git</li>
+<li>Python-Abhängigkeiten: <code>requirements.txt</code></li>
+<li>Default CMD: <code>python run_pta.py</code> (PTA Telnet Agent)</li>
+</ul>
+
+<h3 id="llm">12.3 LLM-Konfiguration</h3>
+<p>Der PTA benötigt eine Konfigurationsdatei an einem der folgenden Orte:</p>
+<ul>
+<li><code>py_pta/llm_config.json</code> (Standard, relativ zu bridge.py)</li>
+<li><code>secrets/llm_config.json</code> (alternativ)</li>
+</ul>
 <pre>
 {
   "llm_base_url": "http://localhost:1234/v1",
@@ -495,12 +769,31 @@ services:
 <li><strong>system_prompt</strong>: Die System-Anweisung für den PTA</li>
 </ul>
 
+<h3 id="telnet-config">12.4 Telnet-Konfiguration</h3>
+<p>Die Telnet-Hub-Konfiguration befindet sich in <code>py_pta/telnet_config.json</code>:</p>
+<pre>
+{
+  "host": "127.0.0.1",
+  "port": 9999,
+  "alias": "pta"
+}
+</pre>
+<p>Diese Konfiguration wird automatisch von <code>run_pta.py</code> geladen und kann über CLI-Parameter überschrieben werden.</p>
+
 <hr>
 
-<h2 id="faq">8. FAQ und Tipps</h2>
+<h2 id="faq">13. FAQ und Tipps</h2>
 
 <h3>Wie verbinde ich mich mit dem IBKR Gateway?</h3>
 <p>Verwenden Sie den <code>connect</code>-Befehl. Für die Standard-Docker-Konfiguration reicht <code>connect default</code>. Für manuelle Verbindungen geben Sie Host, Port und Client-ID an.</p>
+
+<h3>Wie funktioniert die Auto-Discovery (Connection 3.0)?</h3>
+<p>Der PTA versucht automatisch:</p>
+<ol>
+<li>Verbindung zu <code>localhost:4002</code> (Paper Default)</li>
+<li>Fallback zu <code>localhost:4001</code> (Live)</li>
+<li>Bei Misserfolg: Nachfrage beim User nach Custom IP/Port</li>
+</ol>
 
 <h3>Wie erstelle ich eine Market Order?</h3>
 <p>Geben Sie keine <code>limit_price</code> an:</p>
@@ -518,7 +811,7 @@ trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10, "limit_price": 850.0
 <p>Verwenden Sie <code>trades</code> um alle offenen Positionen mit ihren IDs aufzulisten, oder <code>status</code> für einen vollständigen Portfolio-Snapshot.</p>
 
 <h3>Was bedeutet der Heat-Index?</h3>
-<p>Der Heat-Index ist das Gesamtrisiko aller Positionen als Prozentsatz des Kontowerts. Ein Heat-Index über 2.5% pro Position lönt eine Warnung aus. Das Gesamtrisiko sollte typischerweise nicht 10% des Kontowerts überschreiten.</p>
+<p>Der Heat-Index ist das Gesamtrisiko aller Positionen als Prozentsatz des Kontowerts. Ein Heat-Index über 2.5% pro Position löst eine Warnung aus. Das Gesamtrisiko sollte typischerweise nicht 10% des Kontowerts überschreiten.</p>
 
 <h3>Wie funktioniert die Minervini-Positionsgrößen-Berechnung?</h3>
 <p>Der <code>wizard</code>-Befehl berechnet die optimale Positionsgröße basierend auf:</p>
@@ -564,6 +857,14 @@ trade {"action": "ENTER", "ticker": "NVDA", "quantity": 10, "limit_price": 850.0
 <li><code>data/portfolio_latest.json</code>: Letzter Live-Snapshot</li>
 <li><code>logs/communication.log</code>: PTA-Kommunikationsprotokoll</li>
 </ul>
+
+<h3>Wie führe ich die Tests aus?</h3>
+<p>Verwenden Sie pytest:</p>
+<pre>
+pytest tests/                    # Alle Tests
+pytest tests/ -v                 # Detaillierte Ausgabe
+pytest tests/test_cli_analyze.py # Einzelner Test
+</pre>
 
 <hr>
 <p><em>Letzte Aktualisierung: 2026-04-19</em></p>

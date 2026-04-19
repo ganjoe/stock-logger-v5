@@ -25,7 +25,7 @@ def main():
     parser = argparse.ArgumentParser(description="Trading System Unified CLI")
     parser.add_argument("--mode", choices=["human", "bot"], default="human", help="Operating Mode")
     parser.add_argument("--confirm-all", action="store_true", help="Auto-confirm critical actions (Bot only)")
-    parser.add_argument("--trades-dir", default="./data/trades", help="Directory for trade storage")
+    parser.add_argument("--trades-dir", default="/home/daniel/stock-data-node/data/parquet", help="Directory for trade storage")
     parser.add_argument("command", nargs=argparse.REMAINDER, help="Command to execute")
 
     args = parser.parse_args()

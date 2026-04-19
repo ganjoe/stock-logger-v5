@@ -16,6 +16,7 @@ services:
     network_mode: "host"
     command: ["python", "run_pta.py", "--host", "127.0.0.1"]
     volumes:
+      - /home/daniel/stock-data-node/data/parquet:/home/daniel/stock-data-node/data/parquet
       - ./data:/app/data
       - ./secrets:/app/secrets
       - ./logs:/app/logs

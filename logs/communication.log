@@ -338,3 +338,96 @@ Hier sind deine **offenen Positionen**:
 | **SOI** | 6 | 49.33 | 0.00 | -295.96 |
 
 *Hinweis: Negative Mengen (z.B. EOSE, AAOI) deuten auf Short-Positionen hin.*
+2026-04-19 17:51:18 - [USER] hallo
+2026-04-19 17:51:24 - [PTA_RESPONSE] Hallo! Ich bin dein Personal Trading Assistant (PTA).
+
+Ich bin bereit für die **Exekution**. Gib mir einen Befehl oder sag mir, was zu tun ist (z. B. `status` abfragen, Trades platzieren, ändern oder schließen). 
+
+Wie kann ich dir jetzt helfen?
+2026-04-19 17:51:38 - [USER] status
+2026-04-19 17:51:40 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'status'}
+2026-04-19 17:51:40 - [SYSTEM_EXEC] status
+2026-04-19 17:51:40 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "No Active Broker Connection.", "error_code": "NO_CONNECTION"}
+2026-04-19 17:51:44 - [PTA_RESPONSE] Es besteht aktuell **keine aktive Broker-Verbindung** (`NO_CONNECTION`). Ohne Verbindung kann ich keine Trades ausführen oder den Status abfragen.
+
+Bitte stelle eine Verbindung her. Wenn du die Zugangsdaten bereit hast, kann ich den `connect`-Befehl für dich ausführen. 
+
+Was ist der nächste Schritt?
+2026-04-19 17:52:07 - [USER] connect
+2026-04-19 17:52:14 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'connect'}
+2026-04-19 17:52:14 - [SYSTEM_EXEC] connect
+2026-04-19 17:52:15 - [SYSTEM_RESULT] {"success": true, "payload": null, "message": "Connected to 127.0.0.1:4002 (ID: 22)", "error_code": "OK"}
+2026-04-19 17:52:16 - [PTA_RESPONSE] Die Verbindung zum Broker ist nun **erfolgreich hergestellt** (`ID: 22`).
+
+Ich bin bereit für die Exekution. Was soll ich tun?
+2026-04-19 17:52:42 - [USER] liste alle befehle auf
+2026-04-19 17:52:55 - [PTA_RESPONSE] Hier sind die Befehle, die ich für dich ausführen kann:
+
+### 1. Informationsabfrage (Monitoring)
+*   `status`: Überprüft den aktuellen Verbindungsstatus und Systemzustand.
+*   `trades`: Listet alle aktuell offenen Trades auf.
+
+### 2. Trade-Management (Exekution)
+*   **Trade platzieren**: `trade {symbol} {side} {amount} [sl] [tp]`
+    *   *Beispiel:* `trade BTCUSDT BUY 0.1 SL 60000 TP 70000`
+*   **Trade anpassen**: `update {id} {params}` (z. B. Stop-Loss oder Take-Profit ändern)
+    *   *Beispiel:* `update 5 SL 62000`
+*   **Trade schließen**: `exit {id}` (Schließt einen bestehenden Trade sofort)
+*   **Order stornieren**: `cancel {id}` (Storniert eine noch nicht ausgeführte Order/Limit-Order)
+
+### 3. Daten-Management
+*   `bulk_fetch`: Lädt Massendaten für mehrere Symbole gleichzeitig herunter.
+
+**Wichtiger Hinweis:** Bevor ich `update`, `exit` oder `cancel` nutze, werde ich immer zuerst mit `trades` die korrekte **ID** verifizieren, um Fehler zu vermeiden.
+
+Was soll ich als Nächstes tun?
+2026-04-19 17:53:19 - [USER] trades
+2026-04-19 17:53:21 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'trades'}
+2026-04-19 17:53:21 - [SYSTEM_EXEC] trades
+2026-04-19 17:53:21 - [SYSTEM_RESULT] {"success": true, "payload": {"trades": [{"id": "fc3f41e5...", "ticker": "GOOGL", "qty": 10, "entry": 150.0}, {"id": "a1b2c3d4...", "ticker": "MSFT", "qty": 5, "entry": 300.0}]}, "message": "Trades list", "error_code": "OK"}
+2026-04-19 17:53:24 - [PTA_RESPONSE] Es sind aktuell **2 offene Trades** vorhanden:
+
+| ID | Ticker | Menge (Qty) | Einstiegspreis (Entry) |
+| :--- | :--- | :--- | :--- |
+| `fc3f41e5...` | **GOOGL** | 10 | 150 |
+| `a1b2c3d4...` | **MSFT** | 5 | 300 |
+
+Was möchtest du mit diesen Trades tun? (z. B. schließen, anpassen oder einen neuen Trade eröffnen)
+2026-04-19 17:54:08 - [USER] frag die trades von broker ab. live status
+2026-04-19 17:54:12 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'trades'}
+2026-04-19 17:54:12 - [SYSTEM_EXEC] trades
+2026-04-19 17:54:12 - [SYSTEM_RESULT] {"success": true, "payload": {"trades": [{"id": "fc3f41e5...", "ticker": "GOOGL", "qty": 10, "entry": 150.0}, {"id": "a1b2c3d4...", "ticker": "MSFT", "qty": 5, "entry": 300.0}]}, "message": "Trades list", "error_code": "OK"}
+2026-04-19 17:54:16 - [PTA_RESPONSE] Ich habe die aktuellen Trades direkt vom Broker abgefragt. Der Status ist live und zeigt weiterhin diese Positionen:
+
+| ID | Ticker | Menge (Qty) | Einstiegspreis (Entry) |
+| :--- | :--- | :--- | :--- |
+| `fc3f41e5...` | **GOOGL** | 10 | 150 |
+| `a1b2c3d4...` | **MSFT** | 5 | 300 |
+
+Soll ich eine Aktion für einen dieser Trades ausführen?
+2026-04-19 17:55:33 - [USER] listte alle commands auf
+2026-04-19 17:55:51 - [PTA_RESPONSE] Hier ist die vollständige Übersicht aller Befehle, die ich als **Personal Trading Assistant (PTA)** zur Ausführung nutzen kann:
+
+### 1. Monitoring & Kontrolle (Status)
+*   `status`: Prüft den aktuellen Verbindungsstatus zum Broker und das System-Health.
+*   `trades`: Ruft die Liste aller aktuell offenen Positionen direkt vom Broker ab.
+
+### 2. Trade-Management (Exekution)
+*   **Neuer Trade**: `trade {symbol} {side} {amount} [sl] [tp]`
+    *   *Beispiel:* `trade BTCUSDT BUY 0.5 SL 40000 TP 50000`
+    *   *(side: BUY oder SELL)*
+*   **Trade anpassen**: `update {id} {params}`
+    *   *Beispiel:* `update fc3f41e5... SL 140` (Setzt den Stop-Loss für GOOGL auf 140)
+*   **Trade schließen**: `exit {id}`
+    *   *Beispiel:* `exit a1b2c3d4...` (Schließt die MSFT Position sofort)
+*   **Order stornieren**: `cancel {id}`
+    *   *Beispiel:* `cancel fc3f41e5...` (Storniert eine noch nicht ausgeführte Limit-Order)
+
+### 3. System & Daten
+*   `connect`: Stellt die Verbindung zum Broker her.
+*   `bulk_fetch`: Lädt massenhaft Marktdaten für mehrere Symbole gleichzeitig herunter, um die Datenbank zu aktualisieren.
+
+**Wichtige Regel meiner Arbeitsweise:**
+Bevor ich Befehle wie `update`, `exit` oder `cancel` ausführe, werde ich immer zuerst den Befehl `trades` nutzen, um sicherzustellen, dass ich die **korrekte ID** verwende.
+
+Welchen Befehl soll ich jetzt für dich ausführen?
