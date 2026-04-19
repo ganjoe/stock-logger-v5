@@ -1,0 +1,26 @@
+{
+  "id": "bbe0384e-486c-4e2a-bb69-9cb26a1a2a6e",
+  "ticker": "_CASH",
+  "status": "CLOSED",
+  "trade_type": "CASH",
+  "transactions": [
+    {
+      "id": "ccb91509",
+      "timestamp": "2026-04-19T11:54:50.860024",
+      "type": "ENTRY",
+      "quantity": -500.0,
+      "price": 1.0,
+      "commission": 0.0,
+      "slippage": 0.0,
+      "order_id": null
+    }
+  ],
+  "order_history": [],
+  "active_orders": {},
+  "initial_stop_price": null,
+  "current_stop_price": null,
+  "entry_date": "2026-04-19T11:54:50.860005",
+  "notes": "Withdrawal",
+  "currency": "USD",
+  "exchange": ""
+}

@@ -14,7 +14,7 @@ class PTACommand(ICommand):
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         global _bridge
         if not args:
-            return CommandResponse(False, "Bitte gib eine Anweisung oder Frage ein. Beispiel: pta 'Wie sieht mein Portfolio aus?'")
+            return CommandResponse(success=False, message="Bitte gib eine Anweisung oder Frage ein. Beispiel: pta 'Wie sieht mein Portfolio aus?'")
 
         if _bridge is None:
             from py_captrader import services
@@ -25,7 +25,7 @@ class PTACommand(ICommand):
         
         response = _bridge.chat(user_msg)
         
-        return CommandResponse(True, message=response)
+        return CommandResponse(success=True, message=response)
 
 
 # Register
@@ -63,6 +63,6 @@ class ChatCommand(ICommand):
             except EOFError:
                 break
 
-        return CommandResponse(True, "Chat-Modus beendet.")
+        return CommandResponse(success=True, message="Chat-Modus beendet.")
 
 registry.register(ChatCommand())

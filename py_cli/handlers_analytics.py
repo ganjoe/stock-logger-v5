@@ -19,7 +19,7 @@ class AnalyzeCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         if not args:
-            return CommandResponse(False, "Usage: analyze [live|history] [json_filter]", error_code="INVALID_ARGS")
+            return CommandResponse(success=False, message="Usage: analyze [live|history] [json_filter]", error_code="INVALID_ARGS")
 
         sub_cmd = args[0].lower()
         payload = {}
@@ -31,18 +31,18 @@ class AnalyzeCommand(ICommand):
                 if sub_cmd == "live":
                     payload = {"ticker": args[1]}
                 else:
-                    return CommandResponse(False, "Invalid JSON payload.", error_code="JSON_ERROR")
+                    return CommandResponse(success=False, message="Invalid JSON payload.", error_code="JSON_ERROR")
 
         if sub_cmd == "live":
             return self._handle_live(payload)
         elif sub_cmd == "history":
             return self._handle_history(ctx, payload)
         else:
-            return CommandResponse(False, f"Unknown sub-command: {sub_cmd}", error_code="UNKNOWN_SUBCOMMAND")
+            return CommandResponse(success=False, message=f"Unknown sub-command: {sub_cmd}", error_code="UNKNOWN_SUBCOMMAND")
 
     def _handle_live(self, p: Dict[str, Any]) -> CommandResponse:
         if not services.has_broker():
-            return CommandResponse(False, "No Active Broker Connection.", error_code="NO_CONNECTION")
+            return CommandResponse(success=False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
         
         broker = services.get_broker()
         manager = LivePortfolioManager(broker)
@@ -55,7 +55,7 @@ class AnalyzeCommand(ICommand):
         analyzer = SnapshotAnalyzer()
         report = analyzer.analyze(snap)
         
-        return CommandResponse(True, payload=report.to_dict(), message=f"Live Analytics Report (Ticker: {ticker or 'ALL'})")
+        return CommandResponse(success=True, payload=report.to_dict(), message=f"Live Analytics Report (Ticker: {ticker or 'ALL'})")
 
     def _handle_history(self, ctx: CLIContext, p: Dict[str, Any]) -> CommandResponse:
         days = p.get("days", 30)
@@ -80,7 +80,7 @@ class AnalyzeCommand(ICommand):
             closed = [t for t in closed if t.ticker.upper() == ticker.upper()]
         
         if not closed:
-            return CommandResponse(True, message=f"No closed trades in the last {days} days.", payload={
+            return CommandResponse(success=True, message=f"No closed trades in the last {days} days.", payload={
                 "period_days": days,
                 "total_trades": 0
             })
@@ -111,7 +111,7 @@ class AnalyzeCommand(ICommand):
             "trades": trade_list
         }
         
-        return CommandResponse(True, payload=payload, message=f"History Report ({days}d): {len(closed)} trades, PnL: {total_pnl:+.2f}")
+        return CommandResponse(success=True, payload=payload, message=f"History Report ({days}d): {len(closed)} trades, PnL: {total_pnl:+.2f}")
 
 
 # py_cli/handlers_analytics.py
@@ -140,9 +140,9 @@ class BulkFetchCommand(ICommand):
             # nohup-like behavior not strictly needed if we don't wait?
             # actually Popen returns immediately.
             subprocess.Popen(cmd, start_new_session=True)
-            return CommandResponse(True, message=f"Bulk fetch started (Client {client_id}) in background.")
+            return CommandResponse(success=True, message=f"Bulk fetch started (Client {client_id}) in background.")
         except Exception as e:
-            return CommandResponse(False, message=f"Failed to start bulk fetch: {e}")
+            return CommandResponse(success=False, message=f"Failed to start bulk fetch: {e}")
 
 class MarketClockCommand(ICommand):
     name = "market_clock"
@@ -151,7 +151,7 @@ class MarketClockCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         status = MarketClock.get_status()
-        return CommandResponse(True, payload=status, message=f"Market Status: {status['status']}")
+        return CommandResponse(success=True, payload=status, message=f"Market Status: {status['status']}")
 
 class WizardCommand(ICommand):
     name = "wizard"
@@ -160,12 +160,12 @@ class WizardCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         if not args:
-            return CommandResponse(False, "Usage: wizard <json_payload>", error_code="INVALID_ARGS")
+            return CommandResponse(success=False, message="Usage: wizard <json_payload>", error_code="INVALID_ARGS")
 
         try:
             payload = json.loads(" ".join(args))
         except json.JSONDecodeError:
-             return CommandResponse(False, "Invalid JSON payload.", error_code="JSON_ERROR")
+             return CommandResponse(success=False, message="Invalid JSON payload.", error_code="JSON_ERROR")
              
         # Extraction
         symbol = payload.get("symbol", "UNKNOWN")
@@ -187,11 +187,11 @@ class WizardCommand(ICommand):
                     if fetched_price > 0:
                         entry = fetched_price
                     else:
-                        return CommandResponse(False, f"Fetched price for {symbol} is invalid/zero.", error_code="PRICE_ERROR")
+                        return CommandResponse(success=False, message=f"Fetched price for {symbol} is invalid/zero.", error_code="PRICE_ERROR")
                 except Exception as e:
-                    return CommandResponse(False, f"Could not fetch live price for {symbol}: {e}", error_code="PRICE_FETCH_FAILED")
+                    return CommandResponse(success=False, message=f"Could not fetch live price for {symbol}: {e}", error_code="PRICE_FETCH_FAILED")
             else:
-                return CommandResponse(False, "Entry price is zero and no broker connection to fetch it.", error_code="MISSING_DATA")
+                return CommandResponse(success=False, message="Entry price is zero and no broker connection to fetch it.", error_code="MISSING_DATA")
 
         # Context (Equity/Cash)
         equity = payload.get("equity_override")
@@ -223,7 +223,7 @@ class WizardCommand(ICommand):
         
         # Convert dataclass to dict for JSON response
         from dataclasses import asdict
-        return CommandResponse(True, payload=asdict(result), message=f"Wizard Result for {symbol}")
+        return CommandResponse(success=True, payload=asdict(result), message=f"Wizard Result for {symbol}")
 
 # Register
 registry.register(AnalyzeCommand())

@@ -32,7 +32,7 @@ class ConnectCommand(ICommand):
                 # Check if we are already connected to the SAME target
                 client = session._ACTIVE_CLIENT
                 if client and client.host == host and client.port == port:
-                     return CommandResponse(True, message=f"Already connected to {host}:{port}.")
+                     return CommandResponse(success=True, message=f"Already connected to {host}:{port}.")
                 
                 # Different target -> Auto-disconnect
                 session.disconnect()
@@ -44,9 +44,9 @@ class ConnectCommand(ICommand):
             adapter = CapTraderAdapter(client)
             services.register_broker(adapter)
             
-            return CommandResponse(True, message=f"Connected to {host}:{port} (ID: {client_id})")
+            return CommandResponse(success=True, message=f"Connected to {host}:{port} (ID: {client_id})")
         except Exception as e:
-            return CommandResponse(False, message=f"Connection failed: {str(e)}", error_code="CONNECTION_ERROR")
+            return CommandResponse(success=False, message=f"Connection failed: {str(e)}", error_code="CONNECTION_ERROR")
 
 class DisconnectCommand(ICommand):
     name = "disconnect"
@@ -56,12 +56,12 @@ class DisconnectCommand(ICommand):
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         try:
              if not session.is_connected():
-                 return CommandResponse(True, message="Already disconnected.")
+                  return CommandResponse(success=True, message="Already disconnected.")
                  
              session.disconnect()
-             return CommandResponse(True, message="Disconnected.")
+             return CommandResponse(success=True, message="Disconnected.")
         except Exception as e:
-             return CommandResponse(False, message=f"Error disconnecting: {e}")
+              return CommandResponse(success=False, message=f"Error disconnecting: {e}")
 
 # Register
 registry.register(ConnectCommand())

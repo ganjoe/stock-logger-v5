@@ -18,7 +18,7 @@ class HistoryCommand(ICommand):
             try:
                 days_back = int(args[0])
             except ValueError:
-                return CommandResponse(False, "Invalid days_back argument. Must be integer.", error_code="INVALID_ARG")
+                return CommandResponse(success=False, message="Invalid days_back argument. Must be integer.", error_code="INVALID_ARG")
 
         # 1. Setup Factory
         provider = None
@@ -36,7 +36,7 @@ class HistoryCommand(ICommand):
         snapshot = factory.get_snapshot_at(target_date)
         
         return CommandResponse(
-            True,
+            success=True,
             message=f"History Snapshot at {target_date.strftime('%Y-%m-%d %H:%M:%S')}",
             payload=snapshot.to_dict()
         )

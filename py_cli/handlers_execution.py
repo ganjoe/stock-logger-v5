@@ -13,7 +13,7 @@ class CloseCommand(ICommand):
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
         if not args:
-            return CommandResponse(False, "Usage: close <trade_id> [--force]", error_code="INVALID_ARGS")
+                return CommandResponse(success=False, message="Invalid days_back argument. Must be integer.", error_code="INVALID_ARG")
 
         trade_id = args[0]
         # Check Force Flag
@@ -28,14 +28,14 @@ class CloseCommand(ICommand):
             # In this architecture, maybe we expect the user to type 'close <id> --confirm'?
             # Let's enforce explicit --confirm for now, or just return a warning.
             if not force:
-                 return CommandResponse(False, message=f"⚠️  SAFETY: To close {trade_id}, you must append --confirm or --force.", error_code="CONFIRM_REQUIRED")
+                  return CommandResponse(success=False, message=f"⚠️  SAFETY: To close {trade_id}, you must append --confirm or --force.", error_code="CONFIRM_REQUIRED")
         
         elif ctx.mode == CLIMode.BOT:
             if not (force or ctx.confirm_all):
-                return CommandResponse(False, message="SAFETY: Bot must use --confirm or context.confirm_all=True", error_code="SAFETY_LOCK")
+                return CommandResponse(success=False, message="SAFETY: Bot must use --confirm or context.confirm_all=True", error_code="SAFETY_LOCK")
 
         # Mock Logic
-        return CommandResponse(True, message=f"Trade {trade_id} closed successfully.", payload={"trade_id": trade_id, "status": "CLOSED"})
+        return CommandResponse(success=True, message=f"Trade {trade_id} closed successfully.", payload={"trade_id": trade_id, "status": "CLOSED"})
 
 # Registration
 registry.register(CloseCommand())

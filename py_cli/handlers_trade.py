@@ -18,7 +18,7 @@ class TradeCommand(ICommand):
             pass
 
         if not args:
-            return CommandResponse(False, message="Missing JSON payload.", error_code="INVALID_ARGS")
+            return CommandResponse(success=False, message="Missing JSON payload.", error_code="INVALID_ARGS")
 
         # 2. Parse JSON
         # The args might be split by spaces if quotes were not handled by shell.
@@ -29,11 +29,11 @@ class TradeCommand(ICommand):
         try:
             payload = json.loads(raw_json)
         except json.JSONDecodeError:
-            return CommandResponse(False, message="Invalid JSON format.", error_code="JSON_ERROR")
+            return CommandResponse(success=False, message="Invalid JSON format.", error_code="JSON_ERROR")
             
         action = payload.get("action", "").upper()
         if not action:
-            return CommandResponse(False, message="Missing 'action' field in payload.", error_code="INVALID_PAYLOAD")
+            return CommandResponse(success=False, message="Missing 'action' field in payload.", error_code="INVALID_PAYLOAD")
 
         try:
             # --- DISPATCHER ---
@@ -43,7 +43,7 @@ class TradeCommand(ICommand):
 
             # All other actions require broker connection
             if not services.has_broker():
-                return CommandResponse(False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
+                return CommandResponse(success=False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
             
             broker = services.get_broker()
 
@@ -58,10 +58,10 @@ class TradeCommand(ICommand):
             elif action == "REFRESH":
                 return self._handle_refresh(payload, broker)
             else:
-                return CommandResponse(False, message=f"Unknown action: {action}", error_code="UNKNOWN_ACTION")
+                return CommandResponse(success=False, message=f"Unknown action: {action}", error_code="UNKNOWN_ACTION")
                 
         except Exception as e:
-            return CommandResponse(False, message=f"Execution Error: {str(e)}", error_code="EXECUTION_ERROR")
+            return CommandResponse(success=False, message=f"Execution Error: {str(e)}", error_code="EXECUTION_ERROR")
 
     def _handle_enter(self, p: Dict[str, Any], broker) -> CommandResponse:
         ticker = p.get("ticker")
@@ -71,7 +71,7 @@ class TradeCommand(ICommand):
         trade_id = p.get("trade_id") # Optional specific ID
         
         if not ticker or not qty:
-            return CommandResponse(False, message="ENTER requires 'ticker' and 'quantity'.", error_code="INVALID_PAYLOAD")
+            return CommandResponse(success=False, message="ENTER requires 'ticker' and 'quantity'.", error_code="INVALID_PAYLOAD")
             
         # Create Trade Object
         trade = TradeObject(ticker=ticker, id=trade_id)
@@ -82,7 +82,7 @@ class TradeCommand(ICommand):
         broker_oid = trade.enter(quantity=float(qty), limit_price=limit, stop_loss=stop)
         
         return CommandResponse(
-            True, 
+            success=True, 
             message=f"Trade Entered: {ticker}",
             payload={
                 "trade_id": trade.id,
@@ -97,7 +97,7 @@ class TradeCommand(ICommand):
         stop_loss = p.get("stop_loss")
         
         if not trade_id:
-             return CommandResponse(False, message="UPDATE requires 'trade_id'.", error_code="INVALID_PAYLOAD")
+             return CommandResponse(success=False, message="UPDATE requires 'trade_id'.", error_code="INVALID_PAYLOAD")
              
         # Load Trade (implicit via ID)
         # We need to find the ticker for this ID? 
@@ -111,13 +111,13 @@ class TradeCommand(ICommand):
         
         ticker = p.get("ticker")
         if not ticker:
-             return CommandResponse(False, message="UPDATE requires 'ticker' (to locate file).", error_code="INVALID_PAYLOAD")
+             return CommandResponse(success=False, message="UPDATE requires 'ticker' (to locate file).", error_code="INVALID_PAYLOAD")
 
         trade = TradeObject(ticker=ticker, id=trade_id)
         # Verify it loaded (status should not be PLANNED if ID existed)
         if trade.status == TradeStatus.PLANNED:
              # Means we created a new one because file not found
-             return CommandResponse(False, message=f"Trade {trade_id} not found for {ticker}.", error_code="NOT_FOUND")
+             return CommandResponse(success=False, message=f"Trade {trade_id} not found for {ticker}.", error_code="NOT_FOUND")
              
         trade.set_broker(broker)
         
@@ -125,7 +125,7 @@ class TradeCommand(ICommand):
             trade.set_stop_loss(float(stop_loss))
             
         return CommandResponse(
-            True,
+            success=True,
             message=f"Trade Updated: {trade_id}",
             payload={
                 "trade_id": trade.id,
@@ -139,7 +139,7 @@ class TradeCommand(ICommand):
         ticker = p.get("ticker")
         
         if not trade_id or not ticker:
-             return CommandResponse(False, message="EXIT requires 'trade_id' and 'ticker'.", error_code="INVALID_PAYLOAD")
+             return CommandResponse(success=False, message="EXIT requires 'trade_id' and 'ticker'.", error_code="INVALID_PAYLOAD")
 
         trade = TradeObject(ticker=ticker, id=trade_id)
         trade.set_broker(broker)
@@ -147,7 +147,7 @@ class TradeCommand(ICommand):
         oid = trade.close()
         
         return CommandResponse(
-            True,
+            success=True,
             message=f"Trade Closed: {trade_id}",
             payload={
                 "trade_id": trade.id,
@@ -161,7 +161,7 @@ class TradeCommand(ICommand):
         ticker = p.get("ticker")
         
         if not trade_id or not ticker:
-             return CommandResponse(False, message="REFRESH requires 'trade_id' and 'ticker'.", error_code="INVALID_PAYLOAD")
+             return CommandResponse(success=False, message="REFRESH requires 'trade_id' and 'ticker'.", error_code="INVALID_PAYLOAD")
 
         trade = TradeObject(ticker=ticker, id=trade_id)
         trade.set_broker(broker)
@@ -171,7 +171,7 @@ class TradeCommand(ICommand):
         trade.refresh(current_price=price)
         
         return CommandResponse(
-            True,
+            success=True,
             message=f"Trade Refreshed: {trade_id}",
             payload=trade._state.to_dict()
         )
@@ -182,7 +182,7 @@ class TradeCommand(ICommand):
         order_id = p.get("broker_order_id")
 
         if not trade_id or not ticker or not order_id:
-             return CommandResponse(False, message="CANCEL requires 'trade_id', 'ticker', and 'broker_order_id'.", error_code="INVALID_PAYLOAD")
+             return CommandResponse(success=False, message="CANCEL requires 'trade_id', 'ticker', and 'broker_order_id'.", error_code="INVALID_PAYLOAD")
 
         trade = TradeObject(ticker=ticker, id=trade_id)
         trade.set_broker(broker)
@@ -191,13 +191,13 @@ class TradeCommand(ICommand):
         
         if success:
             return CommandResponse(
-                True, 
+                success=True, 
                 message=f"Order {order_id} Cancelled.",
                 payload={"trade_id": trade.id, "cancelled_order_id": order_id, "status": "CANCELLED"}
             )
         else:
             return CommandResponse(
-                False, 
+                success=False, 
                 message=f"Order {order_id} not active in Trade {trade_id}.",
                 error_code="ORDER_NOT_FOUND"
             )
@@ -211,11 +211,11 @@ class TradeCommand(ICommand):
         """
         amount = p.get("quantity")
         if amount is None:
-            return CommandResponse(False, message="CASH requires 'quantity' (positive=deposit, negative=withdrawal).", error_code="INVALID_PAYLOAD")
+            return CommandResponse(success=False, message="CASH requires 'quantity' (positive=deposit, negative=withdrawal).", error_code="INVALID_PAYLOAD")
         
         amount = float(amount)
         if amount == 0:
-            return CommandResponse(False, message="CASH quantity must not be zero.", error_code="INVALID_PAYLOAD")
+            return CommandResponse(success=False, message="CASH quantity must not be zero.", error_code="INVALID_PAYLOAD")
         
         note = p.get("note", "")
         
@@ -223,7 +223,7 @@ class TradeCommand(ICommand):
         action_label = "Deposit" if amount > 0 else "Withdrawal"
         
         return CommandResponse(
-            True,
+            success=True,
             message=f"💰 {action_label}: {abs(amount):.2f} EUR",
             payload={
                 "trade_id": trade.id,
