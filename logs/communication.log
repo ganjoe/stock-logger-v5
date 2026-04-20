@@ -516,3 +516,84 @@ Da ich der **Personal Trading Assistant (PTA)** bin, ist meine Rolle in diesem Z
 **Möchtest du, dass ich aktuell nach offenen Trades suche, die wir im Sinne einer Minervini-Strategie anpassen müssen (z.B. Stop-Loss nachziehen)?**
 
 *Gib mir einfach einen Befehl wie: `trades` oder `update [ID] sl=[Preis]`.*
+2026-04-20 20:33:32 - [USER] hallo
+2026-04-20 20:33:43 - [PTA_RESPONSE] Hallo! Dein **Personal Trading Assistant (PTA)** ist einsatzbereit und wartet auf deine Anweisungen.
+
+Ich bin hier für die **EXEKUTION**. 
+
+Wie kann ich dich jetzt unterstützen?
+*   `status`: Den aktuellen Systemzustand prüfen?
+*   `trades`: Deine offenen Positionen anzeigen, um IDs zu finden?
+*   `trade ...`: Eine neue Order platzieren?
+*   `update ...`: Einen bestehenden Trade (SL/TP) anpassen?
+
+**Was ist dein nächster Befehl?**
+2026-04-20 20:34:10 - [USER] zeig mir mein portfolio
+2026-04-20 20:34:14 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'trades'}
+2026-04-20 20:34:14 - [SYSTEM_EXEC] trades
+2026-04-20 20:34:14 - [SYSTEM_RESULT] {"success": true, "payload": {"trades": [{"id": "fc3f41e5...", "ticker": "GOOGL", "qty": 10, "entry": 150.0}, {"id": "a1b2c3d4...", "ticker": "MSFT", "qty": 5, "entry": 300.0}]}, "message": "Trades list", "error_code": "OK"}
+2026-04-20 20:34:19 - [PTA_RESPONSE] Hier ist dein aktuelles Portfolio (aktive Trades):
+
+| Ticker | Menge | Einstiegspreis | Trade ID |
+| :--- | :--- | :--- | :--- |
+| **GOOGL** | 10 | 150.00 | `fc3f41e5...` |
+| **MSFT** | 5 | 300.00 | `a1b2c3d4...` |
+
+**Was möchtest du als Nächstes tun?**
+*   Einen Stop-Loss oder Take-Profit für einen dieser Trades anpassen? (z.B. `update fc3f41e5... sl=140`)
+*   Eine Position schließen/stornieren? (`cancel [ID]`)
+*   Einen neuen Trade eröffnen? (`trade buy symbol=...`)
+2026-04-20 20:34:39 - [USER] status
+2026-04-20 20:34:40 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'status'}
+2026-04-20 20:34:40 - [SYSTEM_EXEC] status
+2026-04-20 20:34:40 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "No Active Broker Connection.", "error_code": "NO_CONNECTION"}
+2026-04-20 20:34:42 - [PTA_RESPONSE] ⚠️ **ACHTUNG: Keine Verbindung zum Broker!**
+
+Der aktuelle Status ist: `NO_CONNECTION`. Ich kann derzeit keine Orders ausführen oder Trades verwalten, da die Handels-Schnittstelle nicht aktiv ist.
+
+**Was soll ich tun?**
+*   Soll ich versuchen, die Verbindung wiederherzustellen? (Befehl: `connect`)
+*   Oder möchtest du zuerst etwas anderes prüfen?
+2026-04-20 20:35:17 - [USER] connect
+2026-04-20 20:35:19 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'connect'}
+2026-04-20 20:35:19 - [SYSTEM_EXEC] connect
+2026-04-20 20:35:19 - [SYSTEM_RESULT] {"success": false, "payload": null, "message": "Connection failed: [Errno 111] Connect call failed ('127.0.0.1', 4002)", "error_code": "CONNECTION_ERROR"}
+2026-04-20 20:35:23 - [PTA_RESPONSE] ⚠️ **FEHLERBEI DER VERBINDUNG!**
+
+Der Verbindungsversuch ist fehlgeschgestellt (`CONNECTION_ERROR`).
+**Details:** `[Errno 111] Connect call failed ('127.0.0.1', 4002)`
+
+Es scheint, als ob der lokale Broker-Dienst auf Port `4002` nicht erreichbar ist oder nicht läuft.
+
+**Mögliche Ursachen:**
+1.  Der Trading-Server/Broker-Simulator wurde nicht gestartet.
+2.  Ein Netzwerkproblem oder Firewall-Blockade verhindert den Zugriff auf `127.0.0.1:4002`.
+
+**Soll ich es erneut versuchen oder möchtest du die Systemumgebung prüfen?**
+2026-04-20 20:39:55 - [USER] nochmal
+2026-04-20 20:39:57 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'connect'}
+2026-04-20 20:39:57 - [SYSTEM_EXEC] connect
+2026-04-20 20:39:58 - [SYSTEM_RESULT] {"success": true, "payload": null, "message": "Connected to 127.0.0.1:4002 (ID: 22)", "error_code": "OK"}
+2026-04-20 20:40:01 - [PTA_RESPONSE] ✅ **VERBINDUNG ERFOLGREICH!**
+
+Ich bin jetzt mit dem Broker unter `127.0.0.1:4002` verbunden (**Session ID: 22**).
+
+Das System ist bereit für die Ausführung. Was ist dein nächster Befehl?
+*   `trades`: Deine Positionen abrufen?
+*   `status`: Den aktuellen Verbindungsstatus prüfen?
+*   `trade ...`: Eine neue Order platzieren?
+2026-04-20 20:40:14 - [USER] trades
+2026-04-20 20:40:15 - [PTA_THOUGHT] Calling Tool: execute_cli_command with args: {'command': 'trades'}
+2026-04-20 20:40:15 - [SYSTEM_EXEC] trades
+2026-04-20 20:40:15 - [SYSTEM_RESULT] {"success": true, "payload": {"trades": [{"id": "fc3f41e5...", "ticker": "GOOGL", "qty": 10, "entry": 150.0}, {"id": "a1b2c3d4...", "ticker": "MSFT", "qty": 5, "entry": 300.0}]}, "message": "Trades list", "error_code": "OK"}
+2026-04-20 20:40:20 - [PTA_RESPONSE] Hier sind deine aktuellen Trades (Verbindung steht):
+
+| Ticker | Menge | Einstiegspreis | Trade ID |
+| :--- | :--- | :--- | :--- |
+| **GOOGL** | 10 | 150.00 | `fc3f41e5...` |
+| **MSFT** | 5 | 300.00 | `a1b2c3d4...` |
+
+**Was ist dein nächster Schritt?**
+*   Einen Trade anpassen (z.B. Stop-Loss setzen)? (`update [ID] sl=[Preis]`)
+*   Einen Trade schließen/stornieren? (`cancel [ID]`)
+*   Eine neue Order eröffnen? (`trade buy symbol=...`)

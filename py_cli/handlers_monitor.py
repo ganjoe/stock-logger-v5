@@ -54,22 +54,44 @@ class TradesCommand(ICommand):
     syntax = "trades"
 
     def execute(self, ctx: CLIContext, args: List[str]) -> CommandResponse:
-        # Mock List
-        trades = [
-            {"id": "fc3f41e5...", "ticker": "GOOGL", "qty": 10, "entry": 150.0},
-            {"id": "a1b2c3d4...", "ticker": "MSFT", "qty": 5, "entry": 300.0}
-        ]
-        
-        if ctx.mode == CLIMode.BOT:
-            return CommandResponse(success=True, message="Trades list", payload={"trades": trades})
+        if not services.has_broker():
+            return CommandResponse(success=False, message="No Active Broker Connection.", error_code="NO_CONNECTION")
             
-        # Human Table (ID First!)
-        lines = ["ID               | Ticker | Qty | Entry"]
-        lines.append("-" * 40)
-        for t in trades:
-            lines.append(f"{t['id']:<16} | {t['ticker']:<6} | {t['qty']:<3} | {t['entry']}")
+        try:
+            broker = services.get_broker()
+            manager = LivePortfolioManager(broker)
             
-        return CommandResponse(success=True, message="\n".join(lines), payload={"trades": trades})
+            # Fetch Snapshot using existing logic
+            snap = manager.snapshot()
+            
+            # Convert Snapshot positions to the trades format expected by CLI/PTA
+            trades = []
+            for pos in snap.positions:
+                trades.append({
+                    "id": pos.trade_id or "N/A", 
+                    "ticker": pos.ticker, 
+                    "qty": pos.quantity, 
+                    "entry": pos.avg_price,
+                    "market_value": pos.market_value,
+                    "unrealized_pnl": pos.unrealized_pnl
+                })
+            
+            if ctx.mode == CLIMode.BOT:
+                return CommandResponse(success=True, message="Trades list", payload={"trades": trades})
+                
+            # Human Table (ID First!)
+            if not trades:
+                return CommandResponse(success=True, message="No open positions found.", payload={"trades": []})
+
+            lines = ["ID               | Ticker | Qty   | Entry   | PnL"]
+            lines.append("-" * 55)
+            for t in trades:
+                lines.append(f"{t['id']:<16} | {t['ticker']:<6} | {t['qty']:<5} | {t['entry']:<7} | {t['unrealized_pnl']:+.2f}")
+                
+            return CommandResponse(success=True, message="\n".join(lines), payload={"trades": trades})
+            
+        except Exception as e:
+            return CommandResponse(success=False, message=f"Error fetching trades: {e}", error_code="FETCH_ERROR")
 
 class QuoteCommand(ICommand):
     name = "quote"
